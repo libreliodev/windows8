@@ -60,5 +60,62 @@ namespace LibrelioApplication
             //var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
             //this.Frame.Navigate(typeof(SplitPage), groupId);
         }
+
+        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private T FindChild<T>(UIElement element, Func<T, bool> isObject)
+                     where T : UIElement
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                var uiElement = VisualTreeHelper.GetChild(element, i) as UIElement;
+                var child = uiElement as T;
+                if (child != null)
+                {
+                    if (isObject(child))
+                        return child;
+                }
+
+                var result = FindChild(uiElement, isObject);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        private List<T> FindChilds<T>(UIElement element, Func<T, bool> isObject, List<T> res = null)
+                     where T : UIElement
+        {
+            if( res == null )
+                res = new List<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                var uiElement = VisualTreeHelper.GetChild(element, i) as UIElement;
+                var child = uiElement as T;
+                if (child != null)
+                {
+                    if (isObject(child))
+                        res.Add(child);
+                }
+
+                FindChilds(uiElement, isObject, res);
+            }
+            return res;
+        }
+
+
     }
 }

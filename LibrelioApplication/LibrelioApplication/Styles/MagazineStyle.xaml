@@ -1,0 +1,28 @@
+﻿<!--
+    This file contains XAML styles specific for each magazine.
+-->
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!-- Grid-appropriate 250 pixel item template for each magazine -->
+    <!--<DataTemplate x:Key="Standard250x400ItemTemplate">
+        <Grid HorizontalAlignment="Left" Width="250" Height="400">
+            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="227" Height="300"/>
+            </Border>
+            <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" >
+                <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="15,0,15,0" HorizontalAlignment="Center" Content="{Binding DownloadOrReadButton}" Name="DownloadOrReadButton" Click="Button_Click_1"/>
+                <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="15,0,15,0" HorizontalAlignment="Center" Content="{Binding SampleOrDeleteButton}" Name="SampleOrDeleteButton" Click="Button_Click_2"/>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>-->
+
+
+</ResourceDictionary>

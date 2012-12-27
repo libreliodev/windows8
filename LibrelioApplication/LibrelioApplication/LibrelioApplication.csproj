@@ -117,15 +117,23 @@
     <Compile Include="Common\LayoutAwarePage.cs" />
     <Compile Include="Common\RichTextColumns.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Utils\PList.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Page Include="Styles\MagazineStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <PRIResource Include="Assets\strings\en\resources.resw" />
     <PRIResource Include="Assets\strings\fr\resources.resw">
       <SubType>Designer</SubType>
     </PRIResource>
+    <Content Include="Assets\data\magazines.plist">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Common\ReadMe.txt" />
     <None Include="LibrelioApplication_TemporaryKey.pfx" />
   </ItemGroup>

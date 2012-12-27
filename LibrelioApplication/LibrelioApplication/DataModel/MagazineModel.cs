@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.Specialized;
+using LibrelioApplication.Utils;
 
 namespace LibrelioApplication.Data
 {
@@ -176,7 +177,7 @@ namespace LibrelioApplication.Data
 
             public MagazineDataSource()
             {
-
+                PList list = new PList("Assets/data/magazines.plist");
             }
         }
 
