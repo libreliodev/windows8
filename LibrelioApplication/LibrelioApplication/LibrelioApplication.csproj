@@ -118,11 +118,23 @@
     <Compile Include="Common\RichTextColumns.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Utils\PList.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\test\wind_355.png" />
+    <Content Include="Assets\test\wind_356.png" />
+    <Content Include="Assets\test\wind_357.png" />
+    <Content Include="Assets\test\wind_358.png" />
+    <Content Include="Assets\test\wind_359.png" />
+    <Content Include="Assets\test\wind_360.png" />
+    <Content Include="Assets\test\wind_361.png" />
+    <Content Include="Assets\test\wind_362.png" />
+    <Content Include="Assets\test\wind_363.png" />
+    <Content Include="Assets\test\wind_364.png" />
+    <Content Include="Assets\test\wind_365.png" />
     <Page Include="Styles\MagazineStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +146,8 @@
     <Content Include="Assets\data\magazines.plist">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Assets\test\wind_355\wind_355.pdf" />
+    <None Include="Assets\test\wind_358\wind_358.pdf" />
     <None Include="Common\ReadMe.txt" />
     <None Include="LibrelioApplication_TemporaryKey.pfx" />
   </ItemGroup>

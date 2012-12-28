@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,9 +13,20 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.Specialized;
 using LibrelioApplication.Utils;
+using Windows.ApplicationModel.Resources;
+using System.Reflection;
+using Windows.Storage;
+
+// The data model defined by this file serves as a representative example of a strongly-typed
+// model that supports notification when members are added, removed, or modified.  The property
+// names chosen coincide with data bindings in the standard item templates.
+//
+// Applications may use this model as a starting point and build on it, or discard it entirely and
+// replace it with something appropriate to their needs.
 
 namespace LibrelioApplication.Data
 {
+
     public class MagazineModel : LibrelioApplication.Common.BindableBase
     {
         private const String TAG = "MagazineModel";
@@ -22,8 +34,13 @@ namespace LibrelioApplication.Data
         private const String COMPLETE_SAMPLE_FILE = ".sample_complete";
         private const String PAYED_FILE = ".payed";
 
-        public String title { get; set; }
-        public String subtitle { get; set; }
+        private const String FILE_NAME_KEY = "FileName";
+        private const String TITLE_KEY = "Title";
+        private const String SUBTITLE_KEY = "Subtitle";
+
+
+        public String Title { get; set; }
+        public String Subtitle { get; set; }
         public String fileName { get; set; }
         public String pdfPath { get; set; }
         public String pngPath { get; set; }
@@ -37,16 +54,66 @@ namespace LibrelioApplication.Data
         public String assetsDir { get; set; }
         public String downloadDate { get; set; }
 
-        public MagazineModel(String fileName, String title, String subtitle,
-                String downloadDate)
+        public MagazineModel(Dictionary<string, dynamic> dict)
+        {
+            fileName = (string)dict[FILE_NAME_KEY];
+            Title = (string)dict[TITLE_KEY];
+            Subtitle = (string)dict[SUBTITLE_KEY];
+            valuesInit(fileName);
+        }
+
+        public MagazineModel(String fileName, String title, String subtitle)
         {
             this.fileName = fileName;
-            this.title = title;
-            this.subtitle = subtitle;
-            this.downloadDate = downloadDate;
-
-            //valuesInit(fileName);
+            this.Title = title;
+            this.Subtitle = subtitle;
+            
+            valuesInit(fileName);
         }
+
+        private void valuesInit(String fileName)
+        {
+            isPaid = fileName.Contains("_.");
+            int startNameIndex = fileName.IndexOf("/") + 1;
+            string appDataPath = "";
+            StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            appDataPath = folder.Path + "/";
+
+
+            //String png = appDataPath + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+            String png = fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+            string baseURL = appDataPath + "pdf/";
+            pdfUrl = baseURL + fileName;
+            pdfPath = getMagazineDir() + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+            if (isPaid)
+            {
+                pngUrl = pdfUrl.Replace("_.pdf", ".png");
+                pngPath = png.Replace("_.pdf", ".png");
+                sampleUrl = pdfUrl.Replace("_.", ".");
+                samplePath = pdfPath.Replace("_.", ".");
+                isSampleDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE).Result;
+            }
+            else
+            {
+                pngUrl = pdfUrl.Replace(".pdf", ".png");
+                pngPath = png.Replace(".pdf", ".png");
+            }
+            isDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_FILE).Result;
+
+            assetsDir = getMagazineDir();
+        }
+
+        public String getMagazineDir()
+        {
+            int finishNameIndex = fileName.IndexOf("/");
+            return getStoragePath() + fileName.Substring(0, finishNameIndex) + "/";
+        }
+
+        public String getStoragePath() {
+            return "";//TODODEBUG? Possible will be empty so as we used StorageFolder - not full path!
+        }
+
+        
 
         /*
             public MagazineModel(Cursor cursor, Context context) {
@@ -54,7 +121,7 @@ namespace LibrelioApplication.Data
                 int subitleColumnId = cursor.getColumnIndex(Magazines.FIELD_SUBTITLE);
                 int fileNameColumnId = cursor.getColumnIndex(Magazines.FIELD_FILE_NAME);
                 int dateColumnId = cursor.getColumnIndex(Magazines.FIELD_DOWNLOAD_DATE);
-		
+
                 this.fileName = cursor.getString(fileNameColumnId);
                 this.title = cursor.getString(titleColumnId);
                 this.subtitle = cursor.getString(subitleColumnId);
@@ -64,11 +131,7 @@ namespace LibrelioApplication.Data
                 valuesInit(fileName);
             }
 
-            public String getMagazineDir(){
-                int finishNameIndex = fileName.indexOf("/");
-                return ((IBaseContext)context).getStoragePath() + fileName.substring(0,finishNameIndex)+"/";
-            }
-	
+
             public static String getAssetsBaseURL(String fileName){
                 int finishNameIndex = fileName.indexOf("/");
                 return LibrelioApplication.BASE_URL+fileName.substring(0,finishNameIndex)+"/";
@@ -80,7 +143,7 @@ namespace LibrelioApplication.Data
                     assets.mkdirs();
                 }
             }
-	
+
             public void clearMagazineDir(){
                 File dir = new File(getMagazineDir());
                 if (dir.exists()) {
@@ -90,14 +153,14 @@ namespace LibrelioApplication.Data
                     dir.delete();
                 }
             }
-	
+
             public void delete(){
                 Log.d(TAG,"Deleting magazine has been initiated");
                 clearMagazineDir();
                 Intent intentInvalidate = new Intent(MainMagazineActivity.BROADCAST_ACTION_IVALIDATE);
                 context.sendBroadcast(intentInvalidate);
             }
-	
+
             public synchronized void saveInBase() {
                 SQLiteDatabase db;
                 DataBaseHelper dbhelp = new DataBaseHelper(context);
@@ -111,28 +174,7 @@ namespace LibrelioApplication.Data
                 db.close();
             }
 
-            private void valuesInit(String fileName) {
-                isPaid = fileName.contains("_.");
-                int startNameIndex = fileName.indexOf("/")+1;
-                String png = ((IBaseContext)context).getStoragePath()+fileName.substring(startNameIndex, fileName.length()); 
-                pdfUrl = LibrelioApplication.BASE_URL + fileName;
-                pdfPath = getMagazineDir()+fileName.substring(startNameIndex, fileName.length());
-                if(isPaid){
-                    pngUrl = pdfUrl.replace("_.pdf", ".png");
-                    pngPath = png.replace("_.pdf", ".png");
-                    sampleUrl = pdfUrl.replace("_.", ".");
-                    samplePath = pdfPath.replace("_.", ".");
-                    File sample = new File(getMagazineDir()+COMPLETE_SAMPLE_FILE);
-                    isSampleDowloaded = sample.exists();
-                } else {
-                    pngUrl = pdfUrl.replace(".pdf", ".png");
-                    pngPath = png.replace(".pdf", ".png");
-                }
-                File complete = new File(getMagazineDir()+COMPLETE_FILE);
-                isDowloaded = complete.exists();
-		
-                assetsDir = getMagazineDir();
-            }
+
 
             public void makeCompleteFile(boolean isSample){
                 String completeModificator = COMPLETE_FILE;
@@ -159,28 +201,76 @@ namespace LibrelioApplication.Data
                     Log.d(TAG,"Problem with create "+PAYED_FILE+", createNewFile() return "+create,e);
                 }
             }
-	
+
 
         */
 
-        public sealed class MagazineDataSource
+
+
+    }
+
+
+    public class MagazineViewModel : LibrelioApplication.Common.BindableBase
+    {
+
+        public String Title { get; set; }
+        public String Subtitle { get; set; }
+        public String Thumbnail { get; set; }
+        public String DownloadOrReadButton { get; set; }
+        public String SampleOrDeleteButton { get; set; }
+
+        public MagazineViewModel(MagazineModel m) {
+            Title = m.Title;
+            Subtitle = m.Subtitle;
+            Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
+            var resourceLoader = new ResourceLoader();
+
+            //TODO
+            DownloadOrReadButton = resourceLoader.GetString("download");
+            SampleOrDeleteButton = resourceLoader.GetString("sample");
+        }
+
+    }
+
+
+    /// <summary>
+    /// Creates a collection of Magazines. Hardcoded (for design time) and from plist (runtime).
+    /// </summary>
+    public sealed class MagazineDataSource
+    {
+        private static MagazineDataSource _sampleDataSource = new MagazineDataSource();
+
+        private ObservableCollection<MagazineViewModel> _allMagazines = new ObservableCollection<MagazineViewModel>();
+        public ObservableCollection<MagazineViewModel> AllMagazines
         {
-            private static MagazineDataSource _magazineDataSource = new MagazineDataSource();
-
-            private ObservableCollection<MagazineModel> _allMagazines = new ObservableCollection<MagazineModel>();
-            public ObservableCollection<MagazineModel> AllMagazines
-            {
-                get { return this._allMagazines; }
-            }
-
-
-
-            public MagazineDataSource()
-            {
-                PList list = new PList("Assets/data/magazines.plist");
-            }
+            get { return this._allMagazines; }
         }
 
 
+        public MagazineDataSource(int none) {
+            PList list = new PList("Assets/data/magazines.plist");
+            //TODODEBUG try
+            {
+                List<dynamic> arr = list[""];
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    MagazineModel m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+                    _allMagazines.Add(new MagazineViewModel(m));
+                }
+
+            }
+            //catch (Exception e)
+            //{
+            //    throw new Exception("Failed to load list");
+            //}
+        }
+        
+        public MagazineDataSource()
+        {
+            _allMagazines.Add(new MagazineViewModel( new MagazineModel("aaa", "bbb","vccc")) );
+            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
+            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
+            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
+        }
     }
 }

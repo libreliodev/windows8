@@ -1,5 +1,4 @@
 ﻿using LibrelioApplication.Common;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -33,8 +33,22 @@ namespace LibrelioApplication
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            prepareTestData();
         }
 
+        async void prepareTestData()
+        {
+            StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+
+            StorageFolder init = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
+            init = await init.GetFolderAsync("test");
+
+            IReadOnlyList<StorageFile> storageFiles = await init.GetFilesAsync();
+            foreach (var storageFile in storageFiles)
+            {
+                await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
+            }
+        }
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used when the application is launched to open a specific file, to display

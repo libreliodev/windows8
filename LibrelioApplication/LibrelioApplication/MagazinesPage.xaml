@@ -11,14 +11,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    
+    
     <Page.Resources>
 
         <!-- Collection of items displayed by this page -->
+        
+        <!--<CollectionViewSource
+            x:Name="itemsViewSource"
+            Source="{Binding Items}"
+            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>-->
         <CollectionViewSource
             x:Name="itemsViewSource"
             Source="{Binding Items}"
-            d:Source="{Binding AllGroups, Source={d:DesignInstance Type=data:SampleDataSource, IsDesignTimeCreatable=True}}"/>
+            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
+
+
+
     </Page.Resources>
+    <common:LayoutAwarePage.BottomAppBar>
+        <AppBar x:Name="BottomAppBar1" Padding="10,0,10,0" AutomationProperties.Name="Bottom App Bar">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100*"/>
+                    <!--<ColumnDefinition Width="50*"/>-->
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="LeftPanel" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Center">
+                    <Button x:Name="Refresh" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Refresh"/>
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </common:LayoutAwarePage.BottomAppBar>
+
 
     <!--
         This grid acts as a root panel for the page that defines two rows:
@@ -31,7 +55,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+
+
+
         <!-- Horizontal scrolling grid used in most view states -->
+        <!--ItemTemplate="{StaticResource Standard250x400ItemTemplate}"-->
         <GridView
             x:Name="itemGridView"
             AutomationProperties.AutomationId="ItemsGridView"
@@ -40,11 +68,30 @@
             Grid.RowSpan="2"
             Padding="116,136,116,46"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-            ItemTemplate="{StaticResource Standard250x250ItemTemplate}"
+            
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick"/>
+            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
+            <GridView.ItemTemplate>
+                    <DataTemplate >
+                        <Grid HorizontalAlignment="Left" Width="250" Height="500">
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="227" Height="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" >
+                                <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding DownloadOrReadButton}" Name="DownloadOrReadButton" Click="Button_Click_1"/>
+                                <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding SampleOrDeleteButton}" Name="SampleOrDeleteButton" Click="Button_Click_2"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+
+            </GridView.ItemTemplate>
+        </GridView>
 
         <!-- Vertical scrolling list only used when snapped -->
         <ListView
@@ -70,7 +117,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
-            <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}"/>
+            <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}" Margin="0,0,18,40"/>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>

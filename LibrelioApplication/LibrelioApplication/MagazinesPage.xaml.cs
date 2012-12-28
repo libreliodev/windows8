@@ -42,9 +42,12 @@ namespace LibrelioApplication
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            //var dataSrc = new LibrelioApplication.Data.MagazineDataSource();
+            //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
-            //var sampleDataGroups = SampleDataSource.GetGroups((String)navigationParameter);
-            //this.DefaultViewModel["Items"] = sampleDataGroups;
+            //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
+            var sampleDataGroups = new MagazineDataSource(1);
+            this.DefaultViewModel["Items"] = sampleDataGroups.AllMagazines;
         }
 
         /// <summary>

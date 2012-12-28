@@ -34,5 +34,64 @@
 		<key>Title</key>
 		<string>Wind 355</string>
 	</dict>
+	<dict>
+		<key>FileName</key>
+		<string>wind_359/wind_359.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 359</string>
+	</dict>
+
+	<dict>
+		<key>FileName</key>
+		<string>wind_360/wind_360.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 360</string>
+	</dict>
+	<dict>
+		<key>FileName</key>
+		<string>wind_361/wind_361.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 361</string>
+	</dict>
+	<dict>
+		<key>FileName</key>
+		<string>wind_362/wind_362.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 362</string>
+	</dict>
+	<dict>
+		<key>FileName</key>
+		<string>wind_363/wind_363.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 363</string>
+	</dict>
+
+	<dict>
+		<key>FileName</key>
+		<string>wind_364/wind_364.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 364</string>
+	</dict>
+	<dict>
+		<key>FileName</key>
+		<string>wind_365/wind_365.pdf</string>
+		<key>Subtitle</key>
+		<string>Avril 2011</string>
+		<key>Title</key>
+		<string>Wind 365</string>
+	</dict>
+
 </array>
 </plist>

@@ -406,7 +406,7 @@
         Uncomment any style you reference (as not all may be required).
     -->
 
-    <!--
+    
     
     <Style x:Key="SkipBackAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="SkipBackAppBarButton"/>
@@ -518,9 +518,9 @@
         <Setter Property="AutomationProperties.Name" Value="Settings"/>
         <Setter Property="Content" Value="&#xE115;"/>
     </Style>
-    -->
+    
 
-    <!--
+    
     <Style x:Key="VideoAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="VideoAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Video"/>
@@ -611,7 +611,7 @@
         <Setter Property="AutomationProperties.Name" Value="Open Pane"/>
         <Setter Property="Content" Value="&#xE127;"/>
     </Style>
-    -->
+    
 
     <!--
     <Style x:Key="WorldAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
