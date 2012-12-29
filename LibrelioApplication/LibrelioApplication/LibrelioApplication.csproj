@@ -124,17 +124,40 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Assets\test\wind_355.png" />
-    <Content Include="Assets\test\wind_356.png" />
-    <Content Include="Assets\test\wind_357.png" />
-    <Content Include="Assets\test\wind_358.png" />
-    <Content Include="Assets\test\wind_359.png" />
-    <Content Include="Assets\test\wind_360.png" />
-    <Content Include="Assets\test\wind_361.png" />
-    <Content Include="Assets\test\wind_362.png" />
-    <Content Include="Assets\test\wind_363.png" />
-    <Content Include="Assets\test\wind_364.png" />
-    <Content Include="Assets\test\wind_365.png" />
+    <Content Include="Assets\magazine\magazines_background.png" />
+    <Content Include="Assets\test\wind_355.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_356.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_357.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_358.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_359.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_360.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_361.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_362.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_363.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_364.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\wind_365.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Page Include="Styles\MagazineStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,8 +169,12 @@
     <Content Include="Assets\data\magazines.plist">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Assets\test\wind_355\wind_355.pdf" />
-    <None Include="Assets\test\wind_358\wind_358.pdf" />
+    <None Include="Assets\test\wind_355\wind_355.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\test\wind_358\wind_358.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Common\ReadMe.txt" />
     <None Include="LibrelioApplication_TemporaryKey.pfx" />
   </ItemGroup>

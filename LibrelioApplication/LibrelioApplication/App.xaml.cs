@@ -36,6 +36,23 @@ namespace LibrelioApplication
             prepareTestData();
         }
 
+
+        async void copyFolder(StorageFolder from, StorageFolder to) {
+            await to.CreateFolderAsync(from.Name);
+            IReadOnlyList<StorageFile> storageFiles = await from.GetFilesAsync();
+            foreach (var storageFile in storageFiles)
+            {
+                await storageFile.CopyAsync(to, storageFile.Name, NameCollisionOption.ReplaceExisting);
+            }
+
+            IReadOnlyList<StorageFolder> storageFolders = await from.GetFoldersAsync();
+            foreach (var storageFolder in storageFolders)
+            {
+                copyFolder(storageFolder, to);
+            }
+
+        }
+
         async void prepareTestData()
         {
             StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
@@ -43,11 +60,26 @@ namespace LibrelioApplication
             StorageFolder init = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
             init = await init.GetFolderAsync("test");
 
+
             IReadOnlyList<StorageFile> storageFiles = await init.GetFilesAsync();
             foreach (var storageFile in storageFiles)
             {
                 await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
             }
+
+            IReadOnlyList<StorageFolder> storageFolders = await init.GetFoldersAsync();
+            foreach (var storageFolder in storageFolders)
+            {
+                copyFolder(storageFolder, folder);
+            }
+            
+            //copyFolder(init, folder);
+
+            //IReadOnlyList<StorageFile> storageFiles = await init.GetFilesAsync();
+            //foreach (var storageFile in storageFiles)
+            //{
+            //    await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
+            //}
         }
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points

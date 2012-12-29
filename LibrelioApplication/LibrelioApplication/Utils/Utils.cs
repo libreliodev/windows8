@@ -17,7 +17,7 @@ namespace LibrelioApplication.Utils
                 await folder.GetFileAsync(fileName);
                 return true;
             }
-            catch
+            catch( Exception e )
             {
                 return false;
             }

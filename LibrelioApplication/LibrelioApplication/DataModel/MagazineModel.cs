@@ -71,8 +71,12 @@ namespace LibrelioApplication.Data
             valuesInit(fileName);
         }
 
-        private void valuesInit(String fileName)
+        async private void valuesInit(String fileName)
         {
+            if ((fileName == "") || (fileName == null)) {
+                return;
+            }
+
             isPaid = fileName.Contains("_.");
             int startNameIndex = fileName.IndexOf("/") + 1;
             string appDataPath = "";
@@ -91,7 +95,8 @@ namespace LibrelioApplication.Data
                 pngPath = png.Replace("_.pdf", ".png");
                 sampleUrl = pdfUrl.Replace("_.", ".");
                 samplePath = pdfPath.Replace("_.", ".");
-                isSampleDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE).Result;
+                //isSampleDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE).Result;
+                isSampleDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE);
             }
             else
             {
@@ -105,7 +110,9 @@ namespace LibrelioApplication.Data
 
         public String getMagazineDir()
         {
+            if( fileName == "" ) return "";
             int finishNameIndex = fileName.IndexOf("/");
+            if (finishNameIndex <= 0) return "";
             return getStoragePath() + fileName.Substring(0, finishNameIndex) + "/";
         }
 
@@ -212,22 +219,51 @@ namespace LibrelioApplication.Data
 
     public class MagazineViewModel : LibrelioApplication.Common.BindableBase
     {
+        public const string TAG_READ  = "READ";
+        public const string TAG_DEL  = "DEL";
+        public const string TAG_SAMPLE  = "SAMPLE";
+        public const string TAG_DOWNLOAD  = "DOWNLOAD";
 
         public String Title { get; set; }
         public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
         public String DownloadOrReadButton { get; set; }
         public String SampleOrDeleteButton { get; set; }
+        public String Button1Tag { get; set; }
+        public String Button2Tag { get; set; }
+        public String MagazineTag { get; set; }
+        public MagazineViewModel(string title, string subtitle, string tumb, string b1, string b2) {
+            Title = title;
+            Subtitle = subtitle;
+            Thumbnail=tumb;
+            DownloadOrReadButton=b1;
+            SampleOrDeleteButton=b2;
+            Button1Tag = "t1";
+            Button2Tag = "t2";
+            MagazineTag = "m1";
+        }
 
         public MagazineViewModel(MagazineModel m) {
             Title = m.Title;
             Subtitle = m.Subtitle;
             Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
             var resourceLoader = new ResourceLoader();
+            MagazineTag = m.fileName;
 
-            //TODO
-            DownloadOrReadButton = resourceLoader.GetString("download");
-            SampleOrDeleteButton = resourceLoader.GetString("sample");
+            if (m.isDowloaded)
+            {
+                DownloadOrReadButton = resourceLoader.GetString("read");
+                SampleOrDeleteButton = resourceLoader.GetString("delete");
+                Button1Tag = TAG_READ;
+                Button2Tag = TAG_DEL;
+            }
+            else {
+                DownloadOrReadButton = resourceLoader.GetString("download");
+                SampleOrDeleteButton = resourceLoader.GetString("sample");
+                Button1Tag = TAG_DOWNLOAD;
+                Button2Tag = TAG_SAMPLE;
+            }
+            
         }
 
     }
@@ -267,10 +303,10 @@ namespace LibrelioApplication.Data
         
         public MagazineDataSource()
         {
-            _allMagazines.Add(new MagazineViewModel( new MagazineModel("aaa", "bbb","vccc")) );
-            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
-            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
-            _allMagazines.Add(new MagazineViewModel(new MagazineModel("aaa", "bbb", "vccc")));
+            _allMagazines.Add(new MagazineViewModel("aaa", "bbb", "vccc", "buy", "sample"));
+            _allMagazines.Add(new MagazineViewModel("aaa1", "bbb2", "vccc", "buy", "sample"));
+            _allMagazines.Add(new MagazineViewModel("aaa2", "bbb3", "vccc", "buy", "sample"));
+            _allMagazines.Add(new MagazineViewModel("aaa3", "bbb4", "vccc", "buy", "sample"));
         }
     }
 }
