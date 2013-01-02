@@ -37,7 +37,9 @@
                     <!--<ColumnDefinition Width="50*"/>-->
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="LeftPanel" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Center">
-                    <Button x:Name="Refresh" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Refresh"/>
+                    <Button x:Name="Refresh" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Refresh" Click="Appbar_Click"/>
+                    <Button x:Name="testSlideshow" Tag="Slideshow" Content="Slideshow" Visibility="Collapsed" Click="Appbar_Click"/>
+                    <Button x:Name="testVideo" Tag="Video" Content="Video" Visibility="Collapsed" Click="Appbar_Click"/>
                 </StackPanel>
             </Grid>
         </AppBar>

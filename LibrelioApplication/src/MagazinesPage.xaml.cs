@@ -29,6 +29,12 @@ namespace LibrelioApplication
         public ItemsPage()
         {
             this.InitializeComponent();
+#if TEST_SLIDE
+            testSlideshow.Visibility = Windows.UI.Xaml.Visibility.Visible;
+#endif
+#if TEST_VIDEO
+            testVideo.Visibility = Windows.UI.Xaml.Visibility.Visible;
+#endif
         }
 
         /// <summary>
@@ -78,6 +84,25 @@ namespace LibrelioApplication
         {
             int i2 = 2;
         }
+
+        private void Appbar_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b != null) {
+                string tag = (string)b.Tag;
+                switch (tag) { 
+                    case "Slideshow":
+                        Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white");
+                        //Frame.Navigate(
+                        //NavigationService.Navigate(new Uri("/BuyCards.xaml", UriKind.Relative));
+                        //TODO ADD test 
+                        break;
+                }
+
+            }
+            
+        }
+        
 
         private T FindChild<T>(UIElement element, Func<T, bool> isObject)
                      where T : UIElement

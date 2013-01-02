@@ -127,6 +127,9 @@
     <Compile Include="..\src\MagazinesPage.xaml.cs">
       <Link>CoreEngine\MagazinesPage.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\SlideShowPage.xaml.cs">
+      <Link>CoreEngine\SlideShowPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="..\src\Utils\PList.cs">
       <Link>CoreEngine\PList.cs</Link>
     </Compile>
@@ -148,6 +151,11 @@
     </Page>
     <Page Include="..\src\MagazinesPage.xaml">
       <Link>CoreEngine\MagazinesPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\SlideShowPage.xaml">
+      <Link>CoreEngine\SlideShowPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace LibrelioApplication.Utils
 {
@@ -24,16 +26,18 @@ namespace LibrelioApplication.Utils
         }
 
 
-        async public static void copyFolder(StorageFolder from, StorageFolder to)
+        async public static void copyFolder(StorageFolder from, StorageFolder _to)
         {
-            await to.CreateFolderAsync(from.Name, CreationCollisionOption.OpenIfExists);
+            StorageFolder to = await _to.CreateFolderAsync(from.Name, CreationCollisionOption.OpenIfExists);
             IReadOnlyList<StorageFile> storageFiles = await from.GetFilesAsync();
             foreach (var storageFile in storageFiles)
             {
                 await storageFile.CopyAsync(to, storageFile.Name, NameCollisionOption.ReplaceExisting);
             }
 
-            IReadOnlyList<StorageFolder> storageFolders = await from.GetFoldersAsync();
+            //IReadOnlyList<StorageFolder> storageFolders = await from.GetFoldersAsync();
+            var queryResult = from.CreateFolderQuery();
+            IReadOnlyList<StorageFolder> storageFolders = await queryResult.GetFoldersAsync();
             foreach (var storageFolder in storageFolders)
             {
                 copyFolder(storageFolder, to);
@@ -70,7 +74,14 @@ namespace LibrelioApplication.Utils
             //}
         }
 
-
+        public static void navigateTo(Type page, Object param = null) {
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (!rootFrame.Navigate(page, param)) {
+                {
+                    throw new Exception("Failed to create initial page");
+                }
+            }
+        }
 
     }
 }

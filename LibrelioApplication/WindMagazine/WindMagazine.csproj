@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE,TEST_SLIDE,TEST_VIDEO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -127,6 +127,9 @@
     <Compile Include="..\src\MagazinesPage.xaml.cs">
       <Link>MagazinesPage.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\SlideShowPage.xaml.cs">
+      <Link>Common\SlideShowPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="..\src\Utils\PList.cs">
       <Link>Utils\PList.cs</Link>
     </Compile>
@@ -145,10 +148,33 @@
     <None Include="WindMagaine_TemporaryKey.pfx" />
     <PRIResource Include="Assets\strings\en\resources.resw" />
     <PRIResource Include="Assets\strings\fr\resources.resw" />
+    <Page Include="..\src\SlideShowPage.xaml">
+      <Link>Common\SlideShowPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Content Include="Assets\data\magazines.plist">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\magazines_background.png" />
+    <Content Include="Assets\test\img\sample_1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\img\sample_2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\img\sample_3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\img\sample_4.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\img\sample_5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\test\mov\test_move1.mov">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\test\wind_355\wind_355.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
