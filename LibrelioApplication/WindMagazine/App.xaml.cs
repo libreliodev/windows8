@@ -1,6 +1,7 @@
 ﻿using LibrelioApplication.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Windows.ApplicationModel;
@@ -31,9 +32,9 @@ namespace WindMagazine
         /// </summary>
         public App()
         {
+            Debug.WriteLine("App started");
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            LibrelioApplication.Utils.Utils.prepareTestData();
         }
 
 
@@ -52,6 +53,8 @@ namespace WindMagazine
             
             if (rootFrame == null)
             {
+                await LibrelioApplication.Utils.Utils.prepareTestData();
+
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
                 //Associate the frame with a SuspensionManager key                                

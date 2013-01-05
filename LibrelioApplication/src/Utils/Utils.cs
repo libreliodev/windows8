@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,8 +46,9 @@ namespace LibrelioApplication.Utils
 
         }
 
-        async public static void prepareTestData()
+        async public static Task<bool> prepareTestData()
         {
+            Debug.WriteLine("prepareTestData");
             StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
 
             StorageFolder init = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Assets");
@@ -76,12 +78,12 @@ namespace LibrelioApplication.Utils
             //}
 
 
-            ////TODODEBUG
-            //IReadOnlyList<StorageFolder> storageFolders = await init.GetFoldersAsync();
-            //foreach (var storageFolder in storageFolders)
-            //{
-            //    copyFolder(storageFolder, folder);
-            //}
+            //TODODEBUG
+            IReadOnlyList<StorageFolder> storageFolders = await init.GetFoldersAsync();
+            foreach (var storageFolder in storageFolders)
+            {
+                copyFolder(storageFolder, folder);
+            }
 
             //copyFolder(init, folder);
 
@@ -90,6 +92,8 @@ namespace LibrelioApplication.Utils
             //{
             //    await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
             //}
+            Debug.WriteLine("prepareTestData - finished");
+            return true;
         }
 
         public static void navigateTo(Type page, Object param = null) {

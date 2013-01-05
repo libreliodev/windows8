@@ -16,6 +16,8 @@ using LibrelioApplication.Utils;
 using Windows.ApplicationModel.Resources;
 using System.Reflection;
 using Windows.Storage;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 // The data model defined by this file serves as a representative example of a strongly-typed
 // model that supports notification when members are added, removed, or modified.  The property
@@ -67,14 +69,14 @@ namespace LibrelioApplication.Data
             this.fileName = fileName;
             this.Title = title;
             this.Subtitle = subtitle;
-            
+
             valuesInit(fileName);
         }
 
-        async private void valuesInit(String fileName)
+        async public void valuesInit(String fileName)
         {
             if ((fileName == "") || (fileName == null)) {
-                return;
+                return ;
             }
 
             isPaid = fileName.Contains("_.");
@@ -95,7 +97,6 @@ namespace LibrelioApplication.Data
                 pngPath = png.Replace("_.pdf", ".png");
                 sampleUrl = pdfUrl.Replace("_.", ".");
                 samplePath = pdfPath.Replace("_.", ".");
-                //isSampleDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE).Result;
                 isSampleDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE);
             }
             else
@@ -103,10 +104,12 @@ namespace LibrelioApplication.Data
                 pngUrl = pdfUrl.Replace(".pdf", ".png");
                 pngPath = png.Replace(".pdf", ".png");
             }
-            isDowloaded = Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_FILE).Result;
+            isDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_FILE);
 
             assetsDir = getMagazineDir();
         }
+
+
 
         public String getMagazineDir()
         {

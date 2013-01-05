@@ -1,9 +1,10 @@
 ﻿using LibrelioApplication.Data;
-
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -48,12 +49,15 @@ namespace LibrelioApplication
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            Debug.WriteLine("LoadState");
             //var dataSrc = new LibrelioApplication.Data.MagazineDataSource();
             //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
             var sampleDataGroups = new MagazineDataSource(1);
             this.DefaultViewModel["Items"] = sampleDataGroups.AllMagazines;
+            Debug.WriteLine("LoadState - finished");
+        
         }
 
         /// <summary>
@@ -96,7 +100,7 @@ namespace LibrelioApplication
                         Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white");
                         break;
                     case "Video":
-                        Utils.Utils.navigateTo(typeof(LibrelioApplication.VideoPage), "http://localhost/test_move1.mov?waplay=auto");
+                        Utils.Utils.navigateTo(typeof(LibrelioApplication.VideoPage), "http://localhost/test_move1.mov?waplay=auto1");
                         break;
                 }
 

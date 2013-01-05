@@ -11,12 +11,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="75"/>
+            <RowDefinition Height="75"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" x:Name="layoutRoot">
-            <MediaElement x:Name="mediaMain" AutoPlay="False"  Tapped="mediaMain_Tapped_1" />
+            <MediaElement x:Name="mediaMain" AutoPlay="False"  Tapped="mediaMain_Tapped_1" CurrentStateChanged="mediaMain_CurrentStateChanged" />
         </Grid>
-        <Button Content="Back" Click="Button_Click_1" Grid.Row="1" HorizontalAlignment="Stretch" Background="Gray"/>
+        <Button Content="Play" Name ="playButton" Click="playButton_Click" Grid.Row="1" HorizontalAlignment="Stretch" Background="Gray"/>
+        <Button Content="Back" Click="Button_Click_1" Grid.Row="2" HorizontalAlignment="Stretch" Background="Gray"/>
     </Grid>
 
 </Page>

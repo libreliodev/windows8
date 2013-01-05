@@ -60,6 +60,7 @@ namespace LibrelioApplication
             string fullPath = String.Format("ms-appdata:///local/{0}", (path + name ));
             Uri videoUrl = new Uri(fullPath);
             mediaMain.Source = videoUrl;
+            
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -67,10 +68,30 @@ namespace LibrelioApplication
             Utils.Utils.navigateTo(typeof(ItemsPage));
         }
 
+        private void playButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (mediaMain.CurrentState == MediaElementState.Playing)
+                mediaMain.Pause();
+            else
+                mediaMain.Play();
+        }
+        
+
         private void mediaMain_Tapped_1(object sender, TappedRoutedEventArgs e)
         {
-	    mediaMain.Play();            
+            if (mediaMain.CurrentState == MediaElementState.Playing)
+                mediaMain.Pause();
+            else
+                mediaMain.Play();
         }
+
+        private void mediaMain_CurrentStateChanged(object sender, RoutedEventArgs e)
+        {
+
+            playButton.Content = (mediaMain.CurrentState == MediaElementState.Playing) ? "Pause" : "Play";
+        }
+
+        
 
     }
 }
