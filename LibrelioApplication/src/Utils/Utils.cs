@@ -58,12 +58,30 @@ namespace LibrelioApplication.Utils
             {
                 await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
             }
+            ////Var2
+            //IReadOnlyList<IStorageItem> storageItems = null;
+            //try
+            //{
+            //    storageItems = await init.GetFilesAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    //rootPage.NotifyUser("Error retrieving file(s) from Clipboard: " + ex.Message, NotifyType.ErrorMessage);
+            //}
+            //foreach (var storageItem in storageItems) {
+            //    var storageFile = storageItem as StorageFile;
+            //    if (storageFile != null) {
+            //        await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
+            //    }
+            //}
 
-            IReadOnlyList<StorageFolder> storageFolders = await init.GetFoldersAsync();
-            foreach (var storageFolder in storageFolders)
-            {
-                copyFolder(storageFolder, folder);
-            }
+
+            ////TODODEBUG
+            //IReadOnlyList<StorageFolder> storageFolders = await init.GetFoldersAsync();
+            //foreach (var storageFolder in storageFolders)
+            //{
+            //    copyFolder(storageFolder, folder);
+            //}
 
             //copyFolder(init, folder);
 
@@ -82,6 +100,8 @@ namespace LibrelioApplication.Utils
                 }
             }
         }
+
+        
 
     }
 }

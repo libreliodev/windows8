@@ -136,6 +136,9 @@
     <Compile Include="..\src\Utils\Utils.cs">
       <Link>Utils\Utils.cs</Link>
     </Compile>
+    <Compile Include="..\src\VideoPage.xaml.cs">
+      <Link>Common\VideoPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,11 @@
     <PRIResource Include="Assets\strings\fr\resources.resw" />
     <Page Include="..\src\SlideShowPage.xaml">
       <Link>Common\SlideShowPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\VideoPage.xaml">
+      <Link>Common\VideoPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

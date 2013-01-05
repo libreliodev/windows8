@@ -136,6 +136,9 @@
     <Compile Include="..\src\Utils\Utils.cs">
       <Link>CoreEngine\Utils.cs</Link>
     </Compile>
+    <Compile Include="..\src\VideoPage.xaml.cs">
+      <Link>CoreEngine\VideoPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -156,6 +159,11 @@
     </Page>
     <Page Include="..\src\SlideShowPage.xaml">
       <Link>CoreEngine\SlideShowPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\VideoPage.xaml">
+      <Link>CoreEngine\VideoPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

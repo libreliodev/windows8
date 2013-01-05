@@ -92,10 +92,11 @@ namespace LibrelioApplication
                 string tag = (string)b.Tag;
                 switch (tag) { 
                     case "Slideshow":
+                        //msgBox if need:
                         Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white");
-                        //Frame.Navigate(
-                        //NavigationService.Navigate(new Uri("/BuyCards.xaml", UriKind.Relative));
-                        //TODO ADD test 
+                        break;
+                    case "Video":
+                        Utils.Utils.navigateTo(typeof(LibrelioApplication.VideoPage), "http://localhost/test_move1.mov?waplay=auto");
                         break;
                 }
 
