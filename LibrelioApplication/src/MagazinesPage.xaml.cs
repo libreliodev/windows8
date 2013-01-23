@@ -72,6 +72,9 @@ namespace LibrelioApplication
             //// by passing required information as a navigation parameter
             //var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
             //this.Frame.Navigate(typeof(SplitPage), groupId);
+            string sParam = ((MagazineViewModel)e.ClickedItem).MagazineTag;
+            //sParam += LibrelioApplication.PdfViewPage.qqq;
+            Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage), sParam);
         }
 
         private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)

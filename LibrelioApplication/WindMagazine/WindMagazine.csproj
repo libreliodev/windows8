@@ -127,6 +127,9 @@
     <Compile Include="..\src\MagazinesPage.xaml.cs">
       <Link>MagazinesPage.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\PdfViewPage.xaml.cs">
+      <Link>PdfViewPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="..\src\SlideShowPage.xaml.cs">
       <Link>Common\SlideShowPage.xaml.cs</Link>
     </Compile>
@@ -158,6 +161,11 @@
     </Page>
     <Page Include="..\src\VideoPage.xaml">
       <Link>Common\VideoPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\PdfViewPage.xaml">
+      <Link>PdfViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -203,6 +211,7 @@
     <Content Include="Assets\test\wind_358.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\test\wind_358\wind_358__page1.png" />
     <Content Include="Assets\test\wind_359.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

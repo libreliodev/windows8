@@ -127,6 +127,9 @@
     <Compile Include="..\src\MagazinesPage.xaml.cs">
       <Link>CoreEngine\MagazinesPage.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\PdfViewPage.xaml.cs">
+      <Link>CoreEngine\PdfViewPage.xaml.cs</Link>
+    </Compile>
     <Compile Include="..\src\SlideShowPage.xaml.cs">
       <Link>CoreEngine\SlideShowPage.xaml.cs</Link>
     </Compile>
@@ -164,6 +167,11 @@
     </Page>
     <Page Include="..\src\VideoPage.xaml">
       <Link>CoreEngine\VideoPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\PdfViewPage.xaml">
+      <Link>CoreEngine\PdfViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

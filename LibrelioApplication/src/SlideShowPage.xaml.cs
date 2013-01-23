@@ -51,12 +51,6 @@ namespace LibrelioApplication
 
 
             Uri uri = new Uri((string)e.Parameter);
-            string gg = uri.Host;
-            string gg2 = uri.LocalPath;
-            string gg3 = uri.OriginalString;
-            string gg4 = uri.PathAndQuery;
-            string gg5 = uri.Query;
-            string[] gg6 = uri.Segments;
 
             string[] _params = uri.Query.Replace("?", "").Split('&');
             //TODO case "warect"

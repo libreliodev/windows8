@@ -1,6 +1,6 @@
 ﻿<common:LayoutAwarePage
     x:Name="pageRoot"
-    x:Class="LibrelioApplication.ItemsPage"
+    x:Class="LibrelioApplication.PdfViewPage"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,32 +11,74 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    
-    
+
     <Page.Resources>
-        <!-- Collection of items displayed by this page -->
-        <!--<CollectionViewSource
-            x:Name="itemsViewSource"
-            Source="{Binding Items}"
-            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>-->
         <CollectionViewSource
             x:Name="itemsViewSource"
-            Source="{Binding Items}"
-            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
-    </Page.Resources>
+            Source="{Binding ThumbItems}"
+            />
+        </Page.Resources>
     
-    <common:LayoutAwarePage.BottomAppBar>
+            <common:LayoutAwarePage.BottomAppBar>
         <AppBar x:Name="BottomAppBar1" Padding="10,0,10,0" AutomationProperties.Name="Bottom App Bar">
             <Grid>
-                <Grid.ColumnDefinitions>
+                <!--<Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*"/>
-                    <!--<ColumnDefinition Width="50*"/>-->
-                </Grid.ColumnDefinitions>
-                <StackPanel x:Name="LeftPanel" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Center">
+                </Grid.ColumnDefinitions>-->
+
+                
+
+                <!--<ListView 
+            x:Name="itemGridView"
+            AutomationProperties.AutomationId="ItemsGridView"
+            AutomationProperties.Name="Items"
+            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" HorizontalAlignment="Center" Grid.Column="20" IsHoldingEnabled="False" IsRightTapEnabled="False" IsDoubleTapEnabled="False" SelectionMode="None" CanReorderItems="True" DataFetchSize="1" IncrementalLoadingThreshold="-2">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <Grid HorizontalAlignment="Left" Tag="{Binding MagazineTag}" Height="150">
+                                <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                                    <TextBlock Text="ABC" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center" Foreground="#FFBF2D2D" FontFamily="Global User Interface" FontSize="10"/>
+                                </StackPanel>
+                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="75" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+
+                    </ListView.ItemTemplate>
+                </ListView>-->
+
+                <GridView
+            x:Name="itemGridView"
+            AutomationProperties.AutomationId="ItemsGridView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.RowSpan="1"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True"
+            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150">
+                    <GridView.ItemTemplate>
+                        <DataTemplate >
+                            <Grid HorizontalAlignment="Left" Tag="{Binding MagazineTag}" Height="150">
+                                <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                                    <TextBlock Text="ABC" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center" Foreground="#FFBF2D2D" FontFamily="Global User Interface" FontSize="10"/>
+                                </StackPanel>
+                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="75" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+
+                    </GridView.ItemTemplate>
+                </GridView>
+
+
+                <!--<StackPanel x:Name="LeftPanel" Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Center">
                     <Button x:Name="Refresh" Style="{StaticResource RefreshAppBarButtonStyle}" Tag="Refresh" Click="Appbar_Click"/>
                     <Button x:Name="testSlideshow" Tag="Slideshow" Content="Slideshow" Visibility="Collapsed" Click="Appbar_Click"/>
                     <Button x:Name="testVideo" Tag="Video" Content="Video" Visibility="Collapsed" Click="Appbar_Click"/>
-                </StackPanel>
+                </StackPanel>-->
             </Grid>
         </AppBar>
     </common:LayoutAwarePage.BottomAppBar>
@@ -55,59 +97,6 @@
 
 
 
-
-        <!-- Horizontal scrolling grid used in most view states -->
-        <!--ItemTemplate="{StaticResource Standard250x400ItemTemplate}"-->
-        <GridView
-            x:Name="itemGridView"
-            AutomationProperties.AutomationId="ItemsGridView"
-            AutomationProperties.Name="Items"
-            TabIndex="1"
-            Grid.RowSpan="2"
-            Padding="116,136,116,46"
-            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-            
-            SelectionMode="None"
-            IsSwipeEnabled="false"
-            IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
-            <GridView.ItemTemplate>
-                    <DataTemplate >
-                    <Grid HorizontalAlignment="Left" Width="250" Height="500" Tag="{Binding MagazineTag}" >
-                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="227" Height="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
-                                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" >
-                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding DownloadOrReadButton}"  Tag="{Binding Button1Tag}" Name="DownloadOrReadButton" Click="Button_Click_1"/>
-                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding SampleOrDeleteButton}" Tag="{Binding Button2Tag}" Name="SampleOrDeleteButton" Click="Button_Click_2"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-
-            </GridView.ItemTemplate>
-        </GridView>
-
-        <!-- Vertical scrolling list only used when snapped -->
-        <ListView
-            x:Name="itemListView"
-            AutomationProperties.AutomationId="ItemsListView"
-            AutomationProperties.Name="Items"
-            TabIndex="1"
-            Grid.Row="1"
-            Visibility="Collapsed"
-            Margin="0,-10,0,0"
-            Padding="10,0,0,60"
-            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
-            ItemTemplate="{StaticResource Standard80ItemTemplate}"
-            SelectionMode="None"
-            IsSwipeEnabled="false"
-            IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick"/>
-
         <!-- Back button and page title -->
         <Grid>
             <Grid.ColumnDefinitions>
@@ -116,6 +105,19 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}" Margin="0,0,18,40"/>
+        </Grid>
+
+        <Grid x:Name="Output" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Background="White" >
+            <ScrollViewer x:Name="scrollViewer" HorizontalAlignment="Left" VerticalAlignment="Top"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+		      VerticalScrollMode="Auto" HorizontalScrollMode="Auto" ZoomMode="Enabled">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Image Width="480" Height="270" AutomationProperties.Name="Image of a cliff" Stretch="None"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Image Width="480" Height="270" AutomationProperties.Name="Image of Grapes" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>-->
+                    <Image Name="imgPage1" Stretch="None"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>
@@ -160,5 +162,6 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+
     </Grid>
 </common:LayoutAwarePage>
