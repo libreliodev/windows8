@@ -212,6 +212,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\test\wind_358\wind_358__page1.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page1_thumb.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page2.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page2_thumb.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page3.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page3_thumb.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page4.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page4_thumb.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page5.png" />
+    <Content Include="Assets\test\wind_358\wind_358__page5_thumb.png" />
     <Content Include="Assets\test\wind_359.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

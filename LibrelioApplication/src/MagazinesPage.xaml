@@ -73,17 +73,17 @@
             ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
             <GridView.ItemTemplate>
                     <DataTemplate >
-                    <Grid HorizontalAlignment="Left" Width="250" Height="500" Tag="{Binding MagazineTag}" >
-                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="227" Height="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <Grid HorizontalAlignment="Left" Width="130" Height="260" Tag="{Binding MagazineTag}" Margin="10" >
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
+                                <Image Source="{Binding Thumbnail}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="130" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>
                             <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
-                                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Margin="0" TextAlignment="Center" LineHeight="18"/>
+                                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="0,0,0,10" TextAlignment="Center" LineHeight="18"/>
                             </StackPanel>
                             <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" >
-                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding DownloadOrReadButton}"  Tag="{Binding Button1Tag}" Name="DownloadOrReadButton" Click="Button_Click_1"/>
-                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="45" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding SampleOrDeleteButton}" Tag="{Binding Button2Tag}" Name="SampleOrDeleteButton" Click="Button_Click_2"/>
+                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="35" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding DownloadOrReadButton}"  Tag="{Binding Button1Tag}" Name="DownloadOrReadButton" Click="Button_Click_1" FontSize="12" BorderThickness="1"/>
+                            <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="35" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding SampleOrDeleteButton}" Tag="{Binding Button2Tag}" Name="SampleOrDeleteButton" Click="Button_Click_2" BorderThickness="1"/>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>

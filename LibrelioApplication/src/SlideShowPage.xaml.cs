@@ -121,7 +121,8 @@ namespace LibrelioApplication
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Utils.Utils.navigateTo(typeof(ItemsPage));
+            //Utils.Utils.navigateTo(typeof(ItemsPage));
+            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
         }
 
         private void imgMain_Tapped_1(object sender, TappedRoutedEventArgs e)
