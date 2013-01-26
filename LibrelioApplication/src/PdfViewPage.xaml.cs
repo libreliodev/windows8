@@ -21,22 +21,86 @@ using Windows.UI.Xaml.Navigation;
 
 namespace LibrelioApplication
 {
+
+    /// <summary>
+    /// Custom Text box control derived from Textbox class.
+    /// </summary>
+    public class CustomTextBox : TextBox
+    {
+        public CustomTextBox()
+        {
+            this.Background = new SolidColorBrush(Windows.UI.Colors.Coral);
+            this.BorderThickness = new Thickness(1);
+            this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+        }
+    }
+
+
+    public class MyListView : ListView
+    {
+        public PointerEventHandler PointReleaseHandler { get; set; }
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            MyListViewItem item = new MyListViewItem();
+            item.PointerReleased += item_PointerReleased;
+            return item;
+        }
+
+        void item_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (PointReleaseHandler != null)
+                PointReleaseHandler(sender, e);
+        }
+
+        protected override void OnPointerReleased(PointerRoutedEventArgs e)
+        {
+            //base.OnPointerReleased(e);
+            e.Handled = false; 
+        }
+    }
+
+    public class MyListViewItem : ListViewItem
+    {
+        protected override void OnRightTapped(Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            base.OnRightTapped(e);
+            e.Handled = false; // Stop 'swallowing' the event
+        }
+        protected override void OnPointerPressed(PointerRoutedEventArgs e)
+        {
+            //base.OnPointerPressed(e);
+            e.Handled = false; 
+        }
+
+        protected override void OnPointerReleased(PointerRoutedEventArgs e)
+        {
+            //base.OnPointerReleased(e);
+            e.Handled = false;
+        }
+
+
+    }
+
+    //TODO Move to some model file
+    public struct PageLink
+    {
+        public Rect rect;
+        public string url;
+    }
+
+    public struct PageData
+    {
+        public string Url { get; set; }
+        public int Idx { get; set; }
+        public List<PageLink> Links { get; set; }
+    }
+
     /// <summary>
     /// A page that displays pdf (actually list of png files and description in json format).
     /// </summary>
     //public sealed partial class PdfViewPage : LibrelioApplication.Common.LayoutAwarePage
     public sealed partial class PdfViewPage : Page
     {
-        //TODO Move to some model file
-        struct PageLink {
-            public Rect rect;
-            public string url;
-        }
-
-        public struct PageData {
-            public string Url { get; set; }
-            public int Idx { get; set; }
-        }
 
         static string LOCAL_HOST = "localhost";
 
@@ -44,15 +108,15 @@ namespace LibrelioApplication
         string curPageFileName;
         int pageNum;
         int pageCount;
-        List<PageLink> pageLinks = new List<PageLink>();
+        //List<PageLink> pageLinks = new List<PageLink>();
         List<PageData> pages = new List<PageData>();
         List<PageData> thumbs = new List<PageData>();
-        const float INIT_ZOOM_FACTOR = 0.67f;
+        const float INIT_ZOOM_FACTOR = 0.6f;
+        const float PAGE_WIDTH = 950;
 
         public PdfViewPage()
         {
             this.InitializeComponent();
-            scrollViewer.ZoomToFactor( INIT_ZOOM_FACTOR );
         }
 
         ///// <summary>
@@ -79,53 +143,51 @@ namespace LibrelioApplication
             pageNum = 1;
             pageCount = 5;
             for (int p = 1; p <= pageCount; p++) {
-                pages.Add(new PageData() { Url = getPageName(p), Idx = p });
+                PageData data = new PageData() { Url = getPageName(p), Idx = p };
+                data.Links = new List<PageLink>();
+                PageLink link = new PageLink();
+                //link.rect = new Rect(1400, 2800, 350, 400);
+                link.rect = new Rect(0, 0, 800, 1000);
+                //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
+                link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
+                data.Links.Add(link);
+                
+                pages.Add( data );
                 thumbs.Add(new PageData() { Url = getThumbName(p), Idx = p });
             }
 
+            ////TODODEBUG
+            pagesListView.PointReleaseHandler = PdfViewPage_PointerReleased;
             pagesListView.ItemsSource = pages;
             itemGridView.ItemsSource = thumbs;
 
+            //qqq.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/test/img/sample_1.jpg"));
+            scrollViewer.ZoomToFactor(INIT_ZOOM_FACTOR);
+            embdedFrame.Navigating += embdedFrame_Navigating;
+            embdedFrame.Navigated += embdedFrame_Navigated;
 
+            
+            ////TODODEBUG
+            //pagesListView.IsSwipeEnabled = false;
+            //pagesListView.IsTapEnabled = false;
+            //pagesListView.IsItemClickEnabled = false;
 
-            ////curPageFileName = pdfFileName.Replace(".pdf","") + "_page" + pageNum + ".png";
-            ////imgPage1.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", curPageFileName)));
-            ////imgPage2.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", curPageFileName)));
-            ////imgPage3.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", curPageFileName)));
-            ////imgPage1.Source = new Uri( String.Format("ms-appdata:///local/{0}", curPageFileName) );
-            ////imgPage1.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri( getPageName(1) ));
-            ////imgPage2.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(getPageName(2)));
-            ////imgPage3.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(getPageName(3)));
+        }
 
-            //List<MagazineViewModel> lst = new List<MagazineViewModel>();
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    lst.Add(new MagazineViewModel("t1", "", getThumbName(1), "", ""));
-            //    lst.Add(new MagazineViewModel("t1", "", getThumbName(2), "", ""));
-            //    lst.Add(new MagazineViewModel("t1", "", getThumbName(3), "", ""));
-            //    //lst.Add(new MagazineViewModel("t2", "", "ms-appdata:///local/wind_356.png", "", ""));
-            //    //lst.Add(new MagazineViewModel("t3", "", "ms-appdata:///local/wind_357.png", "", ""));
-            //}
+        void embdedFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+        }
 
-            //itemGridView.ItemsSource = lst;
-
-            PageLink l = new PageLink();
-            //l.rect = new Rect(1400, 2800, 350, 400);
-            l.rect = new Rect(0, 0, 400, 400);
-            //l.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
-            l.url = "http://localhost/sample_5.jpg?waplay=auto1&wadelay=3000&wabgcolor=white";
-            pageLinks.Add(l);
-            PointerReleased += PdfViewPage_PointerReleased;
+        void embdedFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
         }
 
         string getPageName(int page) {
-            //return pdfFileName.Replace(".pdf", "") + "_page" + page + ".png";
             return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + ".png"));
         }
 
         string getThumbName(int page)
         {
-            //return pdfFileName.Replace(".pdf", "") + "_page" + page + ".png";
             return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + "_thumb" + ".png"));
         }
 
@@ -133,34 +195,41 @@ namespace LibrelioApplication
 
         void PdfViewPage_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            //TODOThink!
-            //var p = e.GetCurrentPoint(imgPage1);
-            
-            //int tt = 2;
-            //for (int i = 0; i < pageLinks.Count; i++) { 
-            //    if( pageLinks[i].rect.Contains( p.Position ) ){
-            //        Uri uri = new Uri(pageLinks[i].url);
-            //        if (uri.Host == LOCAL_HOST) {
-            //            if (uri.LocalPath.EndsWith(".png") || uri.LocalPath.EndsWith(".jpg")) {
-            //                if (uri.Query.Contains("warect=full"))
-            //                {
-            //                    Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), pageLinks[i].url);
-            //                }
-            //                else {
-            //                    embdedFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            //                    embdedFrame.Navigate( typeof(LibrelioApplication.SlideShowPage) , pageLinks[i].url );
-            //                }
-            //            }
-            //            if (uri.LocalPath.EndsWith(".mov")) { 
-            //            }
-            //        }
-            //        //string url = pageLinks[i].url;
+            if (sender is MyListViewItem) {
+                var p = e.GetCurrentPoint((UIElement)sender);
+                PageData data = (PageData)(((MyListViewItem)sender).Content);
+                Point pos = p.Position;
+                for (int i = 0; i < data.Links.Count; i++)
+                {
+                    if (data.Links[i].rect.Contains(p.Position))
+                    {
+                        Uri uri = new Uri(data.Links[i].url);
+                        if (uri.Host == LOCAL_HOST)
+                        {
+                            if (uri.LocalPath.EndsWith(".png") || uri.LocalPath.EndsWith(".jpg"))
+                            {
+                                if (uri.Query.Contains("warect=full"))
+                                {
+                                    Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
+                                }
+                                else
+                                {
+                                    //TODO continue with real links - right now coord and size worked incorrectly
+                                    embdedFrame.Width = data.Links[i].rect.Width * scrollViewer.ZoomFactor;
+                                    embdedFrame.Height = data.Links[i].rect.Height * scrollViewer.ZoomFactor;
+                                    embdedFrame.Margin = new Thickness(30+data.Links[i].rect.Left * scrollViewer.ZoomFactor, data.Links[i].rect.Top * scrollViewer.ZoomFactor, 0, 0);
+                                    embdedFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                                    embdedFrame.Navigate(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
+                                }
+                            }
+                            if (uri.LocalPath.EndsWith(".mov"))
+                            {
+                            }
+                        }
+                    }
+                }
 
-            //        //if (url.StartsWith(LOCAL_SIGN)) { 
-
-            //        //}
-            //    }
-            //}
+            }
         }
 
 
@@ -177,7 +246,8 @@ namespace LibrelioApplication
         /// <param name="e">Event data that describes the item clicked.</param>
         void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
-
+            int idx = ((PageData)e.ClickedItem).Idx-1;
+            scrollViewer.ScrollToHorizontalOffset(idx * PAGE_WIDTH * scrollViewer.ZoomFactor);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

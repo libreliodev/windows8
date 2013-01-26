@@ -130,5 +130,10 @@ namespace LibrelioApplication
             if (!bAuto)
                 nextImage();
         }
+
+        private void imgMain_DoubleTapped_1(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
+        }
     }
 }

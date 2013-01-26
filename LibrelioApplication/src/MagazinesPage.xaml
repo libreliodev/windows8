@@ -54,7 +54,7 @@
         </Grid.RowDefinitions>
 
 
-
+        
 
         <!-- Horizontal scrolling grid used in most view states -->
         <!--ItemTemplate="{StaticResource Standard250x400ItemTemplate}"-->

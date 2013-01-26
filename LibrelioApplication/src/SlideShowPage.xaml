@@ -19,12 +19,12 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="75"/>
+            <!--<RowDefinition Height="75"/>-->
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" x:Name="layoutRoot">
-            <Image x:Name="imgMain" Stretch="Uniform" Tapped="imgMain_Tapped_1"/>
+            <Image x:Name="imgMain" Stretch="Uniform" Tapped="imgMain_Tapped_1" DoubleTapped="imgMain_DoubleTapped_1"/>
         </Grid>
-        <Button Content="Back" Click="Button_Click_1" Grid.Row="1" HorizontalAlignment="Stretch" Background="Gray"/>
+        <!--<Button Content="Back" Click="Button_Click_1" Grid.Row="1" HorizontalAlignment="Stretch" Background="Gray"/>-->
     </Grid>
 </Page>
