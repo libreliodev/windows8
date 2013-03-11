@@ -155,7 +155,9 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Assets\test\testmagazine.pdf" />
+    <Content Include="Assets\test\testmagazine.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="WindMagaine_TemporaryKey.pfx" />
     <PRIResource Include="Assets\strings\en\resources.resw" />
     <PRIResource Include="Assets\strings\fr\resources.resw" />
