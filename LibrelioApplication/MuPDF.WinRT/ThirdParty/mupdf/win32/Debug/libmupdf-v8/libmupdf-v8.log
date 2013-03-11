@@ -1,0 +1,15 @@
+﻿Build started 3/6/2013 2:55:38 AM.
+     1>Project "C:\Users\anon\MuPDF.WinRT\ThirdParty\mupdf\win32\libmupdf-v8.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\scripts /I..\fitz /I..\pdf /I..\thirdparty\jbig2dec /I..\thirdparty\jpeg /I..\thirdparty\openjpeg\libopenjpeg /I..\thirdparty\zlib /I..\thirdparty\freetype\include /I"..\thirdparty\v8-3.9\include" /ZI /nologo /W3 /WX- /Od /Oy- /D DEBUG=1 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\libmupdf-v8\\" /Fd"Debug\libmupdf-v8\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt ..\pdf\pdf_js.c ..\pdf\pdf_jsimp_cpp.c
+         pdf_jsimp_cpp.c
+         pdf_js.c
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\scripts /I..\fitz /I..\pdf /I..\thirdparty\jbig2dec /I..\thirdparty\jpeg /I..\thirdparty\openjpeg\libopenjpeg /I..\thirdparty\zlib /I..\thirdparty\freetype\include /I"..\thirdparty\v8-3.9\include" /ZI /nologo /W3 /WX- /Od /Oy- /D DEBUG=1 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\libmupdf-v8\\" /Fd"Debug\libmupdf-v8\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\pdf\pdf_jsimp_v8.cpp
+         pdf_jsimp_v8.cpp
+     1>c:\users\anon\mupdf.winrt\thirdparty\mupdf\pdf\pdf_jsimp_v8.cpp(15): fatal error C1083: Cannot open include file: 'v8.h': No such file or directory
+     1>Done Building Project "C:\Users\anon\MuPDF.WinRT\ThirdParty\mupdf\win32\libmupdf-v8.vcxproj" (Rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.74

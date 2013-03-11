@@ -1,0 +1,15 @@
+﻿Build started 05.03.2013 3:16:10 AM.
+     1>Project "C:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\libmupdf-nov8.vcxproj" on node 4 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_ARM\CL.exe /c /I..\mupdf\scripts /I..\mupdf\fitz /I..\mupdf\pdf /I..\mupdf\thirdparty\jbig2dec /I..\mupdf\thirdparty\jpeg /I..\mupdf\thirdparty\openjpeg\libopenjpeg /I..\mupdf\thirdparty\zlib /I..\mupdf\thirdparty\freetype\include /IC:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\ /I"Generated Files\\" /I"ARM\Debug\libmupdf-nov8\\" /Zi /nologo /W3 /WX- /MP /Od /Oy- /D WRTSA /D DEBUG=1 /D _UNICODE /D UNICODE /D _DEBUG /D WINAPI_FAMILY=WINAPI_FAMILY_APP /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"ARM\Debug\libmupdf-nov8\\" /Fd"ARM\Debug\libmupdf-nov8\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt ..\mupdf\pdf\pdf_js_none.c
+         pdf_js_none.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_ARM\Lib.exe /OUT:"ARM\Debug\libmupdf-nov8.lib" /NOLOGO /MACHINE:ARM "ARM\Debug\libmupdf-nov8\pdf_js_none.obj"
+         libmupdf-nov8.vcxproj -> C:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\ARM\Debug\libmupdf-nov8.lib
+       _GenerateProjectPriFileCore:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\MakePri.exe New -ProjectRoot C:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\ -ConfigXml ARM\Debug\libmupdf-nov8\priconfig.xml -OutputFile C:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\ARM\Debug\libmupdf_nov8.pri -IndexName libmupdf_nov8 -Verbose -Overwrite  
+     1>Done Building Project "C:\Users\Dorin\Documents\MuPDF.WinRT\ThirdParty\Win8\libmupdf-nov8.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.83
