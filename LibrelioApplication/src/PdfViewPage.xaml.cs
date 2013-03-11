@@ -16,13 +16,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-// Added by Dorin Damaschin
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media.Imaging;
-using MuPDFWinRT;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
@@ -89,122 +82,17 @@ namespace LibrelioApplication
     }
 
     //TODO Move to some model file
-    //public struct PageLink
-    //{
-    //    public Rect rect;
-    //    public string url;
-    //}
-
-    //public struct PageData
-    //{
-    //    public string Url { get; set; }
-    //    public int Idx { get; set; }
-    //    public List<PageLink> Links { get; set; }
-    //}
-
-    // Changed by Dorin Damaschin
-    //---------------------------------------------
-    //TODO Move to some model file
-
-    // Changed the structure to a bindable class so the UI will update when changes are 
-    // made to the properties
-    public class PageLink : LibrelioApplication.Common.BindableBase
+    public struct PageLink
     {
-        private Rect _rect = new Rect(0, 0, 0, 0);
-        private string _url = "";
-
-        public Rect rect
-        {
-            get { return _rect; }
-            set
-            {
-                _rect = value;
-                OnPropertyChanged("rect");
-            }
-        }
-
-        public string url
-        {
-            get { return _url; }
-            set
-            {
-                _url = value;
-                OnPropertyChanged("url");
-            }
-        }
+        public Rect rect;
+        public string url;
     }
 
-    // Changed the structure to a bindable class so the UI will update when changes are 
-    // made to the properties
-    public class PageData : LibrelioApplication.Common.BindableBase
+    public struct PageData
     {
-        //public string Url { get; set; }
-        private ImageSource _image = null;
-        private int _idx = 0;
-        private ObservableCollection<PageLink> _links = new ObservableCollection<PageLink>();
-        private double _width = 0;
-        private double _height = 0;
-        private bool _loading = true;
-
-        public ImageSource Image
-        {
-            get { return _image; }
-            set
-            {
-                _image = value;
-                OnPropertyChanged("Image");
-            }
-        }
-
-        public int Idx
-        {
-            get { return _idx; }
-            set
-            {
-                _idx = value;
-                OnPropertyChanged("Idx");
-            }
-        }
-
-        public ObservableCollection<PageLink> Links
-        {
-            get { return _links; }
-            set
-            {
-                _links = value;
-                OnPropertyChanged("Links");
-            }
-        }
-
-        public double Width
-        {
-            get { return _width; }
-            set
-            {
-                _width = value;
-                OnPropertyChanged("Width");
-            }
-        }
-
-        public double Height
-        {
-            get { return _height; }
-            set
-            {
-                _height = value;
-                OnPropertyChanged("Height");
-            }
-        }
-
-        public bool Loading
-        {
-            get { return _loading; }
-            set
-            {
-                _loading = value;
-                OnPropertyChanged("Loading");
-            }
-        }
+        public string Url { get; set; }
+        public int Idx { get; set; }
+        public List<PageLink> Links { get; set; }
     }
 
     /// <summary>
@@ -221,12 +109,8 @@ namespace LibrelioApplication
         int pageNum;
         int pageCount;
         //List<PageLink> pageLinks = new List<PageLink>();
-        //List<PageData> pages = new List<PageData>();
-        //List<PageData> thumbs = new List<PageData>();
-        
-        // Changed by Dorin Damaschin
-        ObservableCollection<PageData> pages = new ObservableCollection<PageData>();
-        ObservableCollection<PageData> thumbs = new ObservableCollection<PageData>();
+        List<PageData> pages = new List<PageData>();
+        List<PageData> thumbs = new List<PageData>();
         const float INIT_ZOOM_FACTOR = 0.6f;
         const float PAGE_WIDTH = 950;
 
@@ -256,23 +140,21 @@ namespace LibrelioApplication
             Object navigationParameter = e.Parameter;
             pdfFileName = (string)navigationParameter;
             
-            // Changed by Dorin Damaschin
-
-            //pageNum = 1;
-            //pageCount = 5;
-            //for (int p = 1; p <= pageCount; p++) {
-            //    PageData data = new PageData() { Url = getPageName(p), Idx = p };
-            //    data.Links = new List<PageLink>();
-            //    PageLink link = new PageLink();
-            //    //link.rect = new Rect(1400, 2800, 350, 400);
-            //    link.rect = new Rect(0, 0, 800, 1000);
-            //    //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
-            //    link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
-            //    data.Links.Add(link);
+            pageNum = 1;
+            pageCount = 5;
+            for (int p = 1; p <= pageCount; p++) {
+                PageData data = new PageData() { Url = getPageName(p), Idx = p };
+                data.Links = new List<PageLink>();
+                PageLink link = new PageLink();
+                //link.rect = new Rect(1400, 2800, 350, 400);
+                link.rect = new Rect(0, 0, 800, 1000);
+                //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
+                link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
+                data.Links.Add(link);
                 
-            //    pages.Add( data );
-            //    thumbs.Add(new PageData() { Url = getThumbName(p), Idx = p });
-            //}
+                pages.Add( data );
+                thumbs.Add(new PageData() { Url = getThumbName(p), Idx = p });
+            }
 
             ////TODODEBUG
             pagesListView.PointReleaseHandler = PdfViewPage_PointerReleased;
@@ -290,13 +172,6 @@ namespace LibrelioApplication
             //pagesListView.IsTapEnabled = false;
             //pagesListView.IsItemClickEnabled = false;
 
-        }
-
-        // Added by Dorin Damaschin
-        // Load pdf pages once the container is loaded
-        private async void pagesListView_Loaded(object sender, RoutedEventArgs e)
-        {
-            await LoadPages();
         }
 
         void embdedFrame_Navigated(object sender, NavigationEventArgs e)
@@ -323,7 +198,7 @@ namespace LibrelioApplication
             if (sender is MyListViewItem) {
                 var p = e.GetCurrentPoint((UIElement)sender);
                 PageData data = (PageData)(((MyListViewItem)sender).Content);
-                Windows.Foundation.Point pos = p.Position;
+                Point pos = p.Position;
                 for (int i = 0; i < data.Links.Count; i++)
                 {
                     if (data.Links[i].rect.Contains(p.Position))
@@ -403,102 +278,9 @@ namespace LibrelioApplication
             }
             
         }
+        
 
-        // Added by Dorin Damaschin
-        //---------------------------------------------------------------
 
-        // Load PDF pages async 
-        private async Task LoadPages()
-        {
-            var buffer = await GetPDFFileData();
-            if (buffer == null) return;
-
-            // create the MuPDF Document on a background thread
-            var createDocOp = Task.Run<Document>(() =>
-            {
-                return Document.Create(
-                    buffer, // - file
-                    DocumentType.PDF, // type
-                    160 // - dpi
-                  );
-            });
-
-            using (var document = await createDocOp)
-            {
-                pageNum = 0;
-                pageCount = document.PageCount;
-                for (int p = 0; p < pageCount; p++)
-                {
-                    MuPDFWinRT.Point size = document.GetPageSize(p);
-
-                    // add the loading DataTemplate to the UI
-                    PageData data = new PageData() { Image = null, Idx = p + 1, Width = size.X, Height = size.Y, Loading = true };
-                    pages.Add(data);
-
-                    // if we loaded more than 8 pages use a smaller size
-                    if (p > 8)
-                    {
-                        size.Y = 100 * size.Y / size.X;
-                        size.X = 100;
-                    }
-
-                    // load page to a bitmap buffer on a background thread
-                    var image = new WriteableBitmap(size.X, size.Y);
-                    IBuffer buf = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
-                    buf.Length = image.PixelBuffer.Length;
-
-                    await Task.Run(() =>
-                    {
-                        document.DrawPage(p, buf, 0, 0, size.X, size.Y, false);
-                    });
-
-                    // copy the buffer to the WriteableBitmap ( UI Thread )
-                    buf.CopyTo(image.PixelBuffer);
-                    image.Invalidate();
-
-                    data.Loading = false;
-                    data.Image = image;
-
-                    //data.Links = new List<PageLink>();
-                    PageLink link = new PageLink();
-                    //link.rect = new Rect(1400, 2800, 350, 400);
-                    link.rect = new Rect(0, 0, 800, 1000);
-                    //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
-                    link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
-                    data.Links.Add(link);
-
-                    thumbs.Add(new PageData() { Image = image, Idx = p + 1 });
-                }
-            }
-        }
-
-        // open the testmagazine.pdf in the Assets\test folder and return a buffer with it's content
-        private async Task<IBuffer> GetPDFFileData()
-        {
-            try
-            {
-
-                var fileHandle =
-                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\testmagazine.pdf");
-
-                using (IRandomAccessStream randomAccessStream = await fileHandle.OpenReadAsync())
-
-                using (IInputStream inputStreamAt = randomAccessStream.GetInputStreamAt(0))
-                using (var dataReader = new DataReader(inputStreamAt))
-                {
-                    uint u = await dataReader.LoadAsync((uint)randomAccessStream.Size);
-                    IBuffer readBuffer = dataReader.ReadBuffer(u);
-
-                    return readBuffer;
-                }
-
-            }
-            catch
-            {
-
-                return null;
-            }
-        }
 
     }
 }
