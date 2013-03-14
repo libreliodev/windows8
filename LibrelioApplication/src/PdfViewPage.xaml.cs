@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 // Added by Dorin Damaschin
+using System.Threading;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
@@ -156,6 +157,13 @@ namespace LibrelioApplication
             }
         }
 
+        public string PageNumber
+        {
+            get { return _idx.ToString(); }
+        }
+
+        public float ZoomFactor { get; set; }
+
         public int Idx
         {
             get { return _idx; }
@@ -163,6 +171,7 @@ namespace LibrelioApplication
             {
                 _idx = value;
                 OnPropertyChanged("Idx");
+                OnPropertyChanged("PageNumber");
             }
         }
 
@@ -219,7 +228,9 @@ namespace LibrelioApplication
         string pdfFileName;
         string curPageFileName;
         int pageNum;
+        Collection<int> pagesInView = new Collection<int>();
         int pageCount;
+
         //List<PageLink> pageLinks = new List<PageLink>();
         //List<PageData> pages = new List<PageData>();
         //List<PageData> thumbs = new List<PageData>();
@@ -227,8 +238,21 @@ namespace LibrelioApplication
         // Changed by Dorin Damaschin
         ObservableCollection<PageData> pages = new ObservableCollection<PageData>();
         ObservableCollection<PageData> thumbs = new ObservableCollection<PageData>();
+
+        MuPDFWinRT.Document thumbsDoc = null;
+        MuPDFWinRT.Document document = null;
+
         const float INIT_ZOOM_FACTOR = 0.6f;
         const float PAGE_WIDTH = 950;
+
+        ScrollViewer scrollViewer = null;
+        float defaultZoomFactor = 1.0f;
+        float currentZoomFactor = 1.0f;
+        float offsetZF = 1.0f;
+
+        bool newViewState = false;
+
+        bool isBusy = false;
 
         public PdfViewPage()
         {
@@ -276,13 +300,11 @@ namespace LibrelioApplication
 
             ////TODODEBUG
             pagesListView.PointReleaseHandler = PdfViewPage_PointerReleased;
-            pagesListView.ItemsSource = pages;
-            itemGridView.ItemsSource = thumbs;
 
             //qqq.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/test/img/sample_1.jpg"));
-            scrollViewer.ZoomToFactor(INIT_ZOOM_FACTOR);
-            embdedFrame.Navigating += embdedFrame_Navigating;
-            embdedFrame.Navigated += embdedFrame_Navigated;
+            //scrollViewer.ZoomToFactor(INIT_ZOOM_FACTOR);
+            //embdedFrame.Navigating += embdedFrame_Navigating;
+            //embdedFrame.Navigated += embdedFrame_Navigated;
 
             
             ////TODODEBUG
@@ -296,8 +318,43 @@ namespace LibrelioApplication
         // Load pdf pages once the container is loaded
         private async void pagesListView_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoadPages();
+            isBusy = true;
+
+            var buffer = await GetPDFFileData();
+            if (buffer == null) return;
+
+            // create the MuPDF Document on a background thread
+            document = await CreateDocumentAsync(buffer);
+
+            pageCount = document.PageCount;
+
+            await LoadPagesAsync();
+
+            thumbsDoc = await CreateThumbsDocumentAsync(buffer);
+
+            SetScrollViewer();
+
+            pagesListView.ItemsSource = pages;
+            startRing.IsActive = false;
+
+            isBusy = false;
+
+            var thumbsOp = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async() =>
+            {
+                await LoadThumbsAsync();
+            });
         }
+
+        private void itemGridView_Loaded(object sender, RoutedEventArgs e)
+        {
+            //thumbsScrollviewer = findFirstInVisualTree<ScrollViewer>(itemGridView); 
+
+            //if (thumbsScrollviewer != null)
+            //{
+            //    thumbsScrollviewer.ViewChanged += thumbsScrollviewer_ViewChanged;
+            //}
+        }
+
 
         void embdedFrame_Navigated(object sender, NavigationEventArgs e)
         {
@@ -305,6 +362,44 @@ namespace LibrelioApplication
 
         void embdedFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
+        }
+
+
+        private static T findFirstInVisualTree<T>(DependencyObject parent) where T : class
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            T foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                // If the child is not of the request child type child
+                var childType = child as T;
+                if (childType == null)
+                {
+                    // recursively drill down the tree
+                    foundChild = findFirstInVisualTree<T>(child);
+
+                    // If the child is found, break so we do not overwrite the found child. 
+                    if (foundChild != null)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    // child element found.
+                    foundChild = child as T;
+                    break;
+                }
+            }
+
+            return foundChild;
         }
 
         string getPageName(int page) {
@@ -316,7 +411,11 @@ namespace LibrelioApplication
             return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + "_thumb" + ".png"));
         }
 
-
+        float CalculateZoomFactor(int height)
+        {
+            var rect = Window.Current.Bounds;
+            return (float)(rect.Height - 30) / height;
+        }
 
         void PdfViewPage_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
@@ -340,11 +439,11 @@ namespace LibrelioApplication
                                 else
                                 {
                                     //TODO continue with real links - right now coord and size worked incorrectly
-                                    embdedFrame.Width = data.Links[i].rect.Width * scrollViewer.ZoomFactor;
-                                    embdedFrame.Height = data.Links[i].rect.Height * scrollViewer.ZoomFactor;
-                                    embdedFrame.Margin = new Thickness(30+data.Links[i].rect.Left * scrollViewer.ZoomFactor, data.Links[i].rect.Top * scrollViewer.ZoomFactor, 0, 0);
-                                    embdedFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                                    embdedFrame.Navigate(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
+                                    //embdedFrame.Width = data.Links[i].rect.Width * scrollViewer.ZoomFactor;
+                                    //embdedFrame.Height = data.Links[i].rect.Height * scrollViewer.ZoomFactor;
+                                    //embdedFrame.Margin = new Thickness(30+data.Links[i].rect.Left * scrollViewer.ZoomFactor, data.Links[i].rect.Top * scrollViewer.ZoomFactor, 0, 0);
+                                    //embdedFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                                    //embdedFrame.Navigate(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
                                 }
                             }
                             if (uri.LocalPath.EndsWith(".mov"))
@@ -372,7 +471,7 @@ namespace LibrelioApplication
         void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             int idx = ((PageData)e.ClickedItem).Idx-1;
-            scrollViewer.ScrollToHorizontalOffset(idx * PAGE_WIDTH * scrollViewer.ZoomFactor);
+            //scrollViewer.ScrollToHorizontalOffset(idx * PAGE_WIDTH * scrollViewer.ZoomFactor);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -404,73 +503,7 @@ namespace LibrelioApplication
             
         }
 
-        // Added by Dorin Damaschin
         //---------------------------------------------------------------
-
-        // Load PDF pages async 
-        private async Task LoadPages()
-        {
-            var buffer = await GetPDFFileData();
-            if (buffer == null) return;
-
-            // create the MuPDF Document on a background thread
-            var createDocOp = Task.Run<Document>(() =>
-            {
-                return Document.Create(
-                    buffer, // - file
-                    DocumentType.PDF, // type
-                    160 // - dpi
-                  );
-            });
-
-            using (var document = await createDocOp)
-            {
-                pageNum = 0;
-                pageCount = document.PageCount;
-                for (int p = 0; p < pageCount; p++)
-                {
-                    MuPDFWinRT.Point size = document.GetPageSize(p);
-
-                    // add the loading DataTemplate to the UI
-                    PageData data = new PageData() { Image = null, Idx = p + 1, Width = size.X, Height = size.Y, Loading = true };
-                    pages.Add(data);
-
-                    // if we loaded more than 8 pages use a smaller size
-                    if (p > 8)
-                    {
-                        size.Y = 100 * size.Y / size.X;
-                        size.X = 100;
-                    }
-
-                    // load page to a bitmap buffer on a background thread
-                    var image = new WriteableBitmap(size.X, size.Y);
-                    IBuffer buf = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
-                    buf.Length = image.PixelBuffer.Length;
-
-                    await Task.Run(() =>
-                    {
-                        document.DrawPage(p, buf, 0, 0, size.X, size.Y, false);
-                    });
-
-                    // copy the buffer to the WriteableBitmap ( UI Thread )
-                    buf.CopyTo(image.PixelBuffer);
-                    image.Invalidate();
-
-                    data.Loading = false;
-                    data.Image = image;
-
-                    //data.Links = new List<PageLink>();
-                    PageLink link = new PageLink();
-                    //link.rect = new Rect(1400, 2800, 350, 400);
-                    link.rect = new Rect(0, 0, 800, 1000);
-                    //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
-                    link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
-                    data.Links.Add(link);
-
-                    thumbs.Add(new PageData() { Image = image, Idx = p + 1 });
-                }
-            }
-        }
 
         // open the testmagazine.pdf in the Assets\test folder and return a buffer with it's content
         private async Task<IBuffer> GetPDFFileData()
@@ -500,5 +533,387 @@ namespace LibrelioApplication
             }
         }
 
+
+        private async Task<Document> CreateDocumentAsync(IBuffer buffer)
+        {
+            return await Task.Run<Document>(() =>
+            {
+                return Document.Create(
+                    buffer, // - file
+                    DocumentType.PDF, // type
+                    72 // - dpi
+                  );
+            });
+        }
+
+        private async Task<Document> CreateThumbsDocumentAsync(IBuffer buffer)
+        {
+            return await Task.Run<Document>(() =>
+            {
+                return Document.Create(
+                    buffer, // - file
+                    DocumentType.PDF, // type
+                    72 / 4 // - dpi
+                  );
+            });
+        }
+
+        private async Task LoadThumbsAsync()
+        {
+            if (thumbsDoc == null) return;
+
+            itemGridView.ItemsSource = thumbs;
+
+            for (int p = 0; p < pageCount; p++)
+            {
+                thumbs.Add(new PageData() { Image = null, Idx = p + 1, ZoomFactor = 1.0f });
+            }
+
+            for (int p = 0; p < pageCount; p++)
+            {
+                MuPDFWinRT.Point size = thumbsDoc.GetPageSize(p);
+                var width = 75;
+                var height = size.Y * 75 / size.X;
+
+                // load page to a bitmap buffer on a background thread
+                var image = await DrawToBufferAsync(thumbsDoc, p, width, height);
+
+                thumbs[p].Image = image;
+            }
+        }
+
+        private async Task LoadPagesAsync()
+        {
+            MuPDFWinRT.Point size = document.GetPageSize(0);
+            defaultZoomFactor = CalculateZoomFactor(size.Y);
+            currentZoomFactor = defaultZoomFactor;
+
+            if (defaultZoomFactor > 1)
+            {
+                offsetZF = defaultZoomFactor;
+                defaultZoomFactor = currentZoomFactor = 1.0f;
+            }
+
+            for (int p = 0; p < pageCount; p++)
+            {
+                size = document.GetPageSize(p);
+                int width = (int)(size.X * offsetZF);
+                int height = (int)(size.Y * offsetZF);
+
+                // add the loading DataTemplate to the UI       
+                PageData data = new PageData() { Image = null, Idx = p + 1, Width = width, Height = height, ZoomFactor = defaultZoomFactor, Loading = false };
+                pages.Add(data);
+            }
+
+            for (int p = 0; p < 5; p++)
+            {
+                pages[p].Loading = true;
+
+                size = document.GetPageSize(p);
+                int width = size.X;
+                int height = size.Y;
+
+                width = (int)(size.X * currentZoomFactor * offsetZF);
+                height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+                // load page to a bitmap buffer on a background thread
+                var image = await DrawToBufferAsync(document, p, width, height);
+
+                pages[p].Image = image;
+                pages[p].Loading = false;
+                pages[p].ZoomFactor = currentZoomFactor;
+
+                //data.Links = new List<PageLink>();
+                PageLink link = new PageLink();
+                //link.rect = new Rect(1400, 2800, 350, 400);
+                link.rect = new Rect(0, 0, 800, 1000);
+                //link.url = "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white";
+                link.url = "http://localhost/sample_5.jpg?waplay=auto&wadelay=3000&wabgcolor=white";
+                pages[p].Links.Add(link);
+            }
+
+            
+        }
+
+        private void SetScrollViewer()
+        {
+            scrollViewer = findFirstInVisualTree<ScrollViewer>(pagesListView);
+            if (scrollViewer != null)
+            {
+                scrollViewer.ViewChanged += scrollviewer_ViewChanged;
+
+                if (currentZoomFactor < 1)
+                {
+                    scrollViewer.MinZoomFactor = (float)(currentZoomFactor * 0.8);
+                    scrollViewer.ZoomToFactor(currentZoomFactor);
+                }
+                else
+                {
+                    scrollViewer.MinZoomFactor = 0.8f;
+                }
+            }
+        }
+
+        private int CalcPageNum()
+        {
+            if (scrollViewer == null) return 0;
+
+            var x = scrollViewer.HorizontalOffset + (scrollViewer.ViewportWidth / 2);
+
+            var pageWidth = scrollViewer.ScrollableWidth / pageCount;
+
+            return (int)(x / pageWidth);
+        }
+
+        private Collection<int> DeterminePagesInView()
+        {
+            if (scrollViewer == null) return null;
+
+            var pView = new Collection<int>();
+            var num = CalcPageNum();
+            pView.Add(pageNum);
+
+            var pageWidth = scrollViewer.ScrollableWidth / pageCount;
+
+            var x = scrollViewer.HorizontalOffset + (scrollViewer.ViewportWidth / 2);
+
+            int n = (int)(x / pageWidth);
+
+            var lNum = x - (pageWidth * n);
+            var rNum = pageWidth - lNum;
+
+            x = (scrollViewer.ViewportWidth / 2) - lNum;
+            n = (int)(x / pageWidth) + 1;
+            for (int i = 1; i <= n; i++)
+                pView.Add(num - i);
+
+            x = (scrollViewer.ViewportWidth / 2) - rNum;
+            n = (int)(x / pageWidth) + 1;
+            for (int i = 1; i <= n; i++)
+                pView.Add(num + i);
+
+            return pView;
+        }
+
+        private async Task<WriteableBitmap> DrawToBufferAsync(Document doc, int pageNumber, int width, int height)
+        {
+            var image = new WriteableBitmap(width, height);
+            IBuffer buf = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
+            buf.Length = image.PixelBuffer.Length;
+
+            await Task.Run(() =>
+            {
+                doc.DrawPage(pageNumber, buf, 0, 0, width, height, false);
+            });
+
+            // copy the buffer to the WriteableBitmap ( UI Thread )
+            buf.CopyTo(image.PixelBuffer);
+            image.Invalidate();
+
+            return image;
+        }
+
+        private void UpdatePages(int start, int end)
+        {
+            if (start < 0 || end >= pageCount) return;
+
+            isBusy = true;
+
+            var op = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () =>
+            {
+                await UpdatePagesInternal(start, end);
+
+                isBusy = false;
+                if (newViewState)
+                {
+                    newViewState = false;
+                    scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
+                }
+            });
+        }
+
+        private async Task UpdatePagesInternal(int start, int end)
+        {
+            if (start != CalcPageNum())
+                return;
+
+            for (int p = start; p <= end; p++)
+            {
+                //if (pagesInView.IndexOf(p) == -1)
+                //    break;
+
+                MuPDFWinRT.Point size = document.GetPageSize(p);
+                int width = (int)(size.X * currentZoomFactor * offsetZF);
+                int height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+                // load page to a bitmap buffer on a background thread
+                var image = await DrawToBufferAsync(document, p, width, height);
+
+                pages[p].Image = image;
+                pages[p].ZoomFactor = currentZoomFactor;
+            }
+        }
+
+        private void BufferPages(int start, int end)
+        {
+            if (start < 0 || end >= pageCount) return;
+
+            isBusy = true;
+
+            var op = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
+            {
+                await BufferPagesInternal(start, end);
+
+                isBusy = false;
+                if (newViewState)
+                {
+                    newViewState = false;
+                    scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
+                }
+            });
+        }
+
+        private async Task BufferPagesInternal(int start, int end)
+        {
+            for (int p = 0; p < start; p++)
+            {
+                if (pages[p].Image != null)
+                {
+                    pages[p].Image = null;
+                    pages[p].ZoomFactor = defaultZoomFactor;
+                }
+            }
+
+            for (int p = end + 1; p < pageCount; p++)
+            {
+                if (pages[p].Image != null)
+                {
+                    pages[p].Image = null;
+                    pages[p].ZoomFactor = defaultZoomFactor;
+                }
+            }
+
+            for (int p = start; p <= end; p++)
+            {
+                if (p < pageNum - 3 || p > pageNum + 3)
+                    continue;
+
+                if (pages[p].Image == null)
+                {
+                    pages[p].Loading = true;
+
+                    MuPDFWinRT.Point size = document.GetPageSize(p);
+                    int width = (int)(size.X * defaultZoomFactor);
+                    int height = (int)(size.Y * defaultZoomFactor);
+
+                    // load page to a bitmap buffer on a background thread
+                    var image = await DrawToBufferAsync(document, p, width, height);
+
+                    pages[p].Loading = false;
+                    pages[p].Image = image;
+                }
+            }
+        }
+
+        private void UpdateAndBufferPages(int start, int end)
+        {
+            if (start < 0 || end >= pageCount) return;
+
+            isBusy = true;
+
+            var op = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () =>
+            {
+                await UpdatePagesInternal(pageNum, pageNum);
+
+                await BufferPagesInternal(start, end);
+
+                isBusy = false;
+                if (newViewState)
+                {
+                    newViewState = false;
+                    scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
+                }
+            });
+        }
+
+        private void BufferAndUpdatePages(int start, int end)
+        {
+            if (start < 0 || end >= pageCount) return;
+
+            isBusy = true;
+
+            var op = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, async () =>
+            {
+                await BufferPagesInternal(start, end);
+
+                await UpdatePagesInternal(pageNum, pageNum);
+
+                isBusy = false;
+                if (newViewState)
+                {
+                    newViewState = false;
+                    scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
+                }
+            });
+        }
+
+        void scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (!e.IsIntermediate && !isBusy)
+            {
+                if (currentZoomFactor != scrollViewer.ZoomFactor)
+                {
+                    currentZoomFactor = scrollViewer.ZoomFactor;
+
+                    //var pView = DeterminePagesInView();
+
+                    //var start = pView.Min();
+                    //var end = pView.Max();
+                    //if (pagesInView.Count == 0)
+                    //{
+                    //    pagesInView = null;
+                    //    pagesInView = pView;
+                    //}
+                    //else if (start != pagesInView.Min() || end != pagesInView.Max())
+                    //{
+                    //    pagesInView = null;
+                    //    pagesInView = pView;
+                    //}
+
+                    pageNum = CalcPageNum();
+
+                    UpdatePages(pageNum, pageNum);
+                }
+                else
+                {
+                    int num = CalcPageNum();
+
+                    if (num != pageNum)
+                    {
+                        pageNum = num;
+                        int start = pageNum - 3 >= 0 ? pageNum - 3 : 0;
+                        int end = pageNum + 3 < pageCount ? pageNum + 3 : pageCount - 1;
+
+                        if (pages[pageNum].Image == null &&
+                            currentZoomFactor != pages[pageNum].ZoomFactor)
+                        {
+                            BufferAndUpdatePages(start, end);
+                        }
+                        else if (currentZoomFactor != pages[pageNum].ZoomFactor)
+                        {
+                            UpdateAndBufferPages(start, end);
+                        }
+                        else
+                        {
+                            BufferPages(start, end);
+                        }
+                    }
+                }
+            }
+            else if (isBusy)
+            {
+                newViewState = true;
+            }
+        }
     }
 }

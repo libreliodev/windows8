@@ -134,6 +134,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>..\ThirdParty\Win8\Win32\Release\libthirdparty.lib;..\ThirdParty\Win8\Win32\Release\libmupdf-nov8.lib;..\ThirdParty\Win8\Win32\Release\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -150,6 +151,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>..\ThirdParty\Win8\ARM\Debug\libthirdparty.lib;..\ThirdParty\Win8\ARM\Debug\libmupdf-nov8.lib;..\ThirdParty\Win8\ARM\Debug\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -166,6 +168,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>..\ThirdParty\Win8\ARM\Release\libthirdparty.lib;..\ThirdParty\Win8\ARM\Release\libmupdf-nov8.lib;..\ThirdParty\Win8\ARM\Release\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
