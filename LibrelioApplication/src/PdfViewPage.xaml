@@ -17,6 +17,68 @@
             x:Name="itemsViewSource"
             Source="{Binding ThumbItems}"
             />
+        <Style x:Key="GridViewItemStyle1" TargetType="GridViewItem">
+            <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsHoldingEnabled" Value="False"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewItem">
+                        <Border x:Name="OuterContainer">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver"/>
+                                    <VisualState x:Name="Pressed"/>
+                                    <VisualState x:Name="PointerOverPressed"/>
+                                    <VisualState x:Name="Disabled"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="FocusStates">
+                                    <VisualState x:Name="Focused"/>
+                                    <VisualState x:Name="Unfocused"/>
+                                    <VisualState x:Name="PointerFocused"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionHintStates"/>
+                                <VisualStateGroup x:Name="SelectionStates"/>
+                                <VisualStateGroup x:Name="DragStates"/>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid x:Name="ReorderHintContent" Background="Transparent">
+                                <Path x:Name="SelectingGlyph" Data="F1 M133.1,17.9 L137.2,13.2 L144.6,19.6 L156.4,5.8 L161.2,9.9 L145.6,28.4 z" Fill="{StaticResource ListViewItemCheckSelectingThemeBrush}" FlowDirection="LeftToRight" HorizontalAlignment="Right" Height="13" Margin="0,9.5,9.5,0" Opacity="0" Stretch="Fill" VerticalAlignment="Top" Width="15" Visibility="Collapsed"/>
+                                <Border x:Name="HintGlyphBorder" HorizontalAlignment="Right" Height="40" Margin="4" Opacity="0" VerticalAlignment="Top" Width="40" Visibility="Collapsed">
+                                    <Path x:Name="HintGlyph" Data="F1 M133.1,17.9 L137.2,13.2 L144.6,19.6 L156.4,5.8 L161.2,9.9 L145.6,28.4 z" Fill="{StaticResource ListViewItemCheckHintThemeBrush}" FlowDirection="LeftToRight" HorizontalAlignment="Right" Height="13" Margin="0,5.5,5.5,0" Opacity="0" Stretch="Fill" VerticalAlignment="Top" Width="15"/>
+                                </Border>
+                                <Border x:Name="ContentContainer">
+                                    <Grid x:Name="InnerDragContent">
+                                        <Rectangle x:Name="PointerOverBorder" Fill="{StaticResource ListViewItemPointerOverBackgroundThemeBrush}" IsHitTestVisible="False" Margin="0" Opacity="0" Visibility="Collapsed"/>
+                                        <Rectangle x:Name="FocusVisual" IsHitTestVisible="False" Visibility="Collapsed" Stroke="{StaticResource ListViewItemFocusBorderThemeBrush}" StrokeThickness="0"/>
+                                        <Rectangle x:Name="SelectionBackground" Fill="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" Margin="0" Opacity="0"  Visibility="Collapsed"/>
+                                        <Border x:Name="ContentBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Margin="0">
+                                            <Grid>
+                                                <ContentPresenter x:Name="contentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                <TextBlock x:Name="PlaceholderTextBlock" Foreground="{x:Null}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Text="Xg" Visibility="Collapsed"/>
+                                                <Rectangle x:Name="PlaceholderRect" Fill="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" IsHitTestVisible="False" Visibility="Collapsed"/>
+                                                <Rectangle x:Name="MultiArrangeOverlayBackground" Fill="{StaticResource ListViewItemDragBackgroundThemeBrush}" IsHitTestVisible="False" Opacity="0"/>
+                                            </Grid>
+                                        </Border>
+                                        <Rectangle x:Name="SelectedBorder" IsHitTestVisible="False" Margin="0" Opacity="0" Stroke="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" StrokeThickness="0" Visibility="Collapsed"/>
+                                        <Border x:Name="SelectedCheckMarkOuter" HorizontalAlignment="Right" IsHitTestVisible="False" Margin="4" VerticalAlignment="Top" Visibility="Collapsed">
+                                            <Grid x:Name="SelectedCheckMark" Height="40" Opacity="0" Width="40">
+                                                <Path x:Name="SelectedEarmark" Data="M0,0 L40,0 L40,40 z" Fill="{StaticResource ListViewItemSelectedBackgroundThemeBrush}" Stretch="Fill"/>
+                                                <Path Data="F1 M133.1,17.9 L137.2,13.2 L144.6,19.6 L156.4,5.8 L161.2,9.9 L145.6,28.4 z" Fill="{StaticResource ListViewItemCheckThemeBrush}" FlowDirection="LeftToRight" HorizontalAlignment="Right" Height="13" Margin="0,5.5,5.5,0" Stretch="Fill" VerticalAlignment="Top" Width="15"/>
+                                            </Grid>
+                                        </Border>
+                                        <TextBlock x:Name="MultiArrangeOverlayText" Foreground="{StaticResource ListViewItemDragForegroundThemeBrush}" FontSize="26.667" FontFamily="{StaticResource ContentControlThemeFontFamily}" IsHitTestVisible="False" Margin="18,9,0,0" Opacity="0" TextWrapping="Wrap" Text="{Binding TemplateSettings.DragItemsCount, RelativeSource={RelativeSource Mode=TemplatedParent}}" TextTrimming="WordEllipsis" Visibility="Collapsed"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Page.BottomAppBar>
@@ -57,7 +119,7 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150" Loaded="itemGridView_Loaded">
+            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150">
                     <GridView.ItemTemplate>
                         <DataTemplate >
                             <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Height="150">
@@ -120,33 +182,46 @@
 
                 <!-- Changed by Dorin Damaschin-->
                 <!-- Added Loaded handler-->
-            <local:MyListView  x:Name="pagesListView" 
+            <GridView  x:Name="pagesListView" 
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Bottom" 
-                               SelectionMode="None"  
+                               SelectionMode="None"
+                               IsSwipeEnabled="false"
+                               IsItemClickEnabled="False"
+                               ItemContainerStyle="{StaticResource GridViewItemStyle1}"
                                ScrollViewer.HorizontalScrollMode="Enabled" 
                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                               ScrollViewer.VerticalScrollMode="Auto" 
+                               ScrollViewer.VerticalScrollMode="Enabled" 
                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                               ScrollViewer.ZoomMode="Enabled" Loaded="pagesListView_Loaded">
-                    <local:MyListView.ItemsPanel>
+                               ScrollViewer.ZoomMode="Enabled" Loaded="pagesListView_Loaded" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False">
+                 <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel VerticalAlignment="Center" Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
-                    </local:MyListView.ItemsPanel>
+                </GridView.ItemsPanel>
 
-                    <local:MyListView.ItemTemplate>
+                <GridView.ItemTemplate>
                         <DataTemplate>
-                            <!-- Changed by Dorin Damaschin-->
-                            <!-- Changed DataTemplate to load the testmagazine.pdf pages-->
-                            <Grid>
-                                <Image Source="{Binding Image}" Stretch="UniformToFill" Width="{Binding Width}" Height="{Binding Height}" Margin="50,15" />
+                            <Grid HorizontalAlignment="Center">
+                                <Image Source="{Binding Image}" Stretch="UniformToFill" Width="{Binding Width}" Height="{Binding Height}" Margin="50,0" />
                                 <ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
-                    </local:MyListView.ItemTemplate>
+                </GridView.ItemTemplate>
 
-                </local:MyListView>
+                <GridView.GroupStyle>
+                    <GroupStyle>
+
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,152,0,0"/>
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+
+                    </GroupStyle>
+                </GridView.GroupStyle>
+
+            </GridView>
 
             <ProgressRing x:Name="startRing" IsActive="true" Width="100" Height="100" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
