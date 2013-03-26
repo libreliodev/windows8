@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-// Added by Dorin Damaschin
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -224,6 +223,8 @@ namespace LibrelioApplication
 
         static string LOCAL_HOST = "localhost";
 
+        IRandomAccessStream pdfStream = null;
+
         string pdfFileName;
         string curPageFileName;
         int pageNum;
@@ -283,7 +284,7 @@ namespace LibrelioApplication
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Object navigationParameter = e.Parameter;
-            pdfFileName = (string)navigationParameter;
+            pdfStream = navigationParameter as IRandomAccessStream;
             
             // Changed by Dorin Damaschin
 
@@ -326,6 +327,8 @@ namespace LibrelioApplication
 
             var buffer = await GetPDFFileData();
             if (buffer == null) return;
+
+            pdfStream = null;
 
             // create the MuPDF Document on a background thread
             document = await CreateDocumentAsync(buffer);
@@ -502,18 +505,20 @@ namespace LibrelioApplication
         // open the testmagazine.pdf in the Assets\test folder and return a buffer with it's content
         private async Task<IBuffer> GetPDFFileData()
         {
+            if (pdfStream == null) return null;
+
             try
             {
 
-                var fileHandle =
-                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\testmagazine.pdf");
+                //var fileHandle =
+                //    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\testmagazine.pdf");
 
-                using (IRandomAccessStream randomAccessStream = await fileHandle.OpenReadAsync())
+                //using (IRandomAccessStream randomAccessStream = await fileHandle.OpenReadAsync())
 
-                using (IInputStream inputStreamAt = randomAccessStream.GetInputStreamAt(0))
+                using (IInputStream inputStreamAt = pdfStream.GetInputStreamAt(0))
                 using (var dataReader = new DataReader(inputStreamAt))
                 {
-                    uint u = await dataReader.LoadAsync((uint)randomAccessStream.Size);
+                    uint u = await dataReader.LoadAsync((uint)pdfStream.Size);
                     IBuffer readBuffer = dataReader.ReadBuffer(u);
 
                     return readBuffer;

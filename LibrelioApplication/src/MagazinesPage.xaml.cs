@@ -84,7 +84,7 @@ namespace LibrelioApplication
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            int i1 = 2;
+            this.Frame.Navigate(typeof(DownloadingPage));
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

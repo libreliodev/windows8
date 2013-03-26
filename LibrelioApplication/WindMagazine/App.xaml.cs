@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.ApplicationModel.Store;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -53,6 +54,8 @@ namespace WindMagazine
             
             if (rootFrame == null)
             {
+                var licenseInformation = CurrentAppSimulator.LicenseInformation;
+
                 await LibrelioApplication.Utils.Utils.prepareTestData();
 
                 // Create a Frame to act as the navigation context and navigate to the first page
