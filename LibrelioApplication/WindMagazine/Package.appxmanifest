@@ -23,9 +23,12 @@
         <Extension Category="windows.fileTypeAssociation">
           <FileTypeAssociation Name="test">
             <SupportedFileTypes>
-              <FileType>.plist</FileType>
+              <FileType>.metadata</FileType>
               <FileType>.pdf</FileType>
-              <FileType>.pmd</FileType>
+              <FileType>.jpg</FileType>
+              <FileType>.jpeg</FileType>
+              <FileType>.png</FileType>
+              <FileType>.mp4</FileType>
             </SupportedFileTypes>
           </FileTypeAssociation>
         </Extension>
