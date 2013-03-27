@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=voyager" Version="1.0.0.0" />
+  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=voyager" Version="1.0.0.1" />
   <Properties>
     <DisplayName>WindMagazine</DisplayName>
     <PublisherDisplayName>voyager</PublisherDisplayName>

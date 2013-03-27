@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -82,17 +83,25 @@ namespace LibrelioApplication
         {
             try
             {
-                manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+                var fileHandle =
+                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"application_.xml");
+
+                var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
+                var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
+                string color = node.InnerText;
+                progressBar.Foreground = Utils.Utils.ColorFromHex(color);
+
+                //manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
 
 
-                await manager.LoadPLISTAsync();
+                //await manager.LoadPLISTAsync();
 
-                var mag = new List<Item>();
-                foreach (var url in manager.MagazineUrl)
-                {
-                    mag.Add(new Item { Title = url.Title, Subtitle = url.Subtitle, FullName = url.FullName} );
-                }
-                itemListView.ItemsSource = mag;
+                //var mag = new List<Item>();
+                //foreach (var url in manager.MagazineUrl)
+                //{
+                //    mag.Add(new Item { Title = url.Title, Subtitle = url.Subtitle, FullName = url.FullName} );
+                //}
+                //itemListView.ItemsSource = mag;
 
                 //foreach (var magUrl in manager.MagazineUrl)
                 //{
@@ -364,6 +373,8 @@ namespace LibrelioApplication
         {
             Item item = (Item)e.ClickedItem;
 
+            statusText.Text = "Download in progress";
+
             foreach (var url in manager.MagazineUrl)
             {
                 if (url.FullName == item.FullName)
@@ -371,9 +382,12 @@ namespace LibrelioApplication
                     magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                    pdfThumbnail.Source = await manager.DownloadThumbnailAsync(url);
+                    var bitmap = await manager.DownloadThumbnailAsync(url);
+                    pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
+                    pdfThumbnail.Source = bitmap;
 
-                    statusText.Text = "Loading";
+                    pRing.IsActive = false;
+
                     var progressIndicator = new Progress<int>((value) =>
                     {
                         if (statusText.Text != manager.StatusText)
@@ -408,6 +422,57 @@ namespace LibrelioApplication
                     }
 
                     return;
+                }
+            }
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            testView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            magList.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            try
+            {
+                manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+
+                await manager.LoadPLISTAsync();
+
+                var mag = new List<Item>();
+                foreach (var url in manager.MagazineUrl)
+                {
+                    mag.Add(new Item { Title = url.Title, Subtitle = url.Subtitle, FullName = url.FullName });
+                }
+                itemListView.ItemsSource = mag;
+            }
+            catch
+            {
+            }
+        }
+
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            var url = urlBox.Text;
+            testOutput.Text = "Wait";
+
+            string str = "";
+            var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+            using (var stream = await file.OpenAsync(FileAccessMode.Read))
+            {
+                var dataReader = new DataReader(stream.GetInputStreamAt(0));
+
+                dataReader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                var size = await dataReader.LoadAsync((uint)stream.Size);
+                var receipt = dataReader.ReadString(size);
+
+                receipt = Uri.EscapeDataString(receipt);
+                url += "?receipt=" + receipt;
+                try
+                {
+                    str = await new HttpClient().GetAsync(url).Result.Content.ReadAsStringAsync();
+                    testOutput.Text = str;
+                }
+                catch
+                {
+                    testOutput.Text = "error";
                 }
             }
         }

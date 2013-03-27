@@ -35,17 +35,35 @@
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.RowSpan="2">
 
-            <StackPanel x:Name="downloadView" Visibility="Collapsed">
-                <Grid HorizontalAlignment="Center" Margin="0,50" VerticalAlignment="Top">
-                    <Image x:Name="pdfThumbnail" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" Loaded="pdfThumbnail_Loaded"/>
-                </Grid>
-                <TextBlock x:Name="statusText" FontSize="14" FontFamily="Segoe UI" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                <ProgressBar x:Name="progressBar" Foreground="Red" HorizontalAlignment="Center" Margin="0,10,0,25" VerticalAlignment="Top" Width="185" Height="5" />
+            <StackPanel x:Name="testView" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" Margin="0, 50">
+
+                <TextBlock Text="TEST" HorizontalAlignment="Center" Margin="0,30" />
+
+                <TextBlock FontSize="15" HorizontalAlignment="Center" Text="Download plist and magazines" Margin="0,4"/>
+                <Button HorizontalAlignment="Center" Content="Download" Click="Button_Click_1" />
+                <TextBlock FontSize="15" HorizontalAlignment="Center" Text="Sent sample receipt to php url" Margin="0,20,0,6" Height="17"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBox x:Name="urlBox" Width="500" FontSize="14" FontFamily="Courier New" Height="25" />
+                    <Button  Content="Send" Click="Button_Click_2"/>
+                </StackPanel>
+                <ScrollViewer  Width="600" Height="280" Margin="0,50">
+                    <TextBlock TextWrapping="Wrap" x:Name="testOutput" FontFamily="Courier New" FontSize="12" Text="No output"/>
+                </ScrollViewer>
+                
             </StackPanel>
 
-            <StackPanel x:Name="magList" Margin="0" Grid.Row="1" Orientation="Vertical">
+            <StackPanel x:Name="downloadView" VerticalAlignment="Center" Visibility="Collapsed">
+                <Grid HorizontalAlignment="Center" Margin="0,-15,0,20" VerticalAlignment="Top">
+                    <Image x:Name="pdfThumbnail" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="UniformToFill" Height="325" Loaded="pdfThumbnail_Loaded"/>
+                    <ProgressRing x:Name="pRing" Foreground="Gray" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
+                <TextBlock x:Name="statusText" FontSize="11" FontFamily="Segoe UI" VerticalAlignment="Top" HorizontalAlignment="Center" />
+                <ProgressBar x:Name="progressBar" Foreground="Red" HorizontalAlignment="Center" Margin="0,10,0,25" VerticalAlignment="Top" Width="195" Height="5" />
+            </StackPanel>
+
+            <StackPanel x:Name="magList" Margin="0" Grid.Row="1" VerticalAlignment="Center" Orientation="Vertical" Visibility="Collapsed">
                 
                 <TextBlock Text="TEST" HorizontalAlignment="Center" Margin="0,30" />
 
@@ -56,7 +74,7 @@
                           SelectionMode="None"
                           IsSwipeEnabled="false"
                           IsItemClickEnabled="True"
-                          Width="550" ItemClick="itemListView_ItemClick"
+                          Width="550" Height="400" ItemClick="itemListView_ItemClick"
                           >
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -71,6 +89,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
+            
         </Grid>
         
 

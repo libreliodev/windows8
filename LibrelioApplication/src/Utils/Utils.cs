@@ -5,13 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace LibrelioApplication.Utils
 {
     class Utils
     {
+        public static SolidColorBrush ColorFromHex(string color)
+        {
+            byte R = Convert.ToByte(color.Substring(1, 2), 16);
+            byte G = Convert.ToByte(color.Substring(3, 2), 16);
+            byte B = Convert.ToByte(color.Substring(5, 2), 16);
+
+            return new SolidColorBrush(Color.FromArgb(255, R, G, B));
+        }
+
+
         //public static async Task<bool> fileExistAsync(StorageFolder folder, string fileName)
         public static async Task<bool> fileExistAsync(StorageFolder folder, string fileName)
         {

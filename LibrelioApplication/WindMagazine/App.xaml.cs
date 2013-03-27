@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Store;
+using Windows.Data.Xml.Dom;
+using System.Xml.Linq;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -58,6 +60,14 @@ namespace WindMagazine
 
                 await LibrelioApplication.Utils.Utils.prepareTestData();
 
+                var fileHandle =
+                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"application_.xml");
+
+                var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
+                var appName = xml.SelectSingleNode("/resources/string[@name='app_name']");
+
+                Application.Current.Resources["AppName"] = appName.InnerText;
+ 
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
                 //Associate the frame with a SuspensionManager key                                
