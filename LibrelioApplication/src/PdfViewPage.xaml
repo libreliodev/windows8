@@ -156,10 +156,10 @@
         * Row 1 contains the rest of the page layout
     -->
     <Grid Style="{StaticResource LayoutRootStyle}">
-        <Grid.RowDefinitions>
-            <!--<RowDefinition Height="140"/>-->
+        <!--<Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>-->
 
 
         
@@ -174,7 +174,7 @@
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}" Margin="0,0,18,40"/>
         </Grid>-->
 
-        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Background="White" Canvas.ZIndex="1" >
+        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Canvas.ZIndex="1" >
             <!--<ScrollViewer 
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
 		                  VerticalScrollMode="Auto" HorizontalScrollMode="Auto" ZoomMode="Enabled"
@@ -183,6 +183,7 @@
                 <!-- Changed by Dorin Damaschin-->
                 <!-- Added Loaded handler-->
             <GridView  x:Name="pagesListView" 
+                               Padding="0"
                                HorizontalAlignment="Stretch" 
                                VerticalAlignment="Bottom" 
                                SelectionMode="None"
@@ -190,22 +191,30 @@
                                IsItemClickEnabled="False"
                                ItemContainerStyle="{StaticResource GridViewItemStyle1}"
                                ScrollViewer.HorizontalScrollMode="Enabled" 
-                               ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                               ScrollViewer.VerticalScrollMode="Enabled" 
-                               ScrollViewer.VerticalScrollBarVisibility="Auto"
-                               ScrollViewer.ZoomMode="Enabled" Loaded="pagesListView_Loaded" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False">
+                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                               ScrollViewer.VerticalScrollMode="Disabled" 
+                               ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                               ScrollViewer.ZoomMode="Disabled" Loaded="pagesListView_Loaded" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False">
                  <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal"/>
+                            <StackPanel Orientation="Horizontal" Margin="0"/>
                         </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
 
                 <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid HorizontalAlignment="Center">
-                                <Image Source="{Binding Image}" Stretch="UniformToFill" Width="{Binding Width}" Height="{Binding Height}" Margin="50,0" />
-                                <ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Grid>
+                        <ScrollViewer Width="{Binding Width}" Height="{Binding Height}" 
+                                      ZoomMode="Enabled" HorizontalScrollMode="Enabled"
+                                      VerticalScrollMode="Enabled"
+                                      VerticalSnapPointsType="None"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      MinZoomFactor="1"
+                                      Padding="0" ViewChanged="ScrollViewer_ViewChanged_1">
+                            
+                                    <Image HorizontalAlignment="Center" Source="{Binding Image}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
+                                <!--<ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+                            </ScrollViewer>
                         </DataTemplate>
                 </GridView.ItemTemplate>
 
@@ -223,7 +232,7 @@
 
             </GridView>
 
-            <ProgressRing x:Name="startRing" IsActive="true" Width="100" Height="100" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <ProgressRing x:Name="startRing" IsActive="true" Width="43" Height="43" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
             <!--<local:MyListView Name="pagesListView" SelectionMode="None" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsZoomedInView="True">
                     <ListView.ItemsPanel>
