@@ -210,10 +210,14 @@
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Auto"
                                       MinZoomFactor="1"
-                                      Padding="0" ViewChanged="ScrollViewer_ViewChanged_1">
-                            
+                                      MaxZoomFactor="3.5"
+                                      Padding="0" ViewChanged="ScrollViewer_ViewChanged_1" Loaded="ScrollViewer_Loaded_1">
+
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Image HorizontalAlignment="Center" Source="{Binding Image}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
-                                <!--<ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+                                    <Image HorizontalAlignment="Center" Source="{Binding ZoomedImage}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
+                                </Grid>
+                            <!--<ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
                             </ScrollViewer>
                         </DataTemplate>
                 </GridView.ItemTemplate>

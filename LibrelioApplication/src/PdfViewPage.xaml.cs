@@ -139,6 +139,7 @@ namespace LibrelioApplication
     {
         //public string Url { get; set; }
         private ImageSource _image = null;
+        private ImageSource _imageSource = null;
         private int _idx = 0;
         private ObservableCollection<PageLink> _links = new ObservableCollection<PageLink>();
         private double _width = 0;
@@ -154,6 +155,16 @@ namespace LibrelioApplication
             {
                 _image = value;
                 OnPropertyChanged("Image");
+            }
+        }
+
+        public ImageSource ZoomedImage
+        {
+            get { return _imageSource; }
+            set
+            {
+                _imageSource = value;
+                OnPropertyChanged("ZoomedImage");
             }
         }
 
@@ -262,13 +273,14 @@ namespace LibrelioApplication
 
         MuPDFWinRT.Document thumbsDoc = null;
         MuPDFWinRT.Document document = null;
+        MuPDFWinRT.Document documentRedraw = null;
 
         //const float INIT_ZOOM_FACTOR = 0.6f;
         //const float PAGE_WIDTH = 950;
         const int NUM_NEIGHBOURS_REDRAW = 0;
-        const int NUM_NEIGHBOURS_BUFFER = 4;
+        const int NUM_NEIGHBOURS_BUFFER = 2;
         // we don't buffer unless we jumped BUFFER_OFFSET pages
-        const int BUFFER_OFFSET = 2;
+        const int BUFFER_OFFSET = 1;
 
         ScrollViewer scrollViewer = null;
         float defaultZoomFactor = 1.0f;
@@ -276,8 +288,10 @@ namespace LibrelioApplication
         float offsetZF = 1.0f;
 
         bool needUpdateView = false;
+        bool needBuffer = false;
         bool cancelBuffering = false;
         bool isBusy = false;
+        bool isBusyRedraw = false;
         bool isBuffering = false;
 
         int pageBuffer = 0;
@@ -354,6 +368,7 @@ namespace LibrelioApplication
 
             // create the MuPDF Document on a background thread
             document = await CreateDocumentAsync(buffer);
+            documentRedraw = await CreateDocumentAsync(buffer);
 
             pageCount = document.PageCount / 2 + 1;
 
@@ -603,6 +618,8 @@ namespace LibrelioApplication
 
                 thumbs[p].Image = image;
             }
+
+            thumbsDoc = null;
         }
 
         // Load initial pages async
@@ -676,8 +693,8 @@ namespace LibrelioApplication
                 pages[p].ZoomFactor = currentZoomFactor;
 
                 // load page to a bitmap buffer on a background thread
-                image = await DrawTwoPagesToBufferAsync(document, p, width, height);
-                pages[p].Image = image;
+                 await DrawTwoPagesToBufferAsync(document, p, width, height);
+                //pages[p].Image = image;
 
                 link = new PageLink();
                 pages[p].Links.Add(link);
@@ -696,17 +713,14 @@ namespace LibrelioApplication
                 scrollViewer.HorizontalSnapPointsType = SnapPointsType.MandatorySingle;
                 scrollViewer.HorizontalSnapPointsAlignment = SnapPointsAlignment.Near;
                 scrollViewer.ViewChanged += scrollviewer_ViewChanged;
+            }
+        }
 
-                if (currentZoomFactor < 1)
-                {
-                    //scrollViewer.MinZoomFactor = (float)(currentZoomFactor * 1.0f);
-                    //scrollViewer.MaxZoomFactor = 5.0f;
-                    //scrollViewer.ZoomToFactor(currentZoomFactor);
-                }
-                else
-                {
-                    //scrollViewer.MinZoomFactor = 1.0f;
-                }
+        private void SetScrollViewer(ScrollViewer scr)
+        {
+            if (currentZoomFactor < 1)
+            {
+                scrollViewer.ZoomToFactor(currentZoomFactor);
             }
         }
 
@@ -743,7 +757,7 @@ namespace LibrelioApplication
         }
 
         // Draw the pdf page to a WritableBitmap (UI Thread)
-        private async Task<WriteableBitmap> DrawTwoPagesToBufferAsync(Document doc, int firstPage, int width, int height)
+        private async Task DrawTwoPagesToBufferAsync(Document doc, int page, int width, int height, bool zoomed = false)
         {
             var image = new WriteableBitmap(width, height);
             IBuffer buf1 = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
@@ -751,22 +765,48 @@ namespace LibrelioApplication
             IBuffer buf2 = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
             buf2.Length = image.PixelBuffer.Length;
 
-            image = new WriteableBitmap(2*width, height);
+            image = new WriteableBitmap(2 * width, height);
 
             using (var stream = new InMemoryRandomAccessStream())
             {
-                stream.Size = (uint)(width * height * 4);
                 using (var dataWriter = new DataWriter(stream.GetOutputStreamAt(0)))
                 {
                     await Task.Run(() =>
                     {
-                        doc.DrawPage(2*firstPage-1, buf1, 0, 0, width, height, false);
-                        doc.DrawPage(2*firstPage, buf2, 0, 0, width, height, false);
-
+                        doc.DrawPage(2 * page - 1, buf1, 0, 0, width, height, false);
+                        var size = width * 4;
                         for (int x = 0; x < height; x++)
                         {
-                            dataWriter.WriteBuffer(buf1, (uint)(x * width * 4), (uint)(width * 4));
-                            dataWriter.WriteBuffer(buf2, (uint)(x * width * 4), (uint)(width * 4));
+                            dataWriter.WriteBuffer(buf1, (uint)(x * size), (uint)size);
+                            dataWriter.WriteBytes(new byte[size]);
+                        }
+                    });
+
+                    await dataWriter.StoreAsync();
+                    await dataWriter.FlushAsync();
+                    await stream.AsStream().CopyToAsync(image.PixelBuffer.AsStream());
+                    image.Invalidate();
+                    if (zoomed)
+                    {
+                        pages[page].ZoomedImage = image;
+                    }
+                    else
+                    {
+                        pages[page].Image = image;
+                    }
+                }
+
+                stream.Seek(0);
+                using (var dataWriter = new DataWriter(stream.GetOutputStreamAt(0)))
+                {
+                    await Task.Run(() =>
+                    {
+                        doc.DrawPage(2 * page, buf2, 0, 0, width, height, false);
+                        var size = width * 4;
+                        for (int x = 0; x < height; x++)
+                        {
+                            dataWriter.WriteBuffer(buf1, (uint)(x * size), (uint)size);
+                            dataWriter.WriteBuffer(buf2, (uint)(x * size), (uint)size);
                         }
                     });
 
@@ -776,8 +816,68 @@ namespace LibrelioApplication
                     image.Invalidate();
                 }
             }
+        }
 
-            return image;
+        // Draw the pdf page to a WritableBitmap (UI Thread)
+        private async Task DrawTwoPagesToBufferReversedAsync(Document doc, int page, int width, int height, bool zoomed = false)
+        {
+            var image = new WriteableBitmap(width, height);
+            IBuffer buf1 = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
+            buf1.Length = image.PixelBuffer.Length;
+            IBuffer buf2 = new Windows.Storage.Streams.Buffer(image.PixelBuffer.Capacity);
+            buf2.Length = image.PixelBuffer.Length;
+
+            image = new WriteableBitmap(2 * width, height);
+
+            using (var stream = new InMemoryRandomAccessStream())
+            {
+                using (var dataWriter = new DataWriter(stream.GetOutputStreamAt(0)))
+                {
+                    await Task.Run(() =>
+                    {
+                        doc.DrawPage(2 * page, buf2, 0, 0, width, height, false);
+                        var size = width * 4;
+                        for (int x = 0; x < height; x++)
+                        {
+                            dataWriter.WriteBytes(new byte[size]);
+                            dataWriter.WriteBuffer(buf2, (uint)(x * size), (uint)size);
+                        }
+                    });
+
+                    await dataWriter.StoreAsync();
+                    await dataWriter.FlushAsync();
+                    await stream.AsStream().CopyToAsync(image.PixelBuffer.AsStream());
+                    image.Invalidate();
+                }
+                if (zoomed)
+                {
+                    pages[page].ZoomedImage = image;
+                }
+                else
+                {
+                    pages[page].Image = image;
+                }
+
+                stream.Seek(0);
+                using (var dataWriter = new DataWriter(stream.GetOutputStreamAt(0)))
+                {
+                    await Task.Run(() =>
+                    {
+                        doc.DrawPage(2 * page - 1, buf1, 0, 0, width, height, false);
+                        var size = width * 4;
+                        for (int x = 0; x < height; x++)
+                        {
+                            dataWriter.WriteBuffer(buf1, (uint)(x * size), (uint)size);
+                            dataWriter.WriteBuffer(buf2, (uint)(x * size), (uint)size);
+                        }
+                    });
+
+                    await dataWriter.StoreAsync();
+                    await dataWriter.FlushAsync();
+                    await stream.AsStream().CopyToAsync(image.PixelBuffer.AsStream());
+                    image.Invalidate();
+                }
+            }
         }
 
         private async Task<WriteableBitmap> DrawFirstPageToBufferAsync(Document doc, int page, int width, int height)
@@ -835,6 +935,7 @@ namespace LibrelioApplication
                     {
                         doc.DrawPage(page + 1, buf2, 0, 0, width, height, false);
 
+                        bool flushed = false;
                         for (int x = 0; x < height; x++)
                         {
                             dataWriter.WriteBuffer(buf1, (uint)(x * width * 4), (uint)(width * 4));
@@ -845,61 +946,65 @@ namespace LibrelioApplication
                     await dataWriter.StoreAsync();
                     await dataWriter.FlushAsync();
                     await stream.AsStream().CopyToAsync(image.PixelBuffer.AsStream());
+                    await stream.FlushAsync();
                     image.Invalidate();
                 }
             }
+
+            buf1 = null;
+            buf2 = null;
 
             return image;
         }
 
         private bool NeedToUpdatePages(int page, int numNeighbours)
         {
-            //var start = page - numNeighbours >= 0 ? page - numNeighbours : 0;
-            //var end = page + numNeighbours < pageCount ? page + numNeighbours : pageCount - 1;
-            //for (int p = start; p <= end; p++)
-            //{
-            //    if (pages[p].ZoomFactor != currentZoomFactor)
-            //        return true;
-            //}
+            var start = page - numNeighbours >= 0 ? page - numNeighbours : 0;
+            var end = page + numNeighbours < pageCount ? page + numNeighbours : pageCount - 1;
+            for (int p = start; p <= end; p++)
+            {
+                if (pages[p].ZoomFactor != currentZoomFactor)
+                    return true;
+            }
 
             return false;
         }
 
         // Updates the pdf pages async
         // --------------------------------------------------------
-        private void UpdatePages(int page, int numNeighbours)
+        private void UpdatePages(int page, int numNeighbours, ScrollViewer scr, bool reversed = false)
         {
             // if we are already updating another page wait to finish then try again
-            if (isBusy)
+            if (isBusyRedraw)
             {
                 needUpdateView = true;
                 return;
             }
 
             // if we are buffering pages cancel that operation
-            if (isBuffering)
-            {
-                cancelBuffering = true;
-                return;
-            }
+            //if (isBuffering)
+            //{
+            //    cancelBuffering = true;
+            //    return;
+            //}
 
-            isBusy = true;
+            isBusyRedraw = true;
 
             var op = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
             {
-                await UpdatePagesInternal(page, numNeighbours);
+                await UpdatePagesInternal(page, numNeighbours, reversed);
 
-                isBusy = false;
+                isBusyRedraw = false;
                 // if we need to do something else fire the ViewChanged Event, else we're done
-                if (needUpdateView || NeedToBufferPages(page, NUM_NEIGHBOURS_BUFFER))
+                if (needUpdateView)// || NeedToBufferPages(page, NUM_NEIGHBOURS_BUFFER))
                 {
                     needUpdateView = false;
-                    scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
+                    ScrollViewer_ViewChanged_1(scr, new ScrollViewerViewChangedEventArgs());
                 }
             });
         }
 
-        private async Task UpdatePagesInternal(int page, int numNeighbours)
+        private async Task UpdatePagesInternal(int page, int numNeighbours, bool reversed)
         {
             // if the page no longer has focus we don't need to update it
             if (pageNum != page)
@@ -911,13 +1016,13 @@ namespace LibrelioApplication
             for (int p = page; p <= page + numNeighbours; p++)
             {
                 if (p < pageCount)
-                    await RedrawPage(p, page);
+                    await RedrawPage(p, page, reversed);
                 if (p != page && (2 * page - p) >= 0)
-                    await RedrawPage(2 * page - p, page);
+                    await RedrawPage(2 * page - p, page, reversed);
             }
         }
 
-        private async Task RedrawPage(int p, int page)
+        private async Task RedrawPage(int p, int page, bool reversed)
         {
             // if the page no longer has focus we don't need to update it
             if (pageNum != page)
@@ -929,48 +1034,57 @@ namespace LibrelioApplication
             if (pages[p].ZoomFactor == currentZoomFactor)
                 return;
 
-            if (p == page && pages[p].Image == null)
-            {
-                await BufferPage(p);
+            //if (p == page && pages[p].Image == null)
+            //{
+            //    await BufferPage(p);
 
-                if (pageNum != page)
-                {
-                    needUpdateView = true;
-                    return;
-                }
+            //    if (pageNum != page)
+            //    {
+            //        needUpdateView = true;
+            //        return;
+            //    }
 
-                if (pages[p].ZoomFactor == currentZoomFactor)
-                    return;
-            }
+            //    if (pages[p].ZoomFactor == currentZoomFactor)
+            //        return;
+            //}
 
-            if (pages[p].Image == null)
-                pages[p].Loading = true;
+            //if (pages[p].Image == null)
+            //    pages[p].Loading = true;
 
             // we resize the image to the current zoom factor
             MuPDFWinRT.Point size = document.GetPageSize(p);
-            int width = (int)(size.X * currentZoomFactor * offsetZF);
-            int height = (int)(size.Y * currentZoomFactor * offsetZF);
+            int width = (int)(size.X * currentZoomFactor * offsetZF * 1.1);
+            int height = (int)(size.Y * currentZoomFactor * offsetZF * 1.1);
 
             // load page to a bitmap buffer on a background thread
 
             WriteableBitmap image = null;
             if (p > 0)
             {
-                image = await DrawTwoPagesToBufferAsync(document, p, width, height);
+                pages[p].ZoomFactor = currentZoomFactor;
+                if (!reversed)
+                {
+                    await DrawTwoPagesToBufferAsync(documentRedraw, p, width, height, true);
+                }
+                else
+                {
+                    await DrawTwoPagesToBufferReversedAsync(documentRedraw, p, width, height, true);
+                }
             }
             else
             {
                 image = await DrawToBufferAsync(document, 0, width, height);
+                pages[p].Image = image;
             }
 
             if (pageNum == page)
             {
-                pages[p].Image = image;
+                //pages[p].Image = image;
                 pages[p].ZoomFactor = currentZoomFactor;
             }
 
-            if (pages[p].Loading)
-                pages[p].Loading = false;
+            //if (pages[p].Loading)
+            //    pages[p].Loading = false;
         }
 
 
@@ -1001,9 +1115,10 @@ namespace LibrelioApplication
         private void BufferPages(int page, int numNeighbours)
         {
             // if we are doing something else wait to finish
-            if (isBusy || isBuffering)
+            if (isBuffering)//(isBusy || isBuffering)
             {
-                needUpdateView = true;
+                cancelBuffering = true;
+                needBuffer = true;
                 return;
             }
 
@@ -1016,12 +1131,12 @@ namespace LibrelioApplication
                 if (cancelBuffering)
                 {
                     cancelBuffering = false;
-                    needUpdateView = true;
+                    needBuffer = true;
                 }
                 isBuffering = false;
-                if (needUpdateView)
+                if (needBuffer)
                 {
-                    needUpdateView = false;
+                    needBuffer = false;
                     scrollviewer_ViewChanged(this, new ScrollViewerViewChangedEventArgs());
                 }
                 else
@@ -1036,7 +1151,7 @@ namespace LibrelioApplication
             if (cancelBuffering)
             {
                 cancelBuffering = false;
-                needUpdateView = true;
+                needBuffer = true;
                 return;
             }
 
@@ -1080,7 +1195,7 @@ namespace LibrelioApplication
             if (cancelBuffering)
             {
                 cancelBuffering = false;
-                needUpdateView = true;
+                needBuffer = true;
                 return;
             }
 
@@ -1097,9 +1212,9 @@ namespace LibrelioApplication
 
             if (p > 0)
             {
-                var image = await DrawTwoPagesToBufferAsync(document, p, width, height);
+                await DrawTwoPagesToBufferAsync(document, p, width, height);
                 pages[p].Loading = false;
-                pages[p].Image = image;
+                //pages[p].Image = image;
             }
             else
             {
@@ -1115,7 +1230,14 @@ namespace LibrelioApplication
         {
             if (!e.IsIntermediate)
             {
-                pageNum = CalcPageNum();
+                var p = CalcPageNum();
+
+                if (p != pageNum)
+                {
+                    pages[pageNum].ZoomedImage = null;
+                }
+
+                pageNum = p;
 
                 if (NeedToBufferPages(pageNum, NUM_NEIGHBOURS_BUFFER))
                 {
@@ -1138,14 +1260,33 @@ namespace LibrelioApplication
             if (!e.IsIntermediate)
             {
                 var scrView = sender as ScrollViewer;
-                var parent = scrView.Parent;
                 if ((pages[pageNum].ZoomFactor - scrView.ZoomFactor) < -0.12 ||
                     (pages[pageNum].ZoomFactor - scrView.ZoomFactor) > 0.12)
                 {
                     currentZoomFactor = scrView.ZoomFactor;
-                    UpdatePages(pageNum, NUM_NEIGHBOURS_REDRAW);
+                    if (currentZoomFactor - defaultZoomFactor > -0.12 &&
+                        currentZoomFactor - defaultZoomFactor < 0.12)
+                    {
+                        pages[pageNum].ZoomedImage = null;
+                    }
+                    else
+                    {
+                        if (scrView.HorizontalOffset <= scrView.VerticalOffset)
+                        {
+                            UpdatePages(pageNum, NUM_NEIGHBOURS_REDRAW, scrView);
+                        }
+                        else
+                        {
+                            UpdatePages(pageNum, NUM_NEIGHBOURS_REDRAW, scrView, true);
+                        }
+                    }
                 }
             }
+        }
+
+        private void ScrollViewer_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            SetScrollViewer(sender as ScrollViewer);
         }
     }
 }
