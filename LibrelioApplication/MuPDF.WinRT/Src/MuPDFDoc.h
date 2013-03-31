@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 
+#include <windows.h>
 #include <Winerror.h>
 
 extern "C" {
@@ -12,7 +13,7 @@ extern "C" {
 }
 
 
-#define NUM_CACHE (3)
+#define NUM_CACHE (10)
 #define MAX_SEARCH_HITS (500)
 
 //TODO: Maybe I should change this to class/struct with default constructor
@@ -74,11 +75,16 @@ typedef struct
 class MuPDFDoc
 {
 private:
+	CRITICAL_SECTION m_critSec;
+
+	fz_locks_context locks;
 	fz_context *m_context;
 	fz_document *m_document;
 	fz_outline *m_outline;
+	fz_cookie *m_cts;
 	int m_currentPage;
 	int m_resolution;
+	int about;
 	PageCache m_pages[NUM_CACHE];
 	MuPDFDoc(int resolution);
 	//MuPDFDoc(const MuPDFDoc& that) = delete;
@@ -103,6 +109,10 @@ public:
 	inline bool JavaScriptSupported() { return fz_javascript_supported() != 0; }
 	inline bool NeedsPassword() { return fz_needs_password(m_document) != 0; }
 	inline bool HasOutline() { return m_outline != nullptr; }
+	bool IsCached(int pageNumber);
+	void CancelDraw();
+	int GetTest() {return about; }
+	int GetTest1() {return m_cts->abort; }
 	int GetPageWidth();
 	int GetPageHeight();
 	std::shared_ptr<std::vector<std::shared_ptr<MuPDFDocLink>>> GetLinks();

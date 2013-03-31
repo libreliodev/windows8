@@ -4,7 +4,7 @@
 #include "MuPDFDoc.h"
 
 MuPDFDoc::MuPDFDoc(int resolution)
-	: m_context(nullptr), m_document(nullptr), m_resolution(resolution), m_currentPage(-1)
+	: m_context(nullptr), m_document(nullptr), m_resolution(resolution), m_currentPage(-1), m_cts(nullptr)
 {
 	for(int i = 0; i < NUM_CACHE; i++)
 	{
@@ -89,6 +89,7 @@ HRESULT MuPDFDoc::GotoPage(int pageNumber)
 
 HRESULT MuPDFDoc::DrawPage(unsigned char *bitmap, int x, int y, int width, int height, bool invert)
 {
+	m_cts->abort = 0;
 	fz_device *dev = nullptr;
 	fz_pixmap *pixmap = nullptr;
 	fz_var(dev);
@@ -107,7 +108,8 @@ HRESULT MuPDFDoc::DrawPage(unsigned char *bitmap, int x, int y, int width, int h
 			/* Render to list */
 			pageCache->pageList = fz_new_display_list(m_context);
 			dev = fz_new_list_device(m_context, pageCache->pageList);
-			fz_run_page_contents(m_document, pageCache->page, dev, fz_identity, nullptr);
+
+			fz_run_page_contents(m_document, pageCache->page, dev, fz_identity, *&m_cts);
 		}
 		if (!pageCache->annotList)
 		{
@@ -119,41 +121,43 @@ HRESULT MuPDFDoc::DrawPage(unsigned char *bitmap, int x, int y, int width, int h
 			pageCache->annotList = fz_new_display_list(m_context);
 			dev = fz_new_list_device(m_context, pageCache->annotList);
 			for (fz_annot *annot = fz_first_annot(m_document, pageCache->page); annot; annot = fz_next_annot(m_document, annot))
-				fz_run_annot(m_document, pageCache->page, annot, dev, fz_identity, nullptr);
+				fz_run_annot(m_document, pageCache->page, annot, dev, fz_identity, *&m_cts);
 		}
-		fz_bbox rect;
-		rect.x0 = x;
-		rect.y0 = y;
-		rect.x1 = x + width;
-		rect.y1 = y + height;
-		pixmap = fz_new_pixmap_with_bbox_and_data(m_context, fz_device_bgr, rect, bitmap);
-		if (!pageCache->pageList && !pageCache->annotList)
-		{
-			fz_clear_pixmap_with_value(m_context, pixmap, 0xd0);
-			break;
-		}
-		fz_clear_pixmap_with_value(m_context, pixmap, 0xff);
-		//
-		fz_matrix ctm = CalcConvertMatrix();
-		fz_bbox bbox = fz_round_rect(fz_transform_rect(ctm, pageCache->mediaBox));
-		/* Now, adjust ctm so that it would give the correct page width
-		 * heights. */
-		float xscale = (float)width/(float)(bbox.x1-bbox.x0);
-		float yscale = (float)height/(float)(bbox.y1-bbox.y0);
-		ctm = fz_concat(ctm, fz_scale(xscale, yscale));
-		bbox = fz_round_rect(fz_transform_rect(ctm, pageCache->mediaBox));
-		if (dev)
-		{
-			fz_free_device(dev);
-			dev = nullptr;
-		}
-		dev = fz_new_draw_device(m_context, pixmap);
-		if (pageCache->pageList)
-			fz_run_display_list(pageCache->pageList, dev, ctm, bbox, nullptr);
-		if (pageCache->annotList)
-			fz_run_display_list(pageCache->annotList, dev, ctm, bbox, nullptr);
-		if (invert)
-			fz_invert_pixmap(m_context, pixmap);
+		
+			fz_bbox rect;
+			rect.x0 = x;
+			rect.y0 = y;
+			rect.x1 = x + width;
+			rect.y1 = y + height;
+			pixmap = fz_new_pixmap_with_bbox_and_data(m_context, fz_device_bgr, rect, bitmap);
+			if (!pageCache->pageList && !pageCache->annotList)
+			{
+				fz_clear_pixmap_with_value(m_context, pixmap, 0xd0);
+				break;
+			}
+			fz_clear_pixmap_with_value(m_context, pixmap, 0xff);
+			//
+			fz_matrix ctm = CalcConvertMatrix();
+			fz_bbox bbox = fz_round_rect(fz_transform_rect(ctm, pageCache->mediaBox));
+			/* Now, adjust ctm so that it would give the correct page width
+			 * heights. */
+			float xscale = (float)width/(float)(bbox.x1-bbox.x0);
+			float yscale = (float)height/(float)(bbox.y1-bbox.y0);
+			ctm = fz_concat(ctm, fz_scale(xscale, yscale));
+			bbox = fz_round_rect(fz_transform_rect(ctm, pageCache->mediaBox));
+			if (dev)
+			{
+				fz_free_device(dev);
+				dev = nullptr;
+			}
+			dev = fz_new_draw_device(m_context, pixmap);
+			if (pageCache->pageList)
+				fz_run_display_list(pageCache->pageList, dev, ctm, bbox, *&m_cts);
+			about = m_cts->abort;
+			if (pageCache->annotList)
+				fz_run_display_list(pageCache->annotList, dev, ctm, bbox, *&m_cts);
+			if (invert)
+				fz_invert_pixmap(m_context, pixmap);
 	}
 	fz_always(m_context)
 	{
@@ -521,15 +525,35 @@ HRESULT MuPDFDoc::Init(unsigned char *buffer, int bufferLen, const char *mimeTyp
 	}
 }
 
+// These are the two locking functions required by MuPDF when
+// operating in a multi-threaded environment. They each take a user
+// argument that can be used to transfer some state, in this case a
+// pointer to the array of mutexes.
+
+void lock_mutex(void *user, int lock)
+{
+	EnterCriticalSection((LPCRITICAL_SECTION)user);
+}
+
+void unlock_mutex(void *user, int lock)
+{
+	LeaveCriticalSection((LPCRITICAL_SECTION)user);
+}
+
 HRESULT MuPDFDoc::InitContext()
 {
-	m_context = fz_new_context(nullptr, nullptr, FZ_STORE_DEFAULT);
+	InitializeCriticalSectionEx(&m_critSec, 0, 0);
+	locks.user = &m_critSec;
+	locks.lock = lock_mutex;
+	locks.unlock = unlock_mutex;
+	m_context = fz_new_context(nullptr, &locks, FZ_STORE_DEFAULT);
 	if (!m_context)
 	{
 		return E_OUTOFMEMORY;
 	}
 	else
 	{
+		m_cts = fz_malloc_struct(m_context, fz_cookie);
 		return S_OK;
 	}
 }
@@ -666,4 +690,29 @@ fz_matrix MuPDFDoc::CalcConvertMatrix()
 	// fz_bound_page determine the size of a page at 72 dpi.
 	float zoom = m_resolution / 72.0;
 	return fz_scale(zoom, zoom);
+}
+
+bool MuPDFDoc::IsCached(int pageNumber)
+{
+	int x = -1;
+	x = FindPageInCache(pageNumber);
+	if (x < 0)
+		return false;
+
+	if (m_pages[x].pageList)
+		return true;
+	else return false;
+}
+
+void MuPDFDoc::CancelDraw() 
+{ 
+	fz_context *ctx = fz_clone_context(m_context);
+	fz_try(ctx)
+	{
+	m_cts->abort = 1;
+	}
+	fz_catch(ctx)
+	{
+	}
+	fz_free_context(ctx);
 }

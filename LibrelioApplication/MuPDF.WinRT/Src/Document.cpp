@@ -72,7 +72,7 @@ Platform::Boolean Document::AuthenticatePassword(Platform::String^ password)
 
 Point Document::GetPageSize(int pageNumber)
 {
-	std::lock_guard<std::mutex> lock(m_lock);
+	//std::lock_guard<std::mutex> lock(m_lock);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Point size;
 	size.X = m_doc->GetPageWidth();
@@ -103,7 +103,7 @@ void Document::DrawPage(
 	int32 height,
 	Platform::Boolean invert)
 {
-	std::lock_guard<std::mutex> lock(m_lock);
+	//std::lock_guard<std::mutex> lock(m_lock);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Utilities::ThrowIfFailed(m_doc->DrawPage((unsigned char *)pixels->Data, x, y, width, height, invert));
 }
@@ -117,10 +117,20 @@ void Document::DrawPage(
 	int32 height,
 	Platform::Boolean invert)
 {
-	std::lock_guard<std::mutex> lock(m_lock);
+	//std::lock_guard<std::mutex> lock(m_lock);
 	unsigned char *data = GetPointerToData(pixels);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Utilities::ThrowIfFailed(m_doc->DrawPage(data, x, y, width, height, invert));
+}
+
+bool Document::IsCached(int32 pageNumber)
+{
+	return m_doc->IsCached(pageNumber);
+}
+
+void Document::CancelDraw()
+{ 
+	m_doc->CancelDraw(); 
 }
 
 Windows::Foundation::Collections::IVector<RectF>^ Document::SearchText(int32 pageNumber, Platform::String^ text)

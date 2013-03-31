@@ -53,6 +53,10 @@ namespace MuPDFWinRT
 			int32 width, 
 			int32 height,
 			Platform::Boolean invert);
+		bool IsCached(int32 pageNumber);
+		void CancelDraw();
+		int32 GetTest() { return m_doc->GetTest(); }
+		int32 GetTest1() { return m_doc->GetTest1(); }
 		Windows::Foundation::Collections::IVector<RectF>^ SearchText(int32 pageNumber, Platform::String^ text);
 		Windows::Foundation::Collections::IVector<OutlineItem^>^ GetOutline();
 		property int32 PageCount

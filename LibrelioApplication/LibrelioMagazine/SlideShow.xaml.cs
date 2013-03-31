@@ -27,20 +27,30 @@ namespace WindMagazine
             this.InitializeComponent();
         }
 
-        public async void Start(int interval, StorageFolder folder, List<string> links)
+        public async void Start(int interval)//, StorageFolder folder, List<string> links)
         {
-            int i = 0;
+            int i = 1;
             while (true)
             {
+                var str = "ms-appx:///Assets/test/img/sample_" + i + ".jpg";
+                image.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(str));
+
                 await Task.Delay(interval);
 
                 i++;
-                if (i == links.Count)
-                    i = 0;
+                if (i == 6)
+                    i = 1;
 
-                var file = await folder.GetFileAsync(links[i]).AsTask();
-                image.Source = new BitmapImage(new Uri(links[i]));
+                //var file = await folder.GetFileAsync(links[i]).AsTask();
+                //image.Source = new BitmapImage(new Uri(links[i]));
             }
+        }
+
+        public void SetRect(Rect rect)
+        {
+            frame.Margin = new Thickness(rect.Top, rect.Left, rect.Right, rect.Bottom);
+            image.Width = rect.Width;
+            image.Height = rect.Height;
         }
     }
 }
