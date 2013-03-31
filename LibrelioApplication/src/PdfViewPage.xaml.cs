@@ -1169,6 +1169,9 @@ namespace LibrelioApplication
                     token.ThrowIfCancellationRequested();
 
                     doc.DrawPage(2 * page - 1, buf1, 0, 0, width, height, false);
+
+                    token.ThrowIfCancellationRequested();
+
                     doc.DrawPage(2 * page, buf2, 0, 0, width, height, false);
 
                     token.ThrowIfCancellationRequested();
@@ -1299,8 +1302,8 @@ namespace LibrelioApplication
 
             // we resize the image to the current zoom factor
             MuPDFWinRT.Point size = document.GetPageSize(p);
-            int width = (int)(size.X * currentZoomFactor * offsetZF * 1.1);
-            int height = (int)(size.Y * currentZoomFactor * offsetZF * 1.1);
+            int width = (int)(size.X * currentZoomFactor * offsetZF * 1.05);
+            int height = (int)(size.Y * currentZoomFactor * offsetZF * 1.05);
 
             token.ThrowIfCancellationRequested();
 
@@ -1332,6 +1335,9 @@ namespace LibrelioApplication
         // --------------------------------------------------------
         private bool NeedToBufferPages(int page, int numNeighbours)
         {
+            if (pages[page].Image == null)
+                return true;
+
             var abs = pageNum > pageBuffer ? pageNum - pageBuffer : pageBuffer - pageNum;
             if (pageNum == pageBuffer || abs < BUFFER_OFFSET) return false;
 
@@ -1366,7 +1372,6 @@ namespace LibrelioApplication
                 await bufferTask;
                 isBuffering = false;
                 HandleRequests(page, numNeighbours, 0);
-                pageBuffer = pageNum;
 
             }
             catch (OperationCanceledException e)
@@ -1391,8 +1396,6 @@ namespace LibrelioApplication
                 }
             }
 
-            token.ThrowIfCancellationRequested();
-
             for (int p = end + 1; p < pageCount - 3; p++)
             {
                 if (pages[p].Image != null)
@@ -1410,9 +1413,13 @@ namespace LibrelioApplication
                     await BufferPage(p);
                 token.ThrowIfCancellationRequested();
 
+                pageBuffer = page;
+
                 if (p != page && (2 * page - p) >= 0)
                     await BufferPage(2 * page - p);
                 token.ThrowIfCancellationRequested();
+
+                pageBuffer = page;
             }
         }
 
@@ -1436,7 +1443,14 @@ namespace LibrelioApplication
 
             if (p > 0)
             {
-                await DrawTwoPagesForBufferAsync(document, p, width, height, token);
+                if (p != pageNum)
+                {
+                    await DrawTwoPagesForBufferAsync(document, p, width, height, token);
+                }
+                else
+                {
+                    await DrawTwoPagesToBufferAsync(document, p, width, height, token);
+                }
                 //pages[p].Loading = false;
                 //pages[p].Image = image;
             }

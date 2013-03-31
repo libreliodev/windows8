@@ -180,7 +180,6 @@
 		                  VerticalScrollMode="Auto" HorizontalScrollMode="Auto" ZoomMode="Enabled"
                           Grid.Row="1" Background="White" Canvas.ZIndex="1">-->
 
-                <!-- Changed by Dorin Damaschin-->
                 <!-- Added Loaded handler-->
             <GridView  x:Name="pagesListView" 
                                Padding="0"
@@ -215,12 +214,8 @@
                                       >
 
                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Grid>
                                     <Image HorizontalAlignment="Center" Source="{Binding Image}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
-                                </Grid>
-                                <Grid>
                                     <Image HorizontalAlignment="Center" Source="{Binding ZoomedImage}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
-                                </Grid>
                             </Grid>
                             <!--<ProgressRing IsActive="{Binding Loading}" Width="60" Height="60" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
                             </ScrollViewer>
