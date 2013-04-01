@@ -133,6 +133,18 @@ namespace LibrelioApplication
         }
     }
 
+    public enum UIType
+    {
+        SlideShow
+    };
+
+    public struct UIAddon
+    {
+        public UIElement element { get; set; }
+        public UIType type { get; set; }
+        public string url { get; set; }
+    }
+
     // Changed the structure to a bindable class so the UI will update when changes are 
     // made to the properties
     public class PageData : LibrelioApplication.Common.BindableBase
@@ -142,11 +154,14 @@ namespace LibrelioApplication
         private ImageSource _imageSource = null;
         private int _idx = 0;
         private ObservableCollection<PageLink> _links = null;
+        private ObservableCollection<PageLink> _linksLeft = null;
+        private ObservableCollection<PageLink> _linksRight = null;
         private double _width = 0;
         private double _pageWidth = 0;
         private double _height = 0;
         private double _pageHeight = 0;
         private bool _loading = true;
+        private IList<UIAddon> _pageAddons = new List<UIAddon>();
 
         public ImageSource Image
         {
@@ -165,6 +180,18 @@ namespace LibrelioApplication
             {
                 _imageSource = value;
                 OnPropertyChanged("ZoomedImage");
+            }
+        }
+
+        public IList<UIAddon> Addons
+        {
+            get
+            {
+                return _pageAddons;
+            }
+            set
+            {
+                _pageAddons = value;
             }
         }
 
@@ -196,6 +223,26 @@ namespace LibrelioApplication
             {
                 _links = value;
                 OnPropertyChanged("Links");
+            }
+        }
+
+        public ObservableCollection<PageLink> LinksLeft
+        {
+            get { return _linksLeft; }
+            set
+            {
+                _linksLeft = value;
+                OnPropertyChanged("LinksLeft");
+            }
+        }
+
+        public ObservableCollection<PageLink> LinksRight
+        {
+            get { return _linksRight; }
+            set
+            {
+                _linksRight = value;
+                OnPropertyChanged("LinksRight");
             }
         }
 
@@ -306,6 +353,10 @@ namespace LibrelioApplication
         CancellationTokenSource cancelRedraw = null;
 
         IList<LinkInfo> visitorList = new List<LinkInfo>();
+
+        Windows.Foundation.Point touchPoint;
+        bool controlPressed = false;
+        UIElement currentElement = null;
 
         int pageBuffer = 0;
 
@@ -735,46 +786,8 @@ namespace LibrelioApplication
 
             pageNum = CalcPageNum();
             pageBuffer = pageNum;
-        }
 
-        private void visitor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
-        {
-            foreach (var visitor in visitorList)
-            {
-                if (visitor.visitor == __param0)
-                {
-                    if (pages[visitor.index].Links == null)
-                    {
-                        pages[visitor.index].Links = new ObservableCollection<PageLink>();
-                    }
-                    PageLink link = new PageLink();
-                    link.rect = new Rect(__param1.Rect.Top, __param1.Rect.Left, __param1.Rect.Right, __param1.Rect.Bottom);
-                    link.url = __param1.URI;
-                    pages[visitor.index].Links.Add(link);
-                    var vis = visitorList[visitorList.IndexOf(visitor)];
-                    vis.handled++;
-                    if (vis.handled == vis.count)
-                    {
-                        //if (pageNum == visitor.index)
-                        //{
-                            foreach (var item in pages[visitor.index].Links)
-                            {
-                                if (item.url.Contains("jpg") || item.url.Contains("png"))
-                                {
-                                    //var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum);
-                                    //var grid = findFirstInVisualTree<Grid>(root);
-
-                                    //var slideShow = new WindMagazine.SlideShow();
-                                    //var grid1 = findFirstInVisualTree<Grid>(grid);
-                                    //slideShow.SetRect(item.rect);
-                                    //grid1.Children.Add(slideShow);
-                                    //slideShow.Start(2000);
-                                }
-                            }
-                        //}
-                    }
-                }
-            }
+            InitPageLink(pageNum);
         }
 
         // Set the pagesListView ScrollViewer proprieties
@@ -825,18 +838,6 @@ namespace LibrelioApplication
             var stream = buf.AsStream();
             await stream.CopyToAsync(image.PixelBuffer.AsStream());
             image.Invalidate();
-
-            if (pages[pageNumber].Links == null)
-            {
-                //var links = document.GetLinks(pageNumber);
-                //LinkInfoVisitor vis = new LinkInfoVisitor();
-                //visitorList.Add(new LinkInfo() { visitor = vis, index = pageNumber, count = links.Count, handled = 0 });
-                //vis.OnURILink += visitor_OnURILink;
-                //foreach (var link in links)
-                //{
-                //    link.AcceptVisitor(vis);
-                //}
-            }
 
             return image;
         }
@@ -959,30 +960,6 @@ namespace LibrelioApplication
                         image.Invalidate();
 
                         pages[page].SecondPageZoomFactor = currentZoomFactor;
-                    }
-                }
-
-                if (pages[2 * page - 1].Links == null)
-                {
-                    var links = document.GetLinks(2 * page - 1);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page - 1, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
-                    }
-                }
-
-                if (pages[2 * page].Links == null)
-                {
-                    var links = document.GetLinks(2 * page);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
                     }
                 }
 
@@ -1112,30 +1089,6 @@ namespace LibrelioApplication
                     pages[page].SecondPageZoomFactor = currentZoomFactor;
                 }
 
-                if (pages[2 * page - 1].Links == null)
-                {
-                    var links = document.GetLinks(2 * page - 1);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page - 1, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
-                    }
-                }
-
-                if (pages[2 * page].Links == null)
-                {
-                    var links = document.GetLinks(2 * page);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
-                    }
-                }
-
                 if (drawFirstPage)
                 {
                     pages[page].ZoomFactor = currentZoomFactor;
@@ -1193,30 +1146,6 @@ namespace LibrelioApplication
 
                 await stream.AsStream().CopyToAsync(image.PixelBuffer.AsStream());
                 image.Invalidate();
-
-                if (pages[2 * page - 1].Links == null)
-                {
-                    var links = document.GetLinks(2 * page - 1);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page - 1, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
-                    }
-                }
-
-                if (pages[2 * page].Links == null)
-                {
-                    var links = document.GetLinks(2 * page);
-                    LinkInfoVisitor vis = new LinkInfoVisitor();
-                    visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page, count = links.Count, handled = 0 });
-                    vis.OnURILink += visitor_OnURILink;
-                    foreach (var link in links)
-                    {
-                        link.AcceptVisitor(vis);
-                    }
-                }
 
                 pages[page].Image = image;
             }
@@ -1435,8 +1364,8 @@ namespace LibrelioApplication
 
             // we draw the image at the default zoom factor
             MuPDFWinRT.Point size = document.GetPageSize(p);
-            int width = (int)(size.X * defaultZoomFactor);
-            int height = (int)(size.Y * defaultZoomFactor);
+            int width = (int)(size.X * currentZoomFactor * offsetZF * 1.05);
+            int height = (int)(size.Y * currentZoomFactor * offsetZF * 1.05);
             token.ThrowIfCancellationRequested();
 
             // load page to a bitmap buffer on a background thread
@@ -1485,12 +1414,7 @@ namespace LibrelioApplication
 
                     pageNum = p;
 
-                    //var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum);
-                    //var grid = findFirstInVisualTree<Grid>(root);
-
-                    //var slideShow = new WindMagazine.SlideShow();
-                    //grid.Children.Add(slideShow);
-                    //slideShow.Start(2000);
+                    InitPageLink(pageNum);
 
                     if (isBusyRedraw)
                     {
@@ -1578,5 +1502,238 @@ namespace LibrelioApplication
                 Task task = BufferPages(page, bNumNeigh);
             }
         }
+
+        private void InitPageLink(int page)
+        {
+            if (page == 0)
+            {
+                if (pages[0].Links == null)
+                {
+                    var links = document.GetLinks(0);
+
+                    var linkVistor = new LinkInfoVisitor();
+                    linkVistor.OnURILink += visitor_OnURILink;
+                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = 0, count = links.Count, handled = 0 });
+
+                    for (int j = 0; j < links.Count; j++)
+                    {
+                        links[j].AcceptVisitor(linkVistor);
+                    }
+                }
+
+                LoadLinks(0);
+
+                return;
+            }
+
+            if (pages[page].LinksLeft == null)
+            {
+                var links = document.GetLinks(2 * page - 1);
+                LinkInfoVisitor vis = new LinkInfoVisitor();
+                visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page - 1, count = links.Count, handled = 0 });
+                vis.OnURILink += visitor_OnURILink;
+                foreach (var link in links)
+                {
+                    link.AcceptVisitor(vis);
+                }
+            }
+
+            if (pages[page].LinksRight == null)
+            {
+                var links = document.GetLinks(2 * page);
+                LinkInfoVisitor vis = new LinkInfoVisitor();
+                visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page, count = links.Count, handled = 0 });
+                vis.OnURILink += visitor_OnURILink;
+                foreach (var link in links)
+                {
+                    link.AcceptVisitor(vis);
+                }
+            }
+
+            LoadLinks(page);
+        }
+
+        private void visitor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
+        {
+            foreach (var visitor in visitorList)
+            {
+                if (visitor.visitor == __param0)
+                {
+                    int index = 0;
+
+                    PageLink link = new PageLink();
+                    link.rect = new Rect(__param1.Rect.Left, __param1.Rect.Top, __param1.Rect.Right - __param1.Rect.Left, __param1.Rect.Bottom - __param1.Rect.Top);
+                    link.url = __param1.URI;
+
+                    if (visitor.index == 0)
+                    {
+                        if (pages[index].Links == null)
+                        {
+                            pages[index].Links = new ObservableCollection<PageLink>();
+                        }
+                        pages[0].Links.Add(link);
+                    }
+                    else if (visitor.index % 2 == 0)
+                    {
+                        index = (int)(visitor.index / 2);
+                        if (pages[index].LinksRight == null)
+                        {
+                            pages[index].LinksRight = new ObservableCollection<PageLink>();
+                        }
+                        pages[index].LinksRight.Add(link);
+                    }
+                    else if (visitor.index % 2 == 1)
+                    {
+                        index = (int)(visitor.index / 2) + 1;
+                        if (pages[index].LinksLeft == null)
+                        {
+                            pages[index].LinksLeft = new ObservableCollection<PageLink>();
+                        }
+                        pages[index].LinksLeft.Add(link);
+                    }
+
+                    var vis = visitorList[visitorList.IndexOf(visitor)];
+                    //vis.handled++;
+                    //if (vis.handled == vis.count)
+                    //{
+                    //    LoadLinks(index);
+                    //}
+                }
+            }
+        }
+
+        private void LoadLinks(int page)
+        {
+            visitorList.Clear();
+            if (pages[page].Links != null)
+            {
+                foreach (var item in pages[page].Links)
+                {
+                    if (item.url.Contains("jpg") || item.url.Contains("png"))
+                    {
+                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                        var scr = findFirstInVisualTree<ScrollViewer>(root);
+                        var children = VisualTreeHelper.GetChild(scr, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        var grid = children as Grid;
+                        var slideShow = new WindMagazine.SlideShow();
+                        var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
+                        slideShow.SetRect(rect, offsetZF);
+                        grid.Children.Add(slideShow);
+                        slideShow.Start(4000);
+                    }
+                }
+            }
+
+            if (pages[page].LinksLeft != null)
+            {
+                foreach (var item in pages[page].LinksLeft)
+                {
+                    if (item.url.Contains("jpg") || item.url.Contains("png"))
+                    {
+                        foreach (var addon in pages[page].Addons)
+                        {
+                            if (addon.url == item.url) return;
+                        }
+                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                        var scr = findFirstInVisualTree<ScrollViewer>(root);
+                        var children = VisualTreeHelper.GetChild(scr, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        var grid = children as Grid;
+                        var slideShow = new WindMagazine.SlideShow();
+                        var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
+                        slideShow.SetRect(rect, offsetZF);
+                        grid.Children.Add(slideShow);
+                        slideShow.Start(4000);
+                        pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                    }
+                }
+            }
+
+            if (pages[page].LinksRight != null)
+            {
+                foreach (var item in pages[page].LinksRight)
+                {
+                    if (item.url.Contains("jpg") || item.url.Contains("png"))
+                    {
+                        foreach (var addon in pages[page].Addons)
+                        {
+                            if (addon.url == item.url) return;
+                        }
+                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                        var scr = findFirstInVisualTree<ScrollViewer>(root);
+                        var children = VisualTreeHelper.GetChild(scr, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        children = VisualTreeHelper.GetChild(children, 0);
+                        var grid = children as Grid;
+                        var slideShow = new WindMagazine.SlideShow();
+                        var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / offsetZF), item.rect.Top, item.rect.Width, item.rect.Height);
+                        slideShow.SetRect(rect, offsetZF);
+                        grid.Children.Add(slideShow);
+                        slideShow.Start(4000);
+                        pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                    }
+                }
+            }
+        }
+
+        private void ScrollViewer_PointerPressed_1(object sender, PointerRoutedEventArgs e)
+        {
+            foreach (var addon in pages[pageNum].Addons)
+            {
+                var scr = sender as ScrollViewer;
+                var transform = addon.element.TransformToVisual(scr);
+                var absoluteBounds = transform.TransformBounds(new Rect());
+                var element = addon.element as WindMagazine.SlideShow;
+                absoluteBounds.Width = element.Width * scr.ZoomFactor;
+                absoluteBounds.Height = element.Height * scr.ZoomFactor;
+                var point = e.GetCurrentPoint(null);
+                if (absoluteBounds.Contains(point.Position))
+                {
+                    scr.ManipulationMode = ManipulationModes.None;
+                    scrollViewer.ManipulationMode = ManipulationModes.None;
+                    currentElement = element;
+                    currentElement.ManipulationMode = ManipulationModes.All;
+                    touchPoint = point.Position;
+                    controlPressed = true;
+                }
+            }
+        }
+
+        private void ScrollViewer_PointerMoved_1(object sender, PointerRoutedEventArgs e)
+        {
+            if (controlPressed)
+            {
+                var point = e.GetCurrentPoint(null);
+
+                if (point.Position.Y - touchPoint.Y > -60 &&
+                    point.Position.Y - touchPoint.Y < 60)
+                {
+                    controlPressed = false;
+                    var scr = sender as ScrollViewer;
+                    currentElement.ManipulationMode = ManipulationModes.System;
+                    scr.ManipulationMode = ManipulationModes.System;
+                    scrollViewer.ManipulationMode = ManipulationModes.System;
+                }
+            }
+        }
+
+        private void ScrollViewer_PointerReleased_1(object sender, PointerRoutedEventArgs e)
+        {
+            if (controlPressed)
+            {
+                var scr = sender as ScrollViewer;
+                currentElement.ManipulationMode = ManipulationModes.System;
+                scr.ManipulationMode = ManipulationModes.System;
+                scrollViewer.ManipulationMode = ManipulationModes.System;
+                controlPressed = false;
+            }
+        }
+
     }
 }

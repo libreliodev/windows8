@@ -103,7 +103,7 @@ void Document::DrawPage(
 	int32 height,
 	Platform::Boolean invert)
 {
-	//std::lock_guard<std::mutex> lock(m_lock);
+	std::lock_guard<std::mutex> lock(m_lock);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Utilities::ThrowIfFailed(m_doc->DrawPage((unsigned char *)pixels->Data, x, y, width, height, invert));
 }
@@ -117,7 +117,7 @@ void Document::DrawPage(
 	int32 height,
 	Platform::Boolean invert)
 {
-	//std::lock_guard<std::mutex> lock(m_lock);
+	std::lock_guard<std::mutex> lock(m_lock);
 	unsigned char *data = GetPointerToData(pixels);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Utilities::ThrowIfFailed(m_doc->DrawPage(data, x, y, width, height, invert));

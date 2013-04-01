@@ -601,14 +601,20 @@ fz_stream *MuPDFDoc::OpenStream(unsigned char *buffer, int bufferLen)
 
 void MuPDFDoc::ClearPageCache(PageCache *pageCache)
 {
-	fz_free_display_list(m_context, pageCache->pageList);
-	pageCache->pageList = nullptr;
-	fz_free_display_list(m_context, pageCache->annotList);
-	pageCache->annotList = nullptr;
-	fz_free_page(m_document, pageCache->page);
-	pageCache->page = nullptr;
-	fz_free_page(m_document, pageCache->hqPage);
-	pageCache->hqPage = nullptr;
+	fz_try(m_context)
+	{
+		fz_free_display_list(m_context, pageCache->pageList);
+		pageCache->pageList = nullptr;
+		fz_free_display_list(m_context, pageCache->annotList);
+		pageCache->annotList = nullptr;
+		fz_free_page(m_document, pageCache->page);
+		pageCache->page = nullptr;
+		fz_free_page(m_document, pageCache->hqPage);
+		pageCache->hqPage = nullptr;
+	}
+	fz_catch(m_context)
+	{
+	}
 }
 
 void MuPDFDoc::ClearPages()

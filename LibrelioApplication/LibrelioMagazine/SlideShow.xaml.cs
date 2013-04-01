@@ -46,11 +46,25 @@ namespace WindMagazine
             }
         }
 
-        public void SetRect(Rect rect)
+        public void SetRect(Rect rect, float offset)
         {
-            frame.Margin = new Thickness(rect.Top, rect.Left, rect.Right, rect.Bottom);
-            image.Width = rect.Width;
-            image.Height = rect.Height;
+            this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
+            this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+            this.Margin = new Thickness(rect.Left * offset, (rect.Top + 1.5) * offset, 0, 0);
+            this.Width = rect.Width * offset;
+            this.Height = rect.Height * offset;
+            image.Width = rect.Width * offset;
+            image.Height = rect.Height * offset;
+        }
+
+        private void frame_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            int x = 0;
+        }
+
+        private void frame_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            int x = 0;
         }
     }
 }
