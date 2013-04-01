@@ -9,8 +9,6 @@ using System.Text;
 using System.Net.Http;
 using Windows.Data.Xml.Dom;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.DataProtection;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Media.Imaging;
@@ -166,9 +164,9 @@ namespace LibrelioApplication
             var folder = await AddMagazineFolderStructure(magUrl);
             var file = await folder.CreateFileAsync(magUrl.FullName, CreationCollisionOption.ReplaceExisting);
 
-            using (var protectedStream = await ProtectPDFStream(stream))
+            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
             using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-            //using (var unprotectedStream = await UnprotectPDFStream(protectedStream))
+            //using (var unprotectedStream = await DownloadManager.UnprotectPDFStream(protectedStream))
             {
 
                 await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));
@@ -435,48 +433,6 @@ namespace LibrelioApplication
             }
         }
 
-        private async Task<IRandomAccessStream> ProtectPDFStream(IRandomAccessStream source)
-        {
-            // Create a DataProtectionProvider object for the specified descriptor.
-            DataProtectionProvider Provider = new DataProtectionProvider("LOCAL=user");
-
-            InMemoryRandomAccessStream protectedData = new InMemoryRandomAccessStream();
-            IOutputStream dest = protectedData.GetOutputStreamAt(0);
-
-            await Provider.ProtectStreamAsync(source.GetInputStreamAt(0), dest);
-            await dest.FlushAsync();
-
-            //Verify that the protected data does not match the original
-            DataReader reader1 = new DataReader(source.GetInputStreamAt(0));
-            DataReader reader2 = new DataReader(protectedData.GetInputStreamAt(0));
-            var size1 = await reader1.LoadAsync((uint)(source.Size < 10000 ? source.Size : 10000));
-            var size2 = await reader2.LoadAsync((uint)(protectedData.Size < 10000 ? protectedData.Size : 10000));
-            IBuffer buffOriginalData = reader1.ReadBuffer((uint)size1);
-            IBuffer buffProtectedData = reader2.ReadBuffer((uint)size2);
-
-            if (CryptographicBuffer.Compare(buffOriginalData, buffProtectedData))
-            {
-                throw new Exception("ProtectPDFStream returned unprotected data");
-            }
-
-            // Return the encrypted data.
-            return protectedData;
-        }
-
-        private async Task<IRandomAccessStream> UnprotectPDFStream(IRandomAccessStream source)
-        {
-            // Create a DataProtectionProvider object.
-            DataProtectionProvider Provider = new DataProtectionProvider();
-
-            InMemoryRandomAccessStream unprotectedData = new InMemoryRandomAccessStream();
-            IOutputStream dest = unprotectedData.GetOutputStreamAt(0);
-
-            await Provider.UnprotectStreamAsync(source.GetInputStreamAt(0), dest);
-            await unprotectedData.FlushAsync();
-
-            return unprotectedData;
-        }
-
         private async Task GetUrlsFromPDF(IRandomAccessStream stream)
         {
             using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
@@ -619,9 +575,9 @@ namespace LibrelioApplication
 
             await stream.FlushAsync();
 
-            using (var protectedStream = await ProtectPDFStream(stream))
+            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
             using (var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-            //using (var unprotectedStream = await UnprotectPDFStream(protectedStream))
+            //using (var unprotectedStream = await DownloadManager.UnprotectPDFStream(protectedStream))
             {
 
                 await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));

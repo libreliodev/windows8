@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Net.Http;
 using Windows.Data.Xml.Dom;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.DataProtection;
 
 namespace LibrelioApplication
 {
@@ -179,6 +181,48 @@ namespace LibrelioApplication
         public static bool IsDownloaded(LibrelioLocalUrl url)
         {
             return url.FolderPath != "ND";
+        }
+
+        public static async Task<IRandomAccessStream> ProtectPDFStream(IRandomAccessStream source)
+        {
+            // Create a DataProtectionProvider object for the specified descriptor.
+            DataProtectionProvider Provider = new DataProtectionProvider("LOCAL=user");
+
+            InMemoryRandomAccessStream protectedData = new InMemoryRandomAccessStream();
+            IOutputStream dest = protectedData.GetOutputStreamAt(0);
+
+            await Provider.ProtectStreamAsync(source.GetInputStreamAt(0), dest);
+            await dest.FlushAsync();
+
+            //Verify that the protected data does not match the original
+            DataReader reader1 = new DataReader(source.GetInputStreamAt(0));
+            DataReader reader2 = new DataReader(protectedData.GetInputStreamAt(0));
+            var size1 = await reader1.LoadAsync((uint)(source.Size < 10000 ? source.Size : 10000));
+            var size2 = await reader2.LoadAsync((uint)(protectedData.Size < 10000 ? protectedData.Size : 10000));
+            IBuffer buffOriginalData = reader1.ReadBuffer((uint)size1);
+            IBuffer buffProtectedData = reader2.ReadBuffer((uint)size2);
+
+            if (CryptographicBuffer.Compare(buffOriginalData, buffProtectedData))
+            {
+                throw new Exception("ProtectPDFStream returned unprotected data");
+            }
+
+            // Return the encrypted data.
+            return protectedData;
+        }
+
+        public static async Task<IRandomAccessStream> UnprotectPDFStream(IRandomAccessStream source)
+        {
+            // Create a DataProtectionProvider object.
+            DataProtectionProvider Provider = new DataProtectionProvider();
+
+            InMemoryRandomAccessStream unprotectedData = new InMemoryRandomAccessStream();
+            IOutputStream dest = unprotectedData.GetOutputStreamAt(0);
+
+            await Provider.UnprotectStreamAsync(source.GetInputStreamAt(0), dest);
+            await unprotectedData.FlushAsync();
+
+            return unprotectedData;
         }
     }
 

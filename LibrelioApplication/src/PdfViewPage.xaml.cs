@@ -787,7 +787,7 @@ namespace LibrelioApplication
             pageNum = CalcPageNum();
             pageBuffer = pageNum;
 
-            InitPageLink(pageNum);
+            await InitPageLink(pageNum);
         }
 
         // Set the pagesListView ScrollViewer proprieties
@@ -1414,7 +1414,10 @@ namespace LibrelioApplication
 
                     pageNum = p;
 
-                    InitPageLink(pageNum);
+                    var task1 = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
+                        {
+                            await InitPageLink(pageNum);
+                        });
 
                     if (isBusyRedraw)
                     {
@@ -1503,7 +1506,7 @@ namespace LibrelioApplication
             }
         }
 
-        private void InitPageLink(int page)
+        private async Task InitPageLink(int page)
         {
             if (page == 0)
             {
@@ -1521,7 +1524,7 @@ namespace LibrelioApplication
                     }
                 }
 
-                LoadLinks(0);
+                await LoadLinks(0);
 
                 return;
             }
@@ -1550,7 +1553,7 @@ namespace LibrelioApplication
                 }
             }
 
-            LoadLinks(page);
+            await LoadLinks(page);
         }
 
         private void visitor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
@@ -1602,7 +1605,7 @@ namespace LibrelioApplication
             }
         }
 
-        private void LoadLinks(int page)
+        private async Task LoadLinks(int page)
         {
             visitorList.Clear();
             if (pages[page].Links != null)
@@ -1620,7 +1623,7 @@ namespace LibrelioApplication
                         var grid = children as Grid;
                         var slideShow = new WindMagazine.SlideShow();
                         var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                        slideShow.SetRect(rect, offsetZF);
+                        await slideShow.SetRect(rect, KnownFolders.DocumentsLibrary.Path + "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
                         slideShow.Start(4000);
                     }
@@ -1646,7 +1649,8 @@ namespace LibrelioApplication
                         var grid = children as Grid;
                         var slideShow = new WindMagazine.SlideShow();
                         var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                        slideShow.SetRect(rect, offsetZF);
+                        var folder = KnownFolders.DocumentsLibrary;
+                        await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
                         slideShow.Start(4000);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
@@ -1673,7 +1677,7 @@ namespace LibrelioApplication
                         var grid = children as Grid;
                         var slideShow = new WindMagazine.SlideShow();
                         var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / offsetZF), item.rect.Top, item.rect.Width, item.rect.Height);
-                        slideShow.SetRect(rect, offsetZF);
+                        await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
                         slideShow.Start(4000);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
@@ -1684,55 +1688,55 @@ namespace LibrelioApplication
 
         private void ScrollViewer_PointerPressed_1(object sender, PointerRoutedEventArgs e)
         {
-            foreach (var addon in pages[pageNum].Addons)
-            {
-                var scr = sender as ScrollViewer;
-                var transform = addon.element.TransformToVisual(scr);
-                var absoluteBounds = transform.TransformBounds(new Rect());
-                var element = addon.element as WindMagazine.SlideShow;
-                absoluteBounds.Width = element.Width * scr.ZoomFactor;
-                absoluteBounds.Height = element.Height * scr.ZoomFactor;
-                var point = e.GetCurrentPoint(null);
-                if (absoluteBounds.Contains(point.Position))
-                {
-                    scr.ManipulationMode = ManipulationModes.None;
-                    scrollViewer.ManipulationMode = ManipulationModes.None;
-                    currentElement = element;
-                    currentElement.ManipulationMode = ManipulationModes.All;
-                    touchPoint = point.Position;
-                    controlPressed = true;
-                }
-            }
+            //foreach (var addon in pages[pageNum].Addons)
+            //{
+            //    var scr = sender as ScrollViewer;
+            //    var transform = addon.element.TransformToVisual(scr);
+            //    var absoluteBounds = transform.TransformBounds(new Rect());
+            //    var element = addon.element as WindMagazine.SlideShow;
+            //    absoluteBounds.Width = element.Width * scr.ZoomFactor;
+            //    absoluteBounds.Height = element.Height * scr.ZoomFactor;
+            //    var point = e.GetCurrentPoint(null);
+            //    if (absoluteBounds.Contains(point.Position))
+            //    {
+            //        //scr.ManipulationMode = ManipulationModes.None;
+            //        //scrollViewer.ManipulationMode = ManipulationModes.None;
+            //        currentElement = element;
+            //        currentElement.ManipulationMode = ManipulationModes.All;
+            //        touchPoint = point.Position;
+            //        controlPressed = true;
+            //    }
+            //}
         }
 
         private void ScrollViewer_PointerMoved_1(object sender, PointerRoutedEventArgs e)
         {
-            if (controlPressed)
-            {
-                var point = e.GetCurrentPoint(null);
+            //if (controlPressed)
+            //{
+            //    var point = e.GetCurrentPoint(null);
 
-                if (point.Position.Y - touchPoint.Y > -60 &&
-                    point.Position.Y - touchPoint.Y < 60)
-                {
-                    controlPressed = false;
-                    var scr = sender as ScrollViewer;
-                    currentElement.ManipulationMode = ManipulationModes.System;
-                    scr.ManipulationMode = ManipulationModes.System;
-                    scrollViewer.ManipulationMode = ManipulationModes.System;
-                }
-            }
+            //    if (point.Position.Y - touchPoint.Y > -60 &&
+            //        point.Position.Y - touchPoint.Y < 60)
+            //    {
+            //        controlPressed = false;
+            //        var scr = sender as ScrollViewer;
+            //        currentElement.ManipulationMode = ManipulationModes.System;
+            //        scr.ManipulationMode = ManipulationModes.System;
+            //        scrollViewer.ManipulationMode = ManipulationModes.System;
+            //    }
+            //}
         }
 
         private void ScrollViewer_PointerReleased_1(object sender, PointerRoutedEventArgs e)
         {
-            if (controlPressed)
-            {
-                var scr = sender as ScrollViewer;
-                currentElement.ManipulationMode = ManipulationModes.System;
-                scr.ManipulationMode = ManipulationModes.System;
-                scrollViewer.ManipulationMode = ManipulationModes.System;
-                controlPressed = false;
-            }
+            //if (controlPressed)
+            //{
+            //    var scr = sender as ScrollViewer;
+            //    currentElement.ManipulationMode = ManipulationModes.System;
+            //    scr.ManipulationMode = ManipulationModes.System;
+            //    scrollViewer.ManipulationMode = ManipulationModes.System;
+            //    controlPressed = false;
+            //}
         }
 
     }

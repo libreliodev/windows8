@@ -210,7 +210,7 @@
                                       VerticalScrollBarVisibility="Auto"
                                       MinZoomFactor="1"
                                       MaxZoomFactor="3.5"
-                                      Padding="0" ViewChanged="ScrollViewer_ViewChanged_1" Loaded="ScrollViewer_Loaded_1" PointerPressed="ScrollViewer_PointerPressed_1" PointerMoved="ScrollViewer_PointerMoved_1" PointerReleased="ScrollViewer_PointerReleased_1"
+                                      Padding="0" ViewChanged="ScrollViewer_ViewChanged_1" Loaded="ScrollViewer_Loaded_1"
                                       >
 
                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
