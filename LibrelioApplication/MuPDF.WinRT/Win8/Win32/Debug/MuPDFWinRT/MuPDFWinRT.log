@@ -1,9 +1,21 @@
-﻿La génération a démarré 28/03/2013 13:37:40.
+﻿La génération a démarré 31/03/2013 08:08:50.
      1>Projet "C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\MuPDFWinRT.vcxproj" sur le nœud 2 (Build cible(s)).
      1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Win32\Debug\MuPDFWinRT.dll" /INCREMENTAL /NOLOGO ..\ThirdParty\Win8\Win32\Debug\libthirdparty.lib "..\ThirdParty\Win8\Win32\Debug\libmupdf-nov8.lib" ..\ThirdParty\Win8\Win32\Debug\libmupdf.lib runtimeobject.lib kernel32.lib /MANIFEST:NO /PDB:"Win32\Debug\MuPDFWinRT.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /APPCONTAINER /WINMD /WINMDFILE:"Win32\Debug\MuPDFWinRT.winmd" /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /DLL Win32\Debug\MuPDFWinRT\Document.obj
+         Win32\Debug\MuPDFWinRT\LinkInfoInternal.obj
+         Win32\Debug\MuPDFWinRT\LinkInfoRemote.obj
+         Win32\Debug\MuPDFWinRT\LinkInfoURI.obj
+         Win32\Debug\MuPDFWinRT\LinkInfoVisitor.obj
+         Win32\Debug\MuPDFWinRT\MuPDFDoc.obj
+         Win32\Debug\MuPDFWinRT\OutlineItem.obj
+         Win32\Debug\MuPDFWinRT\Utilities.obj
+         LINK : Win32\Debug\MuPDFWinRT.dll introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
+            Création de la bibliothèque Win32\Debug\MuPDFWinRT.lib et de l'objet Win32\Debug\MuPDFWinRT.exp
          MuPDFWinRT.vcxproj -> C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\Win32\Debug\MuPDFWinRT.dll
+       _GenerateProjectPriFileCore:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\MakePri.exe New -ProjectRoot C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\ -ConfigXml Win32\Debug\MuPDFWinRT\priconfig.xml -OutputFile C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\Win32\Debug\MuPDFWinRT.pri -IndexName MuPDFWinRT -Verbose -Overwrite  
      1>Génération du projet "C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\MuPDFWinRT.vcxproj" terminée (Build cible(s)).
 
 La génération a réussi.
 
-Temps écoulé 00:00:00.37
+Temps écoulé 00:00:01.06
