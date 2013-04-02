@@ -84,7 +84,7 @@ namespace LibrelioApplication
             try
             {
                 var fileHandle =
-                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
+                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"application_.xml");
 
                 var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
                 var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");

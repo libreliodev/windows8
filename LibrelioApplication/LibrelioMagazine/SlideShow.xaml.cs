@@ -16,19 +16,21 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media.Animation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace WindMagazine
+namespace LibrelioApplication
 {
-    public class ImageData : LibrelioApplication.Common.BindableBase
+    public class ImageData : Common.BindableBase
     {
         //public string Url { get; set; }
         private ImageSource _image = null;
         private double _width = 0;
         private double _height = 0;
-        bool _notDownloaded = false;
-        bool _hidden = false;
+        private bool _notDownloaded = false;
+        private bool _hidden = false;
+        private Stretch _stretch = Stretch.UniformToFill;
 
         public ImageSource Image
         {
@@ -37,6 +39,16 @@ namespace WindMagazine
             {
                 _image = value;
                 OnPropertyChanged("Image");
+            }
+        }
+
+        public Stretch ImgStretch
+        {
+            get { return _stretch; }
+            set
+            {
+                _stretch = value;
+                OnPropertyChanged("ImgStretch");
             }
         }
 
@@ -89,6 +101,11 @@ namespace WindMagazine
         int length = 0;
         int currentImage = 0;
 
+        bool autoSlide = false;
+        int interval = 0;
+
+        bool noTranstions = false;
+
         ObservableCollection<ImageData> images = new ObservableCollection<ImageData>();
 
         ScrollViewer scrollViewer;
@@ -98,40 +115,31 @@ namespace WindMagazine
             this.InitializeComponent();
         }
 
-        public async void Start(int interval)//, StorageFolder folder, List<string> links)
-        {
-            
-            //int i = 1;
-            //while (true)
-            //{
-            //    var str = "ms-appx:///Assets/test/img/sample_" + i + ".jpg";
-            //    //image.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(str));
-            //    images.Add(new ImageData() { Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(str)), Width = this.Width, Height = this.Height } );
-
-            //    //await Task.Delay(interval);
-
-            //    i++;
-            //    if (i == 6)
-            //        break;
-
-            //    //var file = await folder.GetFileAsync(links[i]).AsTask();
-            //    //image.Source = new BitmapImage(new Uri(links[i]));
-            //}
-
-            //itemListView.ItemsSource = images;
-        }
-
         public async Task SetRect(Rect rect, string folderUrl, string url, float offset)
         {
-            this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
-            this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
-            this.Margin = new Thickness(rect.Left * offset, (rect.Top + 1.5) * offset, 0, 0);
-            this.Width = rect.Width * offset;
-            this.Height = rect.Height * offset;
+            if (!DownloadManager.IsFullScreenAsset(url))
+            {
+                this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
+                this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+                this.Margin = new Thickness(rect.Left * offset, (rect.Top + 1.5) * offset, 0, 0);
+                this.Width = rect.Width * offset;
+                this.Height = rect.Height * offset;
+            }
+            else
+            {
+                this.Width = rect.Width;
+                this.Height = rect.Height;
+                this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+            }
 
             string startMame = null;
             string endName = null;
-            images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+
+            if (!DownloadManager.IsFullScreenAsset(url))
+            {
+                images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+            }
             StorageFolder folder = null;
             try
             {
@@ -175,15 +183,20 @@ namespace WindMagazine
             }
             catch
             {
-                images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+                if (!DownloadManager.IsFullScreenAsset(url))
+                {
+                    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+                }
 
-                for (int p = 0; p < 7; p++)
+                for (int p = 0; p < 1; p++)
                 {
                     images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
                 }
                 return;
             }
 
+            var maxWidth = this.Width;
+            var maxHeight = this.Height;
             for (int i = 1; i <= length; i++)
             {
                 StorageFile file = null;
@@ -193,10 +206,19 @@ namespace WindMagazine
                     file = await StorageFile.GetFileFromPathAsync(folder.Path + "\\" + startMame + i + endName);
                     using (var stream = await file.OpenAsync(FileAccessMode.Read))
                     {
-                        var unprotected = await LibrelioApplication.DownloadManager.UnprotectPDFStream(stream);
+                        var unprotected = await DownloadManager.UnprotectPDFStream(stream);
                         var bitmap = new BitmapImage();
                         await bitmap.SetSourceAsync(unprotected);
-                        images.Add(new ImageData() { Image = bitmap, Hidden = true, Width = this.Width, Height = this.Height });
+                        if (DownloadManager.IsFullScreenAsset(url))
+                        {
+                            maxWidth = maxWidth < bitmap.PixelWidth ? bitmap.PixelWidth : maxWidth;
+                            maxHeight = maxHeight < bitmap.PixelHeight ? bitmap.PixelHeight : maxHeight;
+                            images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
+                        }
+                        else
+                        {
+                            images.Add(new ImageData() { Image = bitmap, Hidden = true, Width = this.Width, Height = this.Height });
+                        }
                     }
                 }
                 catch
@@ -205,8 +227,73 @@ namespace WindMagazine
                 }
             }
 
-            images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+            if (!DownloadManager.IsFullScreenAsset(url))
+            {
+                images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+            }
+            else
+            {
+                if (maxHeight > Window.Current.Bounds.Height - 100)
+                {
+                    maxWidth = maxWidth * (Window.Current.Bounds.Height - 100) / maxHeight;
+                    maxHeight = Window.Current.Bounds.Height - 100;
+                }
+                this.Width = maxWidth;
+                this.Height = maxHeight;
+                foreach (var image in images)
+                {
+                    image.Width = maxWidth;
+                    image.Height = maxHeight;
+                }
+            }
             itemListView.ItemsSource = images;
+
+            //autoSlide = true;
+            //interval = 4000;
+
+            //noTranstions = true;
+        }
+
+        public async void Start(int interval)
+        {
+            while (true)
+            {
+                await Task.Delay(interval);
+
+                var width = scrollViewer.ExtentWidth / (length + 2);
+                var offset = (int)(scrollViewer.HorizontalOffset / width);
+                var start = scrollViewer.HorizontalOffset;
+                if (offset == length + 1)
+                {
+                    scrollViewer.ScrollToHorizontalOffset(0);
+                    start = 0;
+                    offset = 0;
+                }
+
+                if (!noTranstions)
+                {
+                    var ee = new ExponentialEase();
+                    ee.EasingMode = EasingMode.EaseInOut;
+                    var sb = new Storyboard();
+                    var da = new DoubleAnimation
+                    {
+                        From = start,
+                        To = (width * offset) + width,
+                        Duration = new Duration(TimeSpan.FromSeconds(0.5d)),
+                        EasingFunction = ee,
+                        EnableDependentAnimation = true
+                    };
+
+                    sb.Children.Add(da);
+                    Storyboard.SetTargetProperty(da, "HorizontalOffset");
+                    Storyboard.SetTarget(sb, Mediator);
+                    sb.Begin();
+                }
+                else
+                {
+                    scrollViewer.ScrollToHorizontalOffset((width * offset) + width);
+                }
+            }
         }
 
         private static T findFirstInVisualTree<T>(DependencyObject parent) where T : class
@@ -253,8 +340,68 @@ namespace WindMagazine
             {
                 scrollViewer.HorizontalSnapPointsType = SnapPointsType.MandatorySingle;
                 scrollViewer.HorizontalSnapPointsAlignment = SnapPointsAlignment.Near;
+
+                if (autoSlide)
+                {
+                    Binding b = new Binding();
+                    b.Source = scrollViewer;
+                    b.Mode = BindingMode.TwoWay;
+                    Mediator.SetBinding(Common.ScrollViewerOffsetMediator.ScrollViewerProperty, b);
+                    Start(interval);
+                }
+
+                if (noTranstions)
+                {
+                    scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+                    scrollViewer.ManipulationMode = ManipulationModes.All;
+                    scrollViewer.ManipulationStarted += scrollViewer_ManipulationStarted;
+                    scrollViewer.ManipulationDelta += scrollViewer_ManipulationDelta;
+                }
             }
         }
 
+        void scrollViewer_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (e.IsInertial && isSwiping)
+            {
+                Point currentpoint = e.Position;
+                if (currentpoint.X - initialPoint.X >= 85)
+                {
+                    isSwiping = false;
+                    SwipeRight();
+                    e.Complete();
+                }
+                else if (initialPoint.X - currentpoint.X >= 85)
+                {
+                    isSwiping = false;
+                    SwipeLeft();
+                    e.Complete();
+                }
+            }
+        }
+
+        void scrollViewer_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialPoint = e.Position;
+            isSwiping = true;
+        }
+
+        void SwipeLeft()
+        {
+            var width = scrollViewer.ExtentWidth / (length + 2);
+            if (scrollViewer.HorizontalOffset < (scrollViewer.ExtentWidth - width))
+            {
+                scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + width);
+            }
+        }
+
+        void SwipeRight()
+        {
+            var width = scrollViewer.ExtentWidth / (length + 2);
+            if (scrollViewer.HorizontalOffset >= width)
+            {
+                scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - width);
+            }
+        }
     }
 }

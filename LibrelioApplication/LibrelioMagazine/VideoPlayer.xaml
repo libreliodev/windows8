@@ -1,0 +1,20 @@
+﻿<UserControl
+    x:Class="LibrelioApplication.VideoPlayer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LibrelioApplication"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    >
+
+    <Grid x:Name="frame" Margin="0">
+        <MediaElement x:Name="videoPlayer"/>
+        <Grid x:Name="noAsset" Margin="0" Visibility="Collapsed" Background="Black">
+            <TextBlock Text="Video not downloaded" FontSize ="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI" Foreground="White" />
+        </Grid>
+        <Grid x:Name="controlsFrame" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Stretch" Background="#99000000">
+            
+        </Grid>
+    </Grid>
+</UserControl>

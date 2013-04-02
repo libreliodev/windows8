@@ -135,7 +135,9 @@ namespace LibrelioApplication
 
     public enum UIType
     {
-        SlideShow
+        SlideShow,
+        VideoPlayer,
+        PageButton
     };
 
     public struct UIAddon
@@ -1621,7 +1623,7 @@ namespace LibrelioApplication
                         children = VisualTreeHelper.GetChild(children, 0);
                         children = VisualTreeHelper.GetChild(children, 0);
                         var grid = children as Grid;
-                        var slideShow = new WindMagazine.SlideShow();
+                        var slideShow = new SlideShow();
                         var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
                         await slideShow.SetRect(rect, KnownFolders.DocumentsLibrary.Path + "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
@@ -1634,26 +1636,48 @@ namespace LibrelioApplication
             {
                 foreach (var item in pages[page].LinksLeft)
                 {
-                    if (item.url.Contains("jpg") || item.url.Contains("png"))
+                    bool alreadyInserted = false;
+                    foreach (var addon in pages[page].Addons)
                     {
-                        foreach (var addon in pages[page].Addons)
+                        if (addon.url == item.url)
                         {
-                            if (addon.url == item.url) return;
+                            alreadyInserted = true;
+                            break;
                         }
-                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
-                        var scr = findFirstInVisualTree<ScrollViewer>(root);
-                        var children = VisualTreeHelper.GetChild(scr, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        var grid = children as Grid;
-                        var slideShow = new WindMagazine.SlideShow();
-                        var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                        var folder = KnownFolders.DocumentsLibrary;
+                    }
+
+                    if (alreadyInserted) continue;
+
+                    var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                    var scr = findFirstInVisualTree<ScrollViewer>(root);
+                    var children = VisualTreeHelper.GetChild(scr, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    var grid = children as Grid;
+
+                    var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
+                    if (DownloadManager.IsFullScreenButton(item.url))
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        grid.Children.Add(button);
+                        button.Clicked += button_Clicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
+                    }
+                    else if (DownloadManager.IsImage(item.url))
+                    {
+                        var slideShow = new SlideShow();
                         await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
-                        slideShow.Start(4000);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                    }
+                    else if (DownloadManager.IsVideo(item.url))
+                    {
+                        var videoPlayer = new VideoPlayer();
+                        await videoPlayer.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        grid.Children.Add(videoPlayer);
+                        pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
             }
@@ -1662,28 +1686,57 @@ namespace LibrelioApplication
             {
                 foreach (var item in pages[page].LinksRight)
                 {
-                    if (item.url.Contains("jpg") || item.url.Contains("png"))
+                    bool alreadyInserted = false;
+                    foreach (var addon in pages[page].Addons)
                     {
-                        foreach (var addon in pages[page].Addons)
+                        if (addon.url == item.url)
                         {
-                            if (addon.url == item.url) return;
+                            alreadyInserted = true;
+                            break;
                         }
-                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
-                        var scr = findFirstInVisualTree<ScrollViewer>(root);
-                        var children = VisualTreeHelper.GetChild(scr, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        var grid = children as Grid;
-                        var slideShow = new WindMagazine.SlideShow();
-                        var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / offsetZF), item.rect.Top, item.rect.Width, item.rect.Height);
+                    }
+
+                    if (alreadyInserted) continue;
+
+                    var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                    var scr = findFirstInVisualTree<ScrollViewer>(root);
+                    var children = VisualTreeHelper.GetChild(scr, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    var grid = children as Grid;
+
+                    var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / offsetZF), item.rect.Top, item.rect.Width, item.rect.Height);
+                    if (DownloadManager.IsFullScreenButton(item.url))
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        grid.Children.Add(button);
+                        button.Clicked += button_Clicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
+                    }
+                    else if (DownloadManager.IsImage(item.url))
+                    {
+                        var slideShow = new SlideShow();
                         await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
                         grid.Children.Add(slideShow);
-                        slideShow.Start(4000);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                    }
+                    else if (DownloadManager.IsVideo(item.url))
+                    {
+                        var videoPlayer = new VideoPlayer();
+                        await videoPlayer.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        grid.Children.Add(videoPlayer);
+                        pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
             }
+        }
+
+        void button_Clicked(string folderUrl, string url)
+        {
+            fullScreenContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            var task = fullScreenContainer.Load(folderUrl, url);
         }
 
         private void ScrollViewer_PointerPressed_1(object sender, PointerRoutedEventArgs e)

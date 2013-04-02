@@ -237,6 +237,8 @@
             </GridView>
 
             <ProgressRing x:Name="startRing" IsActive="true" Width="43" Height="43" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            
+            <local:FullScreenContainer x:Name="fullScreenContainer"  Visibility="Collapsed"/>
 
             <!--<local:MyListView Name="pagesListView" SelectionMode="None" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsZoomedInView="True">
                     <ListView.ItemsPanel>

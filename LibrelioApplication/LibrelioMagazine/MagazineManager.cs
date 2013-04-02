@@ -472,23 +472,40 @@ namespace LibrelioApplication
 
         private void linkVistor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
         {
+            int pos = 0;
+            int pos1 = 0;
             string str = __param1.URI;
             if (str.Contains("localhost"))
             {
-                var pos = str.LastIndexOf('_');
-                if (str.Contains(".jpg") && pos > 0)
+                if (DownloadManager.IsImage(str))
                 {
-                    var pos1 = str.IndexOf(".jpg");
+                    pos = str.LastIndexOf('_');
+                    if (str.Contains(".jpg") && pos > 0)
+                    {
+                        pos1 = str.IndexOf(".jpg");
+                    }
+                    else
+                    {
+                        pos1 = str.IndexOf(".jpg");
+                    }
                     var s = str.Substring(0, pos1);
-                    var ss = s.Substring(pos+1);
+                    var ss = s.Substring(pos + 1);
                     int x = Convert.ToInt32(ss);
                     if (x > 1 && x < 50)
                     {
                         for (int i = 1; i < x; i++)
                             links.Add(str.Replace("_" + ss + ".", "_" + Convert.ToString(i) + "."));
                     }
+
+                    links.Add(str);
                 }
-                links.Add(str);
+                else if (DownloadManager.IsVideo(str))
+                {
+                    pos1 = str.IndexOf(".mp4");
+                    str = str.Substring(0, pos1) + ".mp4";
+
+                    links.Add(str);
+                }
             }
         }
 

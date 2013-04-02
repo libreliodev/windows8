@@ -224,6 +224,26 @@ namespace LibrelioApplication
 
             return unprotectedData;
         }
+
+        public static bool IsFullScreenButton(string url)
+        {
+            return url.Contains("warect=full");
+        }
+
+        public static bool IsImage(string url)
+        {
+            return (url.Contains("jpg") || url.Contains("png"));
+        }
+
+        public static bool IsVideo(string url)
+        {
+            return (url.Contains("mp4"));
+        }
+
+        public static bool IsFullScreenAsset(string url)
+        {
+            return url.Contains("warect=full");
+        }
     }
 
     public sealed class LibrelioUrl
