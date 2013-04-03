@@ -111,7 +111,7 @@ namespace LibrelioApplication
             content.Visibility = Windows.UI.Xaml.Visibility.Visible;
             if (!error)
             {
-                //videoPlayer.Play();
+                videoPlayer.Play();
             }
         }
 
@@ -140,13 +140,13 @@ namespace LibrelioApplication
             if (!paused && videoPlayer.CanPause && !error)
             {
                 videoPlayer.Pause();
-                btnPlayPause.Content = "\xe103";
+                btnPlayPause.Content = "\xe102";
                 paused = true;
             }
             else
             {
                 videoPlayer.Play();
-                btnPlayPause.Content = "\xe102";
+                btnPlayPause.Content = "\xe103";
                 paused = false;
             }
         }
