@@ -21,6 +21,11 @@ namespace LibrelioApplication
 {
     public sealed partial class VideoPlayer : UserControl
     {
+        private bool paused = false;
+        private bool error = false;
+        private bool started = false;
+        private bool loaded = false;
+
         public VideoPlayer()
         {
             this.InitializeComponent();
@@ -43,48 +48,117 @@ namespace LibrelioApplication
                 this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
             }
+            videoPlayer.Width = this.Width;
+            videoPlayer.Height = this.Height;
 
-            StorageFolder folder = null;
-            try
+            if (DownloadManager.IsLocalAsset(url))
             {
-                folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
-            }
-            catch
-            {
-                noAsset.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                return;
-            }
-
-            var pos = url.IndexOf(".mp4");
-
-            StorageFile file = null;
-            try
-            {
-                var str = folder.Path + "\\" + url.Substring(0, pos).Replace("http://localhost/", "") + ".mp4";
-                file = await StorageFile.GetFileFromPathAsync(str);
-                using (var stream = await file.OpenAsync(FileAccessMode.Read))
+                StorageFolder folder = null;
+                try
                 {
-                    var unprotected = await DownloadManager.UnprotectPDFStream(stream);
+                    folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
+                }
+                catch
+                {
+                    error = true;
+                    noAsset.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    if (DownloadManager.IsFullScreenAsset(url) || DownloadManager.IsAutoPlay(url))
+                    {
+                        Start();
+                    }
+                    return;
+                }
 
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                var pos = url.IndexOf(".mp4");
+
+                StorageFile file = null;
+                try
+                {
+                    var str = folder.Path + "\\" + url.Substring(0, pos).Replace("http://localhost/", "") + ".mp4";
+                    file = await StorageFile.GetFileFromPathAsync(str);
+                    using (var stream = await file.OpenAsync(FileAccessMode.Read))
+                    {
+                        var unprotected = await DownloadManager.UnprotectPDFStream(stream);
+
+                        videoPlayer.MediaOpened += videoPlayer_MediaOpened;
+                        videoPlayer.MediaFailed += videoPlayer_MediaFailed;
+                        videoPlayer.MediaEnded += videoPlayer_MediaEnded;
+                        videoPlayer.SetSource(unprotected, file.ContentType);
+
+                        if (DownloadManager.IsFullScreenAsset(url) || DownloadManager.IsAutoPlay(url))
                         {
-                            videoPlayer.Width = this.Width;
-                            videoPlayer.Height = this.Height;
-                            videoPlayer.SetSource(unprotected, file.ContentType);
-                            videoPlayer.Play();
-                        });
+                            Start();
+                        }
+                    }
+                }
+                catch
+                {
+                    error = true;
+                    noAsset.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    if (DownloadManager.IsFullScreenAsset(url) || DownloadManager.IsAutoPlay(url))
+                    {
+                        Start();
+                    }
+                    return;
                 }
             }
-            catch
+        }
+
+        async void Start()
+        {
+            started = true;
+            frame.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,0,0,0));
+            content.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            if (!error)
             {
-                noAsset.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                return;
+                //videoPlayer.Play();
             }
+        }
 
-            //autoSlide = true;
-            //interval = 4000;
+        void videoPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            paused = true;
+            btnPlayPause.Content = "\xe102";
+        }
 
-            //noTranstions = true;
+        void videoPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            error = true;
+            noAsset.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        }
+
+        void videoPlayer_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            loaded = true;
+            btnPlayPause.Content = "\xe103";
+            //videoPlayer.Play();
+            //paused = false;
+        }
+
+        private void btnPlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (!paused && videoPlayer.CanPause && !error)
+            {
+                videoPlayer.Pause();
+                btnPlayPause.Content = "\xe103";
+                paused = true;
+            }
+            else
+            {
+                videoPlayer.Play();
+                btnPlayPause.Content = "\xe102";
+                paused = false;
+            }
+        }
+
+        private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            if (!started && !error)
+            {
+                Start();
+            }
         }
     }
 }

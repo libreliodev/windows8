@@ -256,6 +256,21 @@ namespace LibrelioApplication
         {
             return url.Contains("warect=full");
         }
+
+        public static bool IsLocalAsset(string url)
+        {
+            return url.Contains("localhost");
+        }
+        
+        public static bool IsAutoPlay(string url)
+        {
+            return url.Contains("waplay=auto");
+        }
+
+        public static bool IsNoTransitions(string url)
+        {
+            return url.Contains("watransition=none");
+        }
     }
 
     public sealed class LibrelioUrl

@@ -9,10 +9,12 @@
     xmlns:common="using:LibrelioApplication.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" SizeChanged="pageRoot_SizeChanged">
 
 
     <Page.Resources>
+        <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
         <CollectionViewSource
             x:Name="itemsViewSource"
             Source="{Binding ThumbItems}"
@@ -122,16 +124,23 @@
             ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150">
                     <GridView.ItemTemplate>
                         <DataTemplate >
-                            <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Height="150">
+                            <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Width="150"  Height="150">
                                 <!--<StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
                                     <TextBlock Text="{Binding PageNumber}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center" Foreground="#FFBF2D2D" FontFamily="Global User Interface" FontSize="10"/>
                                 </StackPanel>
                                 <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
                                     <Image Source="{Binding Image}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="75" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                 </Border>-->
-                                <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                    <TextBlock Text="{Binding PageNumber}" Height="17" Margin="15,3,15,0" HorizontalAlignment="Center" Foreground="#FFDDDDDD" FontFamily="Global User Interface" FontSize="11"/>
-                                    <Image Source="{Binding Image}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="75" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="150">
+                                    <Grid Visibility="{Binding NotOnePage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding PageNumberLeft}" Height="17" Margin="15,3,15,0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFDDDDDD" FontFamily="Global User Interface" FontSize="11"/>
+                                        <TextBlock Text="{Binding PageNumberRight}" Height="17" Margin="15,3,15,0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFDDDDDD" FontFamily="Global User Interface" FontSize="11"/>
+                                    </Grid>
+                                    <TextBlock Visibility="{Binding OnePage, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding PageNumberOne}" Height="17" Margin="15,3,15,0" HorizontalAlignment="Center" Foreground="#FFDDDDDD" FontFamily="Global User Interface" FontSize="11"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Image Source="{Binding Image}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="75" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        <Image Source="{Binding ImageRight}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}" Width="{Binding WidthRight}" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

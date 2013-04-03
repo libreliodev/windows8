@@ -118,5 +118,8 @@
             <common:ScrollViewerOffsetMediator x:Name="Mediator" />
 
         </GridView>
+        
+        <ProgressRing x:Name="progressLoad" IsActive="True" Foreground="Black" Width="25" Height="25" />
+        
     </Grid>
 </UserControl>

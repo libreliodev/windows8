@@ -153,17 +153,20 @@ namespace LibrelioApplication
     {
         //public string Url { get; set; }
         private ImageSource _image = null;
+        private ImageSource _imageRight = null;
         private ImageSource _imageSource = null;
         private int _idx = 0;
         private ObservableCollection<PageLink> _links = null;
         private ObservableCollection<PageLink> _linksLeft = null;
         private ObservableCollection<PageLink> _linksRight = null;
         private double _width = 0;
+        private double _widthRight = 0;
         private double _pageWidth = 0;
         private double _height = 0;
         private double _pageHeight = 0;
         private bool _loading = true;
         private IList<UIAddon> _pageAddons = new List<UIAddon>();
+        private bool _onePage = false;
 
         public ImageSource Image
         {
@@ -173,6 +176,31 @@ namespace LibrelioApplication
                 _image = value;
                 OnPropertyChanged("Image");
             }
+        }
+
+        public ImageSource ImageRight
+        {
+            get { return _imageRight; }
+            set
+            {
+                _imageRight = value;
+                OnPropertyChanged("ImageRight");
+            }
+        }
+
+        public bool OnePage
+        {
+            get { return _onePage; }
+            set
+            {
+                _onePage = value;
+                OnPropertyChanged("OnePage");
+            }
+        }
+
+        public bool NotOnePage
+        {
+            get { return !_onePage; }
         }
 
         public ImageSource ZoomedImage
@@ -200,6 +228,26 @@ namespace LibrelioApplication
         public string PageNumber
         {
             get { return _idx.ToString(); }
+        }
+
+        public string PageNumberLeft
+        {
+            get { return (2 * _idx - 2).ToString(); }
+        }
+
+        public string PageNumberRight
+        {
+            get { return (2 * _idx - 1).ToString(); }
+        }
+
+        public string PageNumberOne
+        {
+            get 
+            {
+                if (_idx == 1) return "1";
+
+                return (2 * (_idx - 1)).ToString(); 
+            }
         }
 
         public float ZoomFactor { get; set; }
@@ -255,6 +303,16 @@ namespace LibrelioApplication
             {
                 _width = value;
                 OnPropertyChanged("Width");
+            }
+        }
+
+        public double WidthRight
+        {
+            get { return _widthRight; }
+            set
+            {
+                _widthRight = value;
+                OnPropertyChanged("WidthRight");
             }
         }
 
@@ -361,6 +419,8 @@ namespace LibrelioApplication
         UIElement currentElement = null;
 
         int pageBuffer = 0;
+
+        private bool loadedFirstPage = false;
 
         public PdfViewPage()
         {
@@ -665,22 +725,37 @@ namespace LibrelioApplication
 
             itemGridView.ItemsSource = thumbs;
 
-            for (int p = 0; p < pageCount; p++)
+            thumbs.Add(new PageData() { Image = null, Idx = 1, OnePage = true, ZoomFactor = 1.0f });
+
+            for (int p = 1; p < pageCount - 1; p++)
             {
-                thumbs.Add(new PageData() { Image = null, Idx = p + 1, ZoomFactor = 1.0f });
+                thumbs.Add(new PageData() { Image = null, Idx = p + 1, WidthRight = 75, ZoomFactor = 1.0f });
             }
 
-            for (int p = 0; p < pageCount; p++)
-            {
-                MuPDFWinRT.Point size = thumbsDoc.GetPageSize(p);
-                var width = 75;
-                var height = size.Y * 75 / size.X;
+            thumbs.Add(new PageData() { Image = null, Idx = pageCount, OnePage = true, ZoomFactor = 1.0f });
 
+            MuPDFWinRT.Point size = thumbsDoc.GetPageSize(0);
+            var width = 75;
+            var height = size.Y * 75 / size.X;
+
+            var image = await DrawToBufferAsync(thumbsDoc, 0, width, height);
+            thumbs[0].Image = image;
+
+            for (int p = 1; p < pageCount - 1; p++)
+            {
                 // load page to a bitmap buffer on a background thread
-                var image = await DrawToBufferAsync(thumbsDoc, p, width, height);
+                image = await DrawToBufferAsync(thumbsDoc, 2 * p - 1, width, height);
 
                 thumbs[p].Image = image;
+
+                // load page to a bitmap buffer on a background thread
+                image = await DrawToBufferAsync(thumbsDoc, 2 * p, width, height);
+
+                thumbs[p].ImageRight = image;
             }
+
+            image = await DrawToBufferAsync(thumbsDoc, pageCount - 1, width, height);
+            thumbs[pageCount - 1].Image = image;
 
             thumbsDoc = null;
         }
@@ -702,8 +777,8 @@ namespace LibrelioApplication
                 defaultZoomFactor = currentZoomFactor = 1.0f;
             }
 
-            width = (int)(size.X * offsetZF);
-            height = (int)(size.Y * offsetZF);
+            width = (int)(size.X * currentZoomFactor * offsetZF);
+            height = (int)(size.Y * currentZoomFactor * offsetZF);
 
             // add the loading DataTemplate to the UI       
             PageData data = new PageData()
@@ -747,7 +822,7 @@ namespace LibrelioApplication
                 Image = null,
                 Width = Window.Current.Bounds.Width,
                 Height = Window.Current.Bounds.Height,
-                Idx = 2 * pageCount,
+                Idx = pageCount,
                 ZoomFactor = defaultZoomFactor,
                 FirstPageZoomFactor = defaultZoomFactor,
                 SecondPageZoomFactor = defaultZoomFactor,
@@ -756,12 +831,20 @@ namespace LibrelioApplication
                 Loading = false
             };
             pages.Add(data);
-
-            width = size.X;
-            height = size.Y;
-
-            width = (int)(size.X * currentZoomFactor * offsetZF);
-            height = (int)(size.Y * currentZoomFactor * offsetZF);
+            data = new PageData()
+            {
+                Image = null,
+                Width = Window.Current.Bounds.Width,
+                Height = Window.Current.Bounds.Height,
+                Idx = pageCount + 1,
+                ZoomFactor = defaultZoomFactor,
+                FirstPageZoomFactor = defaultZoomFactor,
+                SecondPageZoomFactor = defaultZoomFactor,
+                PageWidth = width,
+                PageHeight = height,
+                Loading = false
+            };
+            pages.Add(data);
 
             // load page to a bitmap buffer on a background thread
             var image = await DrawToBufferAsync(document, 0, width, height);
@@ -775,23 +858,15 @@ namespace LibrelioApplication
                 width = size.X;
                 height = size.Y;
 
-                width = (int)(size.X * currentZoomFactor * offsetZF);
-                height = (int)(size.Y * currentZoomFactor * offsetZF);
-
                 pages[p].PageWidth = 2 * width;
                 pages[p].ZoomFactor = currentZoomFactor;
 
                 // load page to a bitmap buffer on a background thread
                  await DrawTwoPagesToBufferAsync(document, p, width, height);
-
-                //link = new PageLink();
-                //pages[p].Links.Add(link);
             }
 
             pageNum = CalcPageNum();
             pageBuffer = pageNum;
-
-            await InitPageLink(pageNum);
         }
 
         // Set the pagesListView ScrollViewer proprieties
@@ -812,6 +887,12 @@ namespace LibrelioApplication
             {
                 scrollViewer.ZoomToFactor(currentZoomFactor);
             }
+
+            if (!loadedFirstPage)
+            {
+                loadedFirstPage = true;
+                var task = InitPageLink(0);
+            }
         }
 
         // Determine the page in the center screen
@@ -821,7 +902,7 @@ namespace LibrelioApplication
 
             var x = scrollViewer.HorizontalOffset + (scrollViewer.ViewportWidth / 2);
 
-            var pageWidth = scrollViewer.ExtentWidth / pageCount;
+            var pageWidth = scrollViewer.ExtentWidth / (pageCount + 1);
 
             return (int)(x / pageWidth);
         }
@@ -1242,7 +1323,7 @@ namespace LibrelioApplication
 
             // load page to a bitmap buffer on a background thread
 
-            if (p > 0)
+            if (p > 0 && p < pageCount - 1)
             {
                 if (!reversed)
                 {
@@ -1253,9 +1334,14 @@ namespace LibrelioApplication
                     await DrawTwoPagesToBufferReversedAsync(document, p, width, height, token, true);
                 }
             }
-            else
+            else if (p == 0)
             {
                 var image = await DrawToBufferAsync(document, 0, width, height);
+                pages[p].Image = image;
+            }
+            else if (p == pageCount - 1)
+            {
+                var image = await DrawToBufferAsync(document, 2 * p - 1, width, height);
                 pages[p].Image = image;
             }
 
@@ -1374,7 +1460,7 @@ namespace LibrelioApplication
 
             // load page to a bitmap buffer on a background thread
 
-            if (p > 0)
+            if (p > 0 && p < pageCount - 1)
             {
                 if (p != pageNum)
                 {
@@ -1387,10 +1473,15 @@ namespace LibrelioApplication
                 //pages[p].Loading = false;
                 //pages[p].Image = image;
             }
-            else
+            else if (p == 0)
             {
                 var image = await DrawToBufferAsync(document, 0, width, height);
                 //pages[p].Loading = false;
+                pages[p].Image = image;
+            }
+            else if (p == pageCount - 1)
+            {
+                var image = await DrawToBufferAsync(document, 2 * p - 1, width, height);
                 pages[p].Image = image;
             }
         }
@@ -1405,6 +1496,8 @@ namespace LibrelioApplication
 
                 if (p != pageNum)
                 {
+                    RemovePageItems(pageNum);
+
                     pages[pageNum].ZoomedImage = null;
                     pages[pageNum].FirstPageZoomFactor = defaultZoomFactor;
                     pages[pageNum].SecondPageZoomFactor = defaultZoomFactor;
@@ -1533,6 +1626,27 @@ namespace LibrelioApplication
                 return;
             }
 
+            if (page == pageCount - 1)
+            {
+                if (pages[pageCount - 1].Links == null)
+                {
+                    var links = document.GetLinks(0);
+
+                    var linkVistor = new LinkInfoVisitor();
+                    linkVistor.OnURILink += visitor_OnURILink;
+                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = 2 * (pageCount - 1) - 1, count = links.Count, handled = 0 });
+
+                    for (int j = 0; j < links.Count; j++)
+                    {
+                        links[j].AcceptVisitor(linkVistor);
+                    }
+                }
+
+                await LoadLinks(pageCount - 1);
+
+                return;
+            }
+
             if (pages[page].LinksLeft == null)
             {
                 var links = document.GetLinks(2 * page - 1);
@@ -1616,28 +1730,6 @@ namespace LibrelioApplication
             {
                 foreach (var item in pages[page].Links)
                 {
-                    if (item.url.Contains("jpg") || item.url.Contains("png"))
-                    {
-                        var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
-                        var scr = findFirstInVisualTree<ScrollViewer>(root);
-                        var children = VisualTreeHelper.GetChild(scr, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        children = VisualTreeHelper.GetChild(children, 0);
-                        var grid = children as Grid;
-                        var slideShow = new SlideShow();
-                        var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                        await slideShow.SetRect(rect, KnownFolders.DocumentsLibrary.Path + "\\Magazines\\wind_355\\", item.url, offsetZF);
-                        grid.Children.Add(slideShow);
-                        slideShow.Start(4000);
-                    }
-                }
-            }
-
-            if (pages[page].LinksLeft != null)
-            {
-                foreach (var item in pages[page].LinksLeft)
-                {
                     bool alreadyInserted = false;
                     foreach (var addon in pages[page].Addons)
                     {
@@ -1677,8 +1769,58 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
-                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(videoPlayer);
+                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
+                        pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
+                    }
+                }
+            }
+
+            if (pages[page].LinksLeft != null)
+            {
+                foreach (var item in pages[page].LinksLeft)
+                {
+                    bool alreadyInserted = false;
+                    foreach (var addon in pages[page].Addons)
+                    {
+                        if (addon.url == item.url)
+                        {
+                            alreadyInserted = true;
+                            break;
+                        }
+                    }
+
+                    if (alreadyInserted) continue;
+
+                    var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+                    var scr = findFirstInVisualTree<ScrollViewer>(root);
+                    var children = VisualTreeHelper.GetChild(scr, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    children = VisualTreeHelper.GetChild(children, 0);
+                    var grid = children as Grid;
+
+                    var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
+                    if (DownloadManager.IsFullScreenButton(item.url))
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
+                        grid.Children.Add(button);
+                        button.Clicked += button_Clicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
+                    }
+                    else if (DownloadManager.IsImage(item.url))
+                    {
+                        var slideShow = new SlideShow();
+                        await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
+                        grid.Children.Add(slideShow);
+                        pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                    }
+                    else if (DownloadManager.IsVideo(item.url))
+                    {
+                        var videoPlayer = new VideoPlayer();
+                        grid.Children.Add(videoPlayer);
+                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
@@ -1708,11 +1850,11 @@ namespace LibrelioApplication
                     children = VisualTreeHelper.GetChild(children, 0);
                     var grid = children as Grid;
 
-                    var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / offsetZF), item.rect.Top, item.rect.Width, item.rect.Height);
+                    var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / (offsetZF * defaultZoomFactor)), item.rect.Top, item.rect.Width, item.rect.Height);
                     if (DownloadManager.IsFullScreenButton(item.url))
                     {
                         var button = new PageButton();
-                        button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
+                        button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(button);
                         button.Clicked += button_Clicked;
                         pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
@@ -1720,19 +1862,35 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsImage(item.url))
                     {
                         var slideShow = new SlideShow();
-                        await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
+                        await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(slideShow);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
                     }
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
-                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(videoPlayer);
+                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
             }
+        }
+
+        void RemovePageItems(int page)
+        {
+            var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(page);
+            var scr = findFirstInVisualTree<ScrollViewer>(root);
+            var children = VisualTreeHelper.GetChild(scr, 0);
+            children = VisualTreeHelper.GetChild(children, 0);
+            children = VisualTreeHelper.GetChild(children, 0);
+            children = VisualTreeHelper.GetChild(children, 0);
+            var grid = children as Grid;
+            foreach (var addon in pages[page].Addons)
+            {
+                grid.Children.Remove(addon.element);
+            }
+            pages[page].Addons.Clear();
         }
 
         void button_Clicked(string folderUrl, string url)
@@ -1792,6 +1950,65 @@ namespace LibrelioApplication
             //    scrollViewer.ManipulationMode = ManipulationModes.System;
             //    controlPressed = false;
             //}
+        }
+
+        private void pageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (pages.Count > 0)
+            {
+                if (pages[0].Width != Window.Current.Bounds.Width ||
+                    pages[0].Height != Window.Current.Bounds.Height)
+                {
+                    int width = 0;
+                    int height = 0;
+                    MuPDFWinRT.Point size = document.GetPageSize(0);
+                    // calculate display zoom factor
+                    defaultZoomFactor = CalculateZoomFactor(size.Y);
+                    currentZoomFactor = defaultZoomFactor;
+
+                    if (defaultZoomFactor > 1)
+                    {
+                        // if the screen is bigger the the document size we adjust with offsetZF
+                        offsetZF = defaultZoomFactor;
+                        defaultZoomFactor = currentZoomFactor = 1.0f;
+                    }
+                    else
+                    {
+                        offsetZF = 1.0f;
+                    }
+
+                    width = (int)(size.X * currentZoomFactor * offsetZF);
+                    height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+                    for (int p = 0; p <= pageCount; p++)
+                    {
+                        pages[p].Width = Window.Current.Bounds.Width;
+                        pages[p].Height = Window.Current.Bounds.Height;
+                        if (p == 0 || p == pageCount - 1 || p == pageCount)
+                        {
+                            pages[p].PageWidth = width;
+                        }
+                        else
+                        {
+                            pages[p].PageWidth = 2 * width;
+                        }
+                        pages[p].PageHeight = height;
+                        pages[p].Image = null;
+                        pages[p].ZoomedImage = null;
+                        pages[p].FirstPageZoomFactor = defaultZoomFactor;
+                        pages[p].SecondPageZoomFactor = defaultZoomFactor;
+                        pages[p].ZoomFactor = defaultZoomFactor;
+                        var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum) as GridViewItem;
+                        var scr = findFirstInVisualTree<ScrollViewer>(item);
+                        if (scr != null)
+                        {
+                            scr.ZoomToFactor(defaultZoomFactor);
+                        }
+                    }
+
+                    var task = BufferPages(pageNum, NUM_NEIGHBOURS_BUFFER);
+                }
+            }
         }
 
     }

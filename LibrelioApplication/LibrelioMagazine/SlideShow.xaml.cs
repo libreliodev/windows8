@@ -185,6 +185,7 @@ namespace LibrelioApplication
                 {
                     images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
                 }
+                progressLoad.IsActive = false;
                 return;
             }
 
@@ -217,6 +218,7 @@ namespace LibrelioApplication
                 catch
                 {
                     images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
+                    progressLoad.IsActive = false;
                 }
             }
 
@@ -241,10 +243,23 @@ namespace LibrelioApplication
             }
             itemListView.ItemsSource = images;
 
-            //autoSlide = true;
-            //interval = 4000;
+            if (DownloadManager.IsAutoPlay(url))
+            {
+                autoSlide = true;
+            }
 
-            //noTranstions = true;
+            if (DownloadManager.IsNoTransitions(url))
+            {
+                noTranstions = true;
+            }
+
+            if (url.Contains("wadelay="))
+            {
+                var pp = url.IndexOf("wadelay=");
+                interval = Convert.ToInt32(url.Substring(pp + 8, 3));
+            }
+
+            progressLoad.IsActive = false;
         }
 
         public async void Start(int interval)

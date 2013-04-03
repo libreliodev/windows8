@@ -233,7 +233,7 @@ namespace LibrelioApplication
 
             await stream.FlushAsync();
 
-            using (var protectedStream = await ProtectPDFStream(stream))
+            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
             using (var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
             //using (var unprotectedStream = await UnprotectPDFStream(protectedStream))
             {
@@ -292,82 +292,40 @@ namespace LibrelioApplication
             }
         }
 
-        private async Task DownloadAssetsAsync(StorageFile metadataFile)
-        {
-            var absLinks = new List<string>();
+        //private async Task DownloadAssetsAsync(StorageFile metadataFile)
+        //{
+        //    var absLinks = new List<string>();
 
-            foreach (var link in links)
-            {
-                string absLink = link;
-                var pos = absLink.IndexOf('?');
-                if (pos >= 0) absLink = link.Substring(0, pos);
-                string fileName = absLink.Replace("http://localhost/", "");
-                string linkString = "";
-                linkString = folder.Path + "\\" + absLink.Replace("http://localhost/", "") + "\r\n";
-                absLink = absLink.Replace("http://localhost/", "http://librelio-europe.s3.amazonaws.com/niveales/wind/windfree_albeau2012/");
-                absLinks.Add(absLink);
+        //    foreach (var link in links)
+        //    {
+        //        string absLink = link;
+        //        var pos = absLink.IndexOf('?');
+        //        if (pos >= 0) absLink = link.Substring(0, pos);
+        //        string fileName = absLink.Replace("http://localhost/", "");
+        //        string linkString = "";
+        //        linkString = folder.Path + "\\" + absLink.Replace("http://localhost/", "") + "\r\n";
+        //        absLink = absLink.Replace("http://localhost/", "http://librelio-europe.s3.amazonaws.com/niveales/wind/windfree_albeau2012/");
+        //        absLinks.Add(absLink);
 
-                var progressIndicator = new Progress<int>((value) => progressBar.Value = value);
-                cts = new CancellationTokenSource();
+        //        var progressIndicator = new Progress<int>((value) => progressBar.Value = value);
+        //        cts = new CancellationTokenSource();
 
-                var sampleFile = await folder.CreateFileAsync(fileName + ".pmd", CreationCollisionOption.ReplaceExisting);
+        //        var sampleFile = await folder.CreateFileAsync(fileName + ".pmd", CreationCollisionOption.ReplaceExisting);
 
-                await DownloadFileAsyncWithProgress(absLink, sampleFile, progressIndicator, cts.Token);
+        //        await DownloadFileAsyncWithProgress(absLink, sampleFile, progressIndicator, cts.Token);
 
-                using (var fileStream = await metadataFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-                using (var dataReader = new DataReader(fileStream.GetInputStreamAt(0)))
-                using (var dataWriter = new DataWriter(fileStream.GetOutputStreamAt(0)))
-                {
-                    var len = await dataReader.LoadAsync((uint)fileStream.Size);
-                    var data = dataReader.ReadString((uint)len);
-                    var size = dataWriter.WriteString(data + linkString);
-                    await fileStream.FlushAsync();
-                    await dataWriter.StoreAsync();
-                }
-            }
-        }
-
-        private async Task<IRandomAccessStream> ProtectPDFStream(IRandomAccessStream source)
-        {
-            // Create a DataProtectionProvider object for the specified descriptor.
-            DataProtectionProvider Provider = new DataProtectionProvider("LOCAL=user");
-
-            InMemoryRandomAccessStream protectedData = new InMemoryRandomAccessStream();
-            IOutputStream dest = protectedData.GetOutputStreamAt(0);
-
-            await Provider.ProtectStreamAsync(source.GetInputStreamAt(0), dest);
-            await dest.FlushAsync();
-
-            //Verify that the protected data does not match the original
-            DataReader reader1 = new DataReader(source.GetInputStreamAt(0));
-            DataReader reader2 = new DataReader(protectedData.GetInputStreamAt(0));
-            var size1 = await reader1.LoadAsync((uint)(source.Size < 10000 ? source.Size : 10000));
-            var size2 = await reader2.LoadAsync((uint)(protectedData.Size < 10000 ? protectedData.Size : 10000));
-            IBuffer buffOriginalData = reader1.ReadBuffer((uint)size1);
-            IBuffer buffProtectedData = reader2.ReadBuffer((uint)size2);
-
-            if (CryptographicBuffer.Compare(buffOriginalData, buffProtectedData))
-            {
-                throw new Exception("ProtectPDFStream returned unprotected data");
-            }
-
-            // Return the encrypted data.
-            return protectedData;
-        }
-
-        private async Task<IRandomAccessStream> UnprotectPDFStream(IRandomAccessStream source)
-        {
-            // Create a DataProtectionProvider object.
-            DataProtectionProvider Provider = new DataProtectionProvider();
-
-            InMemoryRandomAccessStream unprotectedData = new InMemoryRandomAccessStream();
-            IOutputStream dest = unprotectedData.GetOutputStreamAt(0);
-
-            await Provider.UnprotectStreamAsync(source.GetInputStreamAt(0), dest);
-            await unprotectedData.FlushAsync();
-
-            return unprotectedData;
-        }
+        //        using (var fileStream = await metadataFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+        //        using (var dataReader = new DataReader(fileStream.GetInputStreamAt(0)))
+        //        using (var dataWriter = new DataWriter(fileStream.GetOutputStreamAt(0)))
+        //        {
+        //            var len = await dataReader.LoadAsync((uint)fileStream.Size);
+        //            var data = dataReader.ReadString((uint)len);
+        //            var size = dataWriter.WriteString(data + linkString);
+        //            await fileStream.FlushAsync();
+        //            await dataWriter.StoreAsync();
+        //        }
+        //    }
+        //}
 
         private async void itemListView_ItemClick(object sender, ItemClickEventArgs e)
         {
