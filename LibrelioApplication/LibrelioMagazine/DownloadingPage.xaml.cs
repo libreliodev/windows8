@@ -84,7 +84,7 @@ namespace LibrelioApplication
             try
             {
                 var fileHandle =
-                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"application_.xml");
+                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
 
                 var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
                 var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
@@ -402,7 +402,8 @@ namespace LibrelioApplication
                         statusText.Text = "Done.";
                         await Task.Delay(1000);
 
-                        this.Frame.Navigate(typeof(PdfViewPage), stream);
+                        var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FullName);
+                        this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = stream, folderUrl = mag.FolderPath });
                     }
                     catch (Exception ex)
                     {

@@ -10,6 +10,7 @@ using System.Net.Http;
 using Windows.Data.Xml.Dom;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.DataProtection;
+using System.Collections.Generic;
 
 namespace LibrelioApplication
 {
@@ -176,6 +177,17 @@ namespace LibrelioApplication
             {
                 return null;
             }
+        }
+
+        public static LibrelioLocalUrl GetLocalUrl(IList<LibrelioLocalUrl> list, string name)
+        {
+            foreach (var link in list)
+            {
+                if (link.FullName == name)
+                    return link;
+            }
+
+            return null;
         }
 
         public static bool IsDownloaded(LibrelioLocalUrl url)

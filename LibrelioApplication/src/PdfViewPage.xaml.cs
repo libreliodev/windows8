@@ -316,7 +316,7 @@ namespace LibrelioApplication
 
         static string LOCAL_HOST = "localhost";
 
-        IRandomAccessStream pdfStream = null;
+        MagazineData pdfStream = null;
 
         string pdfFileName;
         string curPageFileName;
@@ -386,7 +386,7 @@ namespace LibrelioApplication
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Object navigationParameter = e.Parameter;
-            pdfStream = navigationParameter as IRandomAccessStream;
+            pdfStream = navigationParameter as MagazineData;
             
             // Changed by Dorin Damaschin
 
@@ -428,7 +428,7 @@ namespace LibrelioApplication
             var buffer = await GetPDFFileData();
             if (buffer == null) return;
 
-            pdfStream = null;
+            pdfStream.stream = null;
 
             // create the MuPDF Document on a background thread
             document = await CreateDocumentAsync(buffer);
@@ -608,16 +608,18 @@ namespace LibrelioApplication
 
                 if (pdfStream == null)
                 {
+                    pdfStream = new MagazineData();
                     var fileHandle =
                         await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\testmagazine.pdf");
 
-                    pdfStream = await fileHandle.OpenReadAsync();
+                    pdfStream.folderUrl = "C:\\Users\\Dorin\\Documents\\Magazines\\wind_355\\";
+                    pdfStream.stream = await fileHandle.OpenReadAsync();
                 }
 
-                using (IInputStream inputStreamAt = pdfStream.GetInputStreamAt(0))
+                using (IInputStream inputStreamAt = pdfStream.stream.GetInputStreamAt(0))
                 using (var dataReader = new DataReader(inputStreamAt))
                 {
-                    uint u = await dataReader.LoadAsync((uint)pdfStream.Size);
+                    uint u = await dataReader.LoadAsync((uint)pdfStream.stream.Size);
                     IBuffer readBuffer = dataReader.ReadBuffer(u);
 
                     return readBuffer;
@@ -1660,7 +1662,7 @@ namespace LibrelioApplication
                     if (DownloadManager.IsFullScreenButton(item.url))
                     {
                         var button = new PageButton();
-                        button.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(button);
                         button.Clicked += button_Clicked;
                         pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
@@ -1668,14 +1670,14 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsImage(item.url))
                     {
                         var slideShow = new SlideShow();
-                        await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(slideShow);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
                     }
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
-                        await videoPlayer.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(videoPlayer);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
@@ -1710,7 +1712,7 @@ namespace LibrelioApplication
                     if (DownloadManager.IsFullScreenButton(item.url))
                     {
                         var button = new PageButton();
-                        button.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(button);
                         button.Clicked += button_Clicked;
                         pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
@@ -1718,14 +1720,14 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsImage(item.url))
                     {
                         var slideShow = new SlideShow();
-                        await slideShow.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(slideShow);
                         pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
                     }
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
-                        await videoPlayer.SetRect(rect, "\\Magazines\\wind_355\\", item.url, offsetZF);
+                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(videoPlayer);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }

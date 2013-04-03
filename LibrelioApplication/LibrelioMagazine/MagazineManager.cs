@@ -18,6 +18,12 @@ using MuPDFWinRT;
 
 namespace LibrelioApplication
 {
+    public class MagazineData
+    {
+        public string folderUrl { get; set; }
+        public IRandomAccessStream stream { get; set; }
+    }
+
     public class MagazineManager
     {
         private string _path;
@@ -32,6 +38,7 @@ namespace LibrelioApplication
 
         public LibrelioUrl PLIST { get { return _pList; } }
         public IList<LibrelioUrl> MagazineUrl { get { return _magazinesUrl; } }
+        public IList<LibrelioLocalUrl> MagazineLocalUrl { get { return _magazinesLocalUrl; } }
 
         public string StatusText { get; set; }
 

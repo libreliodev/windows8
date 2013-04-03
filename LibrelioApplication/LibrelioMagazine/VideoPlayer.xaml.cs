@@ -47,14 +47,7 @@ namespace LibrelioApplication
             StorageFolder folder = null;
             try
             {
-                folder = KnownFolders.DocumentsLibrary;
-                foreach (var fld in folderUrl.Split('\\'))
-                {
-                    if (fld != "")
-                    {
-                        folder = await folder.GetFolderAsync(fld);
-                    }
-                }
+                folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
             }
             catch
             {
