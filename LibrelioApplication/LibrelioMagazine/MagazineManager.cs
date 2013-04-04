@@ -569,33 +569,62 @@ namespace LibrelioApplication
 
             int read = 0;
             int offset = 0;
-            byte[] responseBuffer = new byte[1024];
+            byte[] responseBuffer = new byte[10000];
 
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancelToken);
+            response.EnsureSuccessStatusCode();
+
             var length = response.Content.Headers.ContentLength;
 
             cancelToken.ThrowIfCancellationRequested();
 
             var stream = new InMemoryRandomAccessStream();
 
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            var task1 = client.GetStreamAsync(new Uri(url));
+
+            var cancelation = new CancellationTokenSource();
+
+            var task2 = Task.Run( async () =>
             {
-                do
+                for (int i = 0; i < length; i+=9000)
                 {
-                    cancelToken.ThrowIfCancellationRequested();
-
-                    read = await responseStream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
-
-                    cancelToken.ThrowIfCancellationRequested();
-
-                    await stream.AsStream().WriteAsync(responseBuffer, 0, read);
-
-                    offset += read;
-                    int val = (int)(offset * 100 / length);
+                    await Task.Delay(1);
+                    int val = (int)(i * 100 / length);
                     progress.Report(val);
+
+                    if (cancelation.Token.IsCancellationRequested)
+                    {
+                        progress.Report(99);
+                        return;
+                    }
                 }
-                while (read != 0);
-            }
+            }, cancelation.Token);
+
+            await task1;
+
+            cancelation.Cancel();
+            progress.Report(99);
+
+            await task1.Result.CopyToAsync(stream.AsStream());
+
+            //using (var responseStream = await response.Content.ReadAsStreamAsync())
+            //{
+            //    do
+            //    {
+            //        cancelToken.ThrowIfCancellationRequested();
+
+            //        read = await responseStream.dAsync(responseBuffer, 0, responseBuffer.Length);
+
+            //        cancelToken.ThrowIfCancellationRequested();
+
+            //        await stream.AsStream().WriteAsync(responseBuffer, 0, read);
+
+            //        offset += read;
+            //        int val = (int)(offset * 100 / length);
+            //        progress.Report(val);
+            //    }
+            //    while (read > 0);
+            //}
 
             await stream.FlushAsync();
 

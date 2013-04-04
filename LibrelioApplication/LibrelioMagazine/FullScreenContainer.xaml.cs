@@ -38,7 +38,7 @@ namespace LibrelioApplication
             }
             else if (DownloadManager.IsVideo(url))
             {
-                rect = new Rect(0, 0, Window.Current.Bounds.Width / 2, Window.Current.Bounds.Height / 2);
+                rect = new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
                 videoPlayer = new VideoPlayer();
                 frame.Children.Add(videoPlayer);
                 await videoPlayer.SetRect(rect, folderUrl, url, 1f);

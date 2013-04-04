@@ -22,6 +22,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Animation;
 using MuPDFWinRT;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
@@ -369,7 +370,7 @@ namespace LibrelioApplication
     /// A page that displays pdf (actually list of png files and description in json format).
     /// </summary>
     //public sealed partial class PdfViewPage : LibrelioApplication.Common.LayoutAwarePage
-    public sealed partial class PdfViewPage : Page
+    public sealed partial class PdfViewPage : Common.LayoutAwarePage
     {
 
         static string LOCAL_HOST = "localhost";
@@ -436,17 +437,20 @@ namespace LibrelioApplication
         ///// </param>
         ///// <param name="pageState">A dictionary of state preserved by this page during an earlier
         ///// session.  This will be null the first time a page is visited.</param>
-        //protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        {
+            pdfStream = navigationParameter as MagazineData;
+        }
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.  The Parameter
         /// property is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            Object navigationParameter = e.Parameter;
-            pdfStream = navigationParameter as MagazineData;
+        //protected override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+            //Object navigationParameter = e.Parameter;
+            //pdfStream = navigationParameter as MagazineData;
             
             // Changed by Dorin Damaschin
 
@@ -480,7 +484,7 @@ namespace LibrelioApplication
             //pagesListView.IsTapEnabled = false;
             //pagesListView.IsItemClickEnabled = false;
 
-        }
+        //}
 
         // Load pdf pages once the container is loaded
         private async void pagesListView_Loaded(object sender, RoutedEventArgs e)
@@ -499,10 +503,10 @@ namespace LibrelioApplication
 
             thumbsDoc = await CreateThumbsDocumentAsync(buffer);
 
-            SetScrollViewer();
-
             pagesListView.ItemsSource = pages;
             startRing.IsActive = false;
+
+            SetScrollViewer();
 
             var thumbsOp = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
             {
@@ -855,11 +859,7 @@ namespace LibrelioApplication
 
             for (int p = 1; p < 3; p++)
             {
-                width = size.X;
-                height = size.Y;
-
                 pages[p].PageWidth = 2 * width;
-                pages[p].ZoomFactor = currentZoomFactor;
 
                 // load page to a bitmap buffer on a background thread
                  await DrawTwoPagesToBufferAsync(document, p, width, height);
@@ -878,6 +878,64 @@ namespace LibrelioApplication
                 scrollViewer.HorizontalSnapPointsType = SnapPointsType.MandatorySingle;
                 scrollViewer.HorizontalSnapPointsAlignment = SnapPointsAlignment.Near;
                 scrollViewer.ViewChanged += scrollviewer_ViewChanged;
+                scrollViewer.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(Bubble_PointerWheelChanged), true);
+                Binding b = new Binding();
+                b.Source = scrollViewer;
+                b.Mode = BindingMode.TwoWay;
+                Mediator.SetBinding(Common.ScrollViewerOffsetMediator.ScrollViewerProperty, b);
+            }
+        }
+
+        private void Bubble_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.KeyModifiers == Windows.System.VirtualKeyModifiers.Control) return;
+            if (pages[pageNum].ZoomFactor != defaultZoomFactor) return;
+            var root = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum);
+            var scr = findFirstInVisualTree<ScrollViewer>(root);
+            if (scr.ZoomFactor != defaultZoomFactor) return;
+
+            var width = scrollViewer.ExtentWidth / (pageCount + 1);
+            var offset = (int)(scrollViewer.HorizontalOffset / width);
+            var start = scrollViewer.HorizontalOffset;
+            var wheelDelta = e.GetCurrentPoint(null).Properties.MouseWheelDelta;
+
+            if (offset < pageCount - 1 && wheelDelta < -100)
+            {
+                var ee = new ExponentialEase();
+                ee.EasingMode = EasingMode.EaseInOut;
+                var sb = new Storyboard();
+                var da = new DoubleAnimation
+                {
+                    From = start,
+                    To = (width * offset) + width,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5d)),
+                    EasingFunction = ee,
+                    EnableDependentAnimation = true
+                };
+
+                sb.Children.Add(da);
+                Storyboard.SetTargetProperty(da, "HorizontalOffset");
+                Storyboard.SetTarget(sb, Mediator);
+                sb.Begin();
+            }
+            else if (offset > 0 && wheelDelta > 100)
+            {
+                var ee = new ExponentialEase();
+                ee.EasingMode = EasingMode.EaseInOut;
+                var sb = new Storyboard();
+                var da = new DoubleAnimation
+                {
+                    From = start,
+                    To = (width * (offset - 1)),
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5d)),
+                    EasingFunction = ee,
+                    EnableDependentAnimation = true
+                };
+
+                sb.Children.Add(da);
+                Storyboard.SetTargetProperty(da, "HorizontalOffset");
+                Storyboard.SetTarget(sb, Mediator);
+                sb.Begin();
             }
         }
 
@@ -1801,7 +1859,7 @@ namespace LibrelioApplication
                     var grid = children as Grid;
 
                     var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                    if (DownloadManager.IsFullScreenButton(item.url))
+                    if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
                     {
                         var button = new PageButton();
                         button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
@@ -1895,8 +1953,15 @@ namespace LibrelioApplication
 
         void button_Clicked(string folderUrl, string url)
         {
-            fullScreenContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            var task = fullScreenContainer.Load(folderUrl, url);
+            if (!DownloadManager.IsLink(url))
+            {
+                fullScreenContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                var task = fullScreenContainer.Load(folderUrl, url);
+            }
+            else
+            {
+                var task = Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+            }
         }
 
         private void ScrollViewer_PointerPressed_1(object sender, PointerRoutedEventArgs e)

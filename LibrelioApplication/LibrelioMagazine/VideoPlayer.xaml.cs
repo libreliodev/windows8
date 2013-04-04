@@ -76,7 +76,7 @@ namespace LibrelioApplication
                 {
                     var str = folder.Path + "\\" + url.Substring(0, pos).Replace("http://localhost/", "") + ".mp4";
                     file = await StorageFile.GetFileFromPathAsync(str);
-                    using (var stream = await file.OpenAsync(FileAccessMode.Read))
+                    using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
                     {
                         var unprotected = await DownloadManager.UnprotectPDFStream(stream);
 
@@ -89,6 +89,7 @@ namespace LibrelioApplication
                         {
                             Start();
                         }
+
                     }
                 }
                 catch
@@ -109,9 +110,11 @@ namespace LibrelioApplication
             started = true;
             frame.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,0,0,0));
             content.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            if (!error)
+            if (!error && loaded)
             {
                 videoPlayer.Play();
+                btnPlayPause.Content = "\xe103";
+                paused = false;
             }
         }
 
@@ -130,9 +133,12 @@ namespace LibrelioApplication
         void videoPlayer_MediaOpened(object sender, RoutedEventArgs e)
         {
             loaded = true;
-            btnPlayPause.Content = "\xe103";
-            //videoPlayer.Play();
-            //paused = false;
+            if (started)
+            {
+                videoPlayer.Play();
+                btnPlayPause.Content = "\xe103";
+                paused = false;
+            }
         }
 
         private void btnPlayPause_Click(object sender, RoutedEventArgs e)
@@ -153,7 +159,7 @@ namespace LibrelioApplication
 
         private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
 
             if (!started && !error)
             {

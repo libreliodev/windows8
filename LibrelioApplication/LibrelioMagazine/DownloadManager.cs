@@ -219,6 +219,9 @@ namespace LibrelioApplication
                 throw new Exception("ProtectPDFStream returned unprotected data");
             }
 
+            protectedData.Seek(0);
+            await protectedData.FlushAsync();
+
             // Return the encrypted data.
             return protectedData;
         }
@@ -233,6 +236,7 @@ namespace LibrelioApplication
 
             await Provider.UnprotectStreamAsync(source.GetInputStreamAt(0), dest);
             await unprotectedData.FlushAsync();
+            unprotectedData.Seek(0);
 
             return unprotectedData;
         }
@@ -270,6 +274,11 @@ namespace LibrelioApplication
         public static bool IsNoTransitions(string url)
         {
             return url.Contains("watransition=none");
+        }
+
+        public static bool IsLink(string url)
+        {
+            return !IsLocalAsset(url);
         }
     }
 
