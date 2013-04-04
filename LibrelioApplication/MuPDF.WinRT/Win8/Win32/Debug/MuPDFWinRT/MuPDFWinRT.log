@@ -1,23 +1,9 @@
-﻿La génération a démarré 01/04/2013 09:17:41.
+﻿La génération a démarré 03/04/2013 08:30:00.
      1>Projet "C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\MuPDFWinRT.vcxproj" sur le nœud 2 (Build cible(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\ThirdParty\mupdf\fitz /I..\ThirdParty\mupdf\pdf /IC:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\ /I"Generated Files\\" /IWin32\Debug\MuPDFWinRT\ /ZI /ZW /ZW:nostdlib /nologo /W3 /WX- /sdl /MP /Od /Oy- /D _WINRT_DLL /D _WINDLL /D _UNICODE /D UNICODE /D _DEBUG /D WINAPI_FAMILY=WINAPI_FAMILY_APP /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\MuPDFWinRT\\" /Fd"Win32\Debug\MuPDFWinRT\vc110.pdb" /Gd /TP /FU"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0\ExtensionSDKs\Microsoft.VCLibs\11.0\References\CommonConfiguration\neutral\platform.winmd" /FU"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral\Windows.winmd" /FU"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral\Windows.winmd" /analyze- /errorReport:prompt /bigobj ..\Src\Document.cpp ..\Src\MuPDFDoc.cpp
-         Document.cpp
-         MuPDFDoc.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Win32\Debug\MuPDFWinRT.dll" /INCREMENTAL /NOLOGO ..\ThirdParty\Win8\Win32\Debug\libthirdparty.lib "..\ThirdParty\Win8\Win32\Debug\libmupdf-nov8.lib" ..\ThirdParty\Win8\Win32\Debug\libmupdf.lib runtimeobject.lib kernel32.lib /MANIFEST:NO /PDB:"Win32\Debug\MuPDFWinRT.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /APPCONTAINER /WINMD /WINMDFILE:"Win32\Debug\MuPDFWinRT.winmd" /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /DLL Win32\Debug\MuPDFWinRT\Document.obj
-         Win32\Debug\MuPDFWinRT\LinkInfoInternal.obj
-         Win32\Debug\MuPDFWinRT\LinkInfoRemote.obj
-         Win32\Debug\MuPDFWinRT\LinkInfoURI.obj
-         Win32\Debug\MuPDFWinRT\LinkInfoVisitor.obj
-         Win32\Debug\MuPDFWinRT\MuPDFDoc.obj
-         Win32\Debug\MuPDFWinRT\OutlineItem.obj
-         Win32\Debug\MuPDFWinRT\Utilities.obj
-         LINK : Win32\Debug\MuPDFWinRT.dll introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
-            Création de la bibliothèque Win32\Debug\MuPDFWinRT.lib et de l'objet Win32\Debug\MuPDFWinRT.exp
+     1>Link:
          MuPDFWinRT.vcxproj -> C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\Win32\Debug\MuPDFWinRT.dll
      1>Génération du projet "C:\Users\eprat_000\Dropbox\windows8\LibrelioApplication\MuPDF.WinRT\Win8\MuPDFWinRT.vcxproj" terminée (Build cible(s)).
 
 La génération a réussi.
 
-Temps écoulé 00:00:06.03
+Temps écoulé 00:00:00.09
