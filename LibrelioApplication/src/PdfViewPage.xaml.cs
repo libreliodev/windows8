@@ -758,7 +758,7 @@ namespace LibrelioApplication
                 thumbs[p].ImageRight = image;
             }
 
-            image = await DrawToBufferAsync(thumbsDoc, pageCount - 1, width, height);
+            image = await DrawToBufferAsync(thumbsDoc, 2 * (pageCount - 1) - 1, width, height);
             thumbs[pageCount - 1].Image = image;
 
             thumbsDoc = null;
@@ -1827,8 +1827,8 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
+                        videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         grid.Children.Add(videoPlayer);
-                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
@@ -1877,8 +1877,8 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
+                        videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(videoPlayer);
-                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }
@@ -1927,8 +1927,8 @@ namespace LibrelioApplication
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
+                        videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(videoPlayer);
-                        await videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
                 }

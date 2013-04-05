@@ -607,6 +607,8 @@ namespace LibrelioApplication
 
             await task1.Result.CopyToAsync(stream.AsStream());
 
+            await Task.Delay(670);
+
             //using (var responseStream = await response.Content.ReadAsStreamAsync())
             //{
             //    do

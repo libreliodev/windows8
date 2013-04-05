@@ -84,9 +84,9 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased">
+    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased" Loaded="frame_Loaded">
         <Grid x:Name="content" Visibility="Collapsed">
-            <MediaElement AutoPlay="False" x:Name="videoPlayer" Width="500" Height="300" Visibility="Visible"/>
+            <MediaElement AutoPlay="False" x:Name="videoPlayer" Width="500" Height="300" Visibility="Visible" MediaOpened="videoPlayer_MediaOpened" MediaFailed="videoPlayer_MediaFailed" MediaEnded="videoPlayer_MediaEnded"/>
             <Grid x:Name="noAsset" Margin="0" Visibility="Collapsed" Background="Black">
                 <TextBlock Text="Video not downloaded" FontSize ="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI" Foreground="White" />
             </Grid>

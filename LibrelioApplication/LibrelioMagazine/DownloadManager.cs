@@ -207,20 +207,20 @@ namespace LibrelioApplication
             await dest.FlushAsync();
 
             //Verify that the protected data does not match the original
-            DataReader reader1 = new DataReader(source.GetInputStreamAt(0));
-            DataReader reader2 = new DataReader(protectedData.GetInputStreamAt(0));
-            var size1 = await reader1.LoadAsync((uint)(source.Size < 10000 ? source.Size : 10000));
-            var size2 = await reader2.LoadAsync((uint)(protectedData.Size < 10000 ? protectedData.Size : 10000));
-            IBuffer buffOriginalData = reader1.ReadBuffer((uint)size1);
-            IBuffer buffProtectedData = reader2.ReadBuffer((uint)size2);
+            //DataReader reader1 = new DataReader(source.GetInputStreamAt(0));
+            //DataReader reader2 = new DataReader(protectedData.GetInputStreamAt(0));
+            //var size1 = await reader1.LoadAsync((uint)(source.Size < 10000 ? source.Size : 10000));
+            //var size2 = await reader2.LoadAsync((uint)(protectedData.Size < 10000 ? protectedData.Size : 10000));
+            //IBuffer buffOriginalData = reader1.ReadBuffer((uint)size1);
+            //IBuffer buffProtectedData = reader2.ReadBuffer((uint)size2);
 
-            if (CryptographicBuffer.Compare(buffOriginalData, buffProtectedData))
-            {
-                throw new Exception("ProtectPDFStream returned unprotected data");
-            }
+            //if (CryptographicBuffer.Compare(buffOriginalData, buffProtectedData))
+            //{
+            //    throw new Exception("ProtectPDFStream returned unprotected data");
+            //}
 
-            protectedData.Seek(0);
-            await protectedData.FlushAsync();
+            //protectedData.Seek(0);
+            //await protectedData.FlushAsync();
 
             // Return the encrypted data.
             return protectedData;

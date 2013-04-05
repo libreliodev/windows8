@@ -87,7 +87,7 @@ x:Name="pageRoot"
              <!-- button and page title -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
-                <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}" Margin="0,0,18,40"/>
+                <TextBlock x:Name="pageTitle" Grid.Column="1" Text="Magazines" IsHitTestVisible="false" Style="{StaticResource PageHeaderTextStyle}" Margin="0,0,18,40"/>
             </StackPanel>
         </AppBar>
     </Page.TopAppBar>

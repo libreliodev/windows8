@@ -373,17 +373,19 @@ namespace LibrelioApplication
             if (e.IsInertial && isSwiping)
             {
                 Point currentpoint = e.Position;
-                if (currentpoint.X - initialPoint.X >= 85)
+                if (currentpoint.X - initialPoint.X >= 55)
                 {
-                    isSwiping = false;
+                    //isSwiping = false;
                     SwipeRight();
-                    e.Complete();
+                    initialPoint = currentpoint;
+                    //e.Complete();
                 }
-                else if (initialPoint.X - currentpoint.X >= 85)
+                else if (initialPoint.X - currentpoint.X >= 55)
                 {
-                    isSwiping = false;
+                    //isSwiping = false;
                     SwipeLeft();
-                    e.Complete();
+                    initialPoint = currentpoint;
+                    //e.Complete();
                 }
             }
         }

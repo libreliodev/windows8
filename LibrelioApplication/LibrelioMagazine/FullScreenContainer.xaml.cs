@@ -40,8 +40,8 @@ namespace LibrelioApplication
             {
                 rect = new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
                 videoPlayer = new VideoPlayer();
+                videoPlayer.SetRect(rect, folderUrl, url, 1f);
                 frame.Children.Add(videoPlayer);
-                await videoPlayer.SetRect(rect, folderUrl, url, 1f);
             }
         }
 
