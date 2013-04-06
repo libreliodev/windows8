@@ -45,7 +45,7 @@
                 <Button HorizontalAlignment="Center" Content="Download" Click="Button_Click_1" />
                 <TextBlock FontSize="15" HorizontalAlignment="Center" Text="Sent sample receipt to php url" Margin="0,20,0,6" Height="17"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBox x:Name="urlBox" Width="500" FontSize="14" FontFamily="Courier New" Height="25" />
+                    <TextBox x:Name="urlBox" Width="500" FontSize="14" FontFamily="Courier New" Height="25" Visibility="Collapsed" />
                     <Button  Content="Send" Click="Button_Click_2"/>
                 </StackPanel>
                 <ScrollViewer  Width="600" Height="280" Margin="0,50">
