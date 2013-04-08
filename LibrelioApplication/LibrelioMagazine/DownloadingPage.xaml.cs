@@ -409,7 +409,8 @@ namespace LibrelioApplication
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            var url = urlBox.Text;
+            //var url = urlBox.Text;
+            var url = "http://download.librelio.com/downloads/win8_verify.php";
             testOutput.Text = "Wait";
 
             string str = "";
