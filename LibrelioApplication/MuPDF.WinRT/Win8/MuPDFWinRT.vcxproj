@@ -115,7 +115,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>..\ThirdParty\Win8\Win32\Debug\libthirdparty.lib;..\ThirdParty\Win8\Win32\Debug\libmupdf-nov8.lib;..\ThirdParty\Win8\Win32\Debug\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\ThirdParty\Win8\Win32\Release\libthirdparty.lib;..\ThirdParty\Win8\Win32\Release\libmupdf-nov8.lib;..\ThirdParty\Win8\Win32\Release\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
@@ -129,6 +129,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\ThirdParty\mupdf\fitz;..\ThirdParty\mupdf\pdf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,7 +150,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>..\ThirdParty\Win8\ARM\Debug\libthirdparty.lib;..\ThirdParty\Win8\ARM\Debug\libmupdf-nov8.lib;..\ThirdParty\Win8\ARM\Debug\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\ThirdParty\Win8\ARM\Release\libthirdparty.lib;..\ThirdParty\Win8\ARM\Release\libmupdf-nov8.lib;..\ThirdParty\Win8\ARM\Release\libmupdf.lib;runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
@@ -163,6 +164,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\ThirdParty\mupdf\fitz;..\ThirdParty\mupdf\pdf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

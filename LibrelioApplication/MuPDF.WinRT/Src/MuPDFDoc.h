@@ -13,7 +13,7 @@ extern "C" {
 }
 
 
-#define NUM_CACHE (10)
+#define NUM_CACHE (15)
 #define MAX_SEARCH_HITS (500)
 
 //TODO: Maybe I should change this to class/struct with default constructor
@@ -72,6 +72,48 @@ typedef struct
 	bool newWindow;	
 } MuPDFDocLink;
 
+
+
+struct Data {
+	// A pointer to the original context in the main thread sent
+	// from main to rendering thread. It will be used to create
+	// each rendering thread's context clone.
+	fz_context *ctx;
+
+
+	// Page number sent from main to rendering thread for printing
+	int pagenumber;
+
+	//Cache index
+	int cacheNumber;
+
+	// The display list as obtained by the main thread and sent
+	// from main to rendering thread. This contains the drawing
+	// commands (text, images, etc.) for the page that should be
+	// rendered.
+	fz_display_list *list;
+
+	fz_display_list *annotList;
+
+
+	// The area of the page to render as obtained by the main
+	// thread and sent from main to rendering thread.
+	fz_bbox bbox;
+
+	fz_rect rect;
+
+	// This is the result, a pixmap containing the rendered page.
+	// It is passed first from main thread to the rendering
+	// thread, then its samples are changed by the rendering
+	// thread, and then back from the rendering thread to the main
+	// thread.
+	fz_pixmap *pix;
+
+	int width;
+	int height;
+};
+
+
 class MuPDFDoc
 {
 private:
@@ -111,11 +153,14 @@ public:
 	inline bool HasOutline() { return m_outline != nullptr; }
 	bool IsCached(int pageNumber);
 	void CancelDraw();
-	int GetTest() {return about; }
-	int GetTest1() {return m_cts->abort; }
+	bool IsCanceled();
 	int GetPageWidth();
 	int GetPageHeight();
 	std::shared_ptr<std::vector<std::shared_ptr<MuPDFDocLink>>> GetLinks();
 	std::shared_ptr<std::vector<std::shared_ptr<RectFloat>>> SearchText(const char* text);
 	std::shared_ptr<std::vector<std::shared_ptr<Outlineitem>>> GetOutline();
+
+	HRESULT LoadPage(unsigned char *bitmap, int pageNum, int width, int height, Data **data);
+	HRESULT LoadTwoPages(unsigned char *bitmap1, int pageNum1, unsigned char *bitmap2, int pageNum2, int width, int height, Data **data1, Data **data2);
+	HRESULT Renderer(Data *data, int part, int numParts);
 };

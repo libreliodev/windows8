@@ -98,6 +98,8 @@ namespace LibrelioApplication
         private Point initialPoint;
         bool isSwiping = false;
 
+        bool isAnimating = false;
+
         int length = 0;
         int currentImage = 0;
 
@@ -373,45 +375,54 @@ namespace LibrelioApplication
             if (e.IsInertial && isSwiping)
             {
                 Point currentpoint = e.Position;
-                if (currentpoint.X - initialPoint.X >= 55)
+                if (currentpoint.X - initialPoint.X >= 85)
                 {
-                    //isSwiping = false;
-                    SwipeRight();
+                    isSwiping = false;
+                    var task = SwipeRight();
                     initialPoint = currentpoint;
-                    //e.Complete();
+                    e.Complete();
                 }
-                else if (initialPoint.X - currentpoint.X >= 55)
+                else if (initialPoint.X - currentpoint.X >= 85)
                 {
-                    //isSwiping = false;
+                    isSwiping = false;
                     SwipeLeft();
                     initialPoint = currentpoint;
-                    //e.Complete();
+                    e.Complete();
                 }
             }
         }
 
         void scrollViewer_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            initialPoint = e.Position;
-            isSwiping = true;
+            if (!isAnimating)
+            {
+                initialPoint = e.Position;
+                isSwiping = true;
+            }
         }
 
-        void SwipeLeft()
+        async Task SwipeLeft()
         {
+            isAnimating = true;
             var width = scrollViewer.ExtentWidth / (length + 2);
-            if (scrollViewer.HorizontalOffset < (scrollViewer.ExtentWidth - width))
+            while (scrollViewer.HorizontalOffset < (scrollViewer.ExtentWidth - width))
             {
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + width);
+                await Task.Delay(49);
             }
+            isAnimating = false;
         }
 
-        void SwipeRight()
+        async Task SwipeRight()
         {
+            isAnimating = true;
             var width = scrollViewer.ExtentWidth / (length + 2);
-            if (scrollViewer.HorizontalOffset >= width)
+            while (scrollViewer.HorizontalOffset >= width)
             {
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - width);
+                await Task.Delay(49);
             }
+            isAnimating = false;
         }
     }
 }

@@ -20,6 +20,7 @@ MuPDFDoc::MuPDFDoc(int resolution)
 
 MuPDFDoc::~MuPDFDoc()
 {
+	CoTaskMemFree(m_cts);
 	if (m_outline)
 	{
 		fz_free_outline(m_context, m_outline);
@@ -175,8 +176,295 @@ HRESULT MuPDFDoc::DrawPage(unsigned char *bitmap, int x, int y, int width, int h
 	{
 		return E_FAIL;
 	}
+
 	return S_OK;
 }
+
+HRESULT MuPDFDoc::LoadPage(unsigned char *bitmap, int pageNum, int width, int height, Data **data)
+{
+	GotoPage(pageNum);
+
+	fz_device *dev = nullptr;
+	fz_pixmap *pixmap = nullptr;
+	fz_var(dev);
+	fz_var(pixmap);
+	PageCache *pageCache = &m_pages[m_currentPage];
+	fz_try(m_context)
+	{
+		m_cts->abort = 0;
+		fz_interactive *idoc = fz_interact(m_document);
+		// Call fz_update_page now to ensure future calls yield the
+		// changes from the current state
+		if (idoc)
+			fz_update_page(idoc, pageCache->page);
+
+		if (!pageCache->pageList)
+		{
+			/* Render to list */
+			pageCache->pageList = fz_new_display_list(m_context);
+			dev = fz_new_list_device(m_context, pageCache->pageList);
+
+			fz_run_page_contents(m_document, pageCache->page, dev, fz_identity, nullptr);
+		}
+		if (!pageCache->annotList)
+		{
+			if (dev)
+			{
+				fz_free_device(dev);
+				dev = nullptr;
+			}
+			pageCache->annotList = fz_new_display_list(m_context);
+			dev = fz_new_list_device(m_context, pageCache->annotList);
+			for (fz_annot *annot = fz_first_annot(m_document, pageCache->page); annot; annot = fz_next_annot(m_document, annot))
+				fz_run_annot(m_document, pageCache->page, annot, dev, fz_identity, nullptr);
+		}
+
+		fz_bbox rect;
+		rect.x0 = 0;
+		rect.y0 = 0;
+		rect.x1 = width;
+		rect.y1 = height;
+		pixmap = fz_new_pixmap_with_bbox_and_data(m_context, fz_device_bgr, rect, bitmap);
+		if (!pageCache->pageList && !pageCache->annotList)
+		{
+			fz_clear_pixmap_with_value(m_context, pixmap, 0xd0);
+			break;
+		}
+		fz_clear_pixmap_with_value(m_context, pixmap, 0xff);
+
+		*data = (Data*)CoTaskMemAlloc(sizeof(Data));
+
+		(*data)->pagenumber = pageNum;
+		(*data)->cacheNumber = m_currentPage;
+		(*data)->ctx = m_context;
+		(*data)->list = pageCache->pageList;
+		(*data)->annotList = pageCache->annotList;
+		(*data)->bbox = rect;
+		(*data)->rect = pageCache->mediaBox;
+		(*data)->pix = pixmap;
+		(*data)->width = width;
+		(*data)->height = height;
+	}
+	fz_catch(m_context)
+	{
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT MuPDFDoc::LoadTwoPages(unsigned char *bitmap1, int pageNum1, unsigned char *bitmap2, int pageNum2, int width, int height, Data **data1, Data **data2)
+{
+	GotoPage(pageNum1);
+
+	fz_device *dev = nullptr;
+	fz_pixmap *pixmap = nullptr;
+	fz_var(dev);
+	fz_var(pixmap);
+	PageCache *pageCache = &m_pages[m_currentPage];
+	fz_try(m_context)
+	{
+		m_cts->abort = 0;
+
+		fz_interactive *idoc = fz_interact(m_document);
+		// Call fz_update_page now to ensure future calls yield the
+		// changes from the current state
+		if (idoc)
+			fz_update_page(idoc, pageCache->page);
+
+		if (!pageCache->pageList)
+		{
+			/* Render to list */
+			pageCache->pageList = fz_new_display_list(m_context);
+			dev = fz_new_list_device(m_context, pageCache->pageList);
+
+			fz_run_page_contents(m_document, pageCache->page, dev, fz_identity, nullptr);
+		}
+		if (!pageCache->annotList)
+		{
+			if (dev)
+			{
+				fz_free_device(dev);
+				dev = nullptr;
+			}
+			pageCache->annotList = fz_new_display_list(m_context);
+			dev = fz_new_list_device(m_context, pageCache->annotList);
+			for (fz_annot *annot = fz_first_annot(m_document, pageCache->page); annot; annot = fz_next_annot(m_document, annot))
+				fz_run_annot(m_document, pageCache->page, annot, dev, fz_identity, nullptr);
+		}
+
+		fz_bbox rect;
+		rect.x0 = 0;
+		rect.y0 = 0;
+		rect.x1 = width;
+		rect.y1 = height;
+		pixmap = fz_new_pixmap_with_bbox_and_data(m_context, fz_device_bgr, rect, bitmap1);
+		if (!pageCache->pageList && !pageCache->annotList)
+		{
+			fz_clear_pixmap_with_value(m_context, pixmap, 0xd0);
+			break;
+		}
+		fz_clear_pixmap_with_value(m_context, pixmap, 0xff);
+
+		*data1 = (Data*)CoTaskMemAlloc(sizeof(Data));
+
+		(*data1)->pagenumber = pageNum1;
+		(*data1)->cacheNumber = m_currentPage;
+		(*data1)->ctx = m_context;
+		(*data1)->list = pageCache->pageList;
+		(*data1)->annotList = pageCache->annotList;
+		(*data1)->bbox = rect;
+		(*data1)->rect = pageCache->mediaBox;
+		(*data1)->pix = pixmap;
+		(*data1)->width = width;
+		(*data1)->height = height;
+	}
+	fz_catch(m_context)
+	{
+		return E_FAIL;
+	}
+
+	GotoPage(pageNum2);
+
+	fz_device *dev1 = nullptr;
+	fz_pixmap *pixmap1 = nullptr;
+	fz_var(dev1);
+	fz_var(pixmap1);
+	PageCache *pageCache1 = &m_pages[m_currentPage];
+	fz_try(m_context)
+	{
+		fz_interactive *idoc = fz_interact(m_document);
+		// Call fz_update_page now to ensure future calls yield the
+		// changes from the current state
+		if (idoc)
+			fz_update_page(idoc, pageCache1->page);
+
+		if (!pageCache1->pageList)
+		{
+			/* Render to list */
+			pageCache1->pageList = fz_new_display_list(m_context);
+			dev1 = fz_new_list_device(m_context, pageCache1->pageList);
+
+			fz_run_page_contents(m_document, pageCache1->page, dev1, fz_identity, nullptr);
+		}
+		if (!pageCache1->annotList)
+		{
+			if (dev1)
+			{
+				fz_free_device(dev1);
+				dev1 = nullptr;
+			}
+			pageCache1->annotList = fz_new_display_list(m_context);
+			dev1 = fz_new_list_device(m_context, pageCache1->annotList);
+			for (fz_annot *annot = fz_first_annot(m_document, pageCache1->page); annot; annot = fz_next_annot(m_document, annot))
+				fz_run_annot(m_document, pageCache1->page, annot, dev1, fz_identity, nullptr);
+		}
+
+		fz_bbox rect;
+		rect.x0 = 0;
+		rect.y0 = 0;
+		rect.x1 = width;
+		rect.y1 = height;
+		pixmap1 = fz_new_pixmap_with_bbox_and_data(m_context, fz_device_bgr, rect, bitmap2);
+		if (!pageCache1->pageList && !pageCache1->annotList)
+		{
+			fz_clear_pixmap_with_value(m_context, pixmap1, 0xd0);
+			break;
+		}
+		fz_clear_pixmap_with_value(m_context, pixmap1, 0xff);
+
+		*data2 = (Data*)CoTaskMemAlloc(sizeof(Data));
+
+		(*data2)->pagenumber = pageNum2;
+		(*data2)->cacheNumber = m_currentPage;
+		(*data2)->ctx = m_context;
+		(*data2)->list = pageCache1->pageList;
+		(*data2)->annotList = pageCache->annotList;
+		(*data2)->bbox = rect;
+		(*data2)->rect = pageCache1->mediaBox;
+		(*data2)->pix = pixmap1;
+		(*data2)->width = width;
+		(*data2)->height = height;
+	}
+	fz_catch(m_context)
+	{
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT MuPDFDoc::Renderer(Data *data, int part, int numParts)
+{
+	if (m_cts->abort == 1) return S_OK;
+
+	int pagenumber = data->pagenumber;
+	fz_context *ctx = data->ctx;
+	fz_display_list *list = data->list;
+	fz_display_list *annotList = data->annotList;
+	fz_rect rect = data->rect;
+	fz_pixmap *pix = data->pix;
+	fz_device *dev = nullptr;
+	int width = data->width;
+	int height = data->height / numParts;
+
+
+	// The context pointer is pointing to the main thread's
+	// context, so here we create a new context based on it for
+	// use in this thread.
+
+
+	ctx = fz_clone_context(ctx);
+
+	fz_try(ctx)
+	{
+		if (part == 1 && numParts == 2)
+		{
+			rect.y1 = rect.y1/2;
+		}
+		if (part == 2 && numParts == 2)
+		{
+			rect.y0 = rect.y1/2;
+		}
+		fz_matrix ctm = CalcConvertMatrix();
+		fz_bbox bbox = fz_round_rect(fz_transform_rect(ctm, rect));
+		/* Now, adjust ctm so that it would give the correct page width
+		* heights. */
+		float xscale = (float)width/(float)(bbox.x1-bbox.x0);
+		float yscale = (float)height/(float)(bbox.y1-bbox.y0);
+		ctm = fz_concat(ctm, fz_scale(xscale, yscale));
+		bbox = fz_round_rect(fz_transform_rect(ctm, rect));
+
+		dev = fz_new_draw_device(ctx, pix);
+		if (list)
+			fz_run_display_list(list, dev, ctm, bbox, *&m_cts);
+		if (m_cts->abort == 1) break;
+		if (annotList)
+			fz_run_display_list(annotList, dev, ctm, bbox, *&m_cts);
+	}
+	fz_always(ctx)
+	{
+		if (dev)
+		{
+			fz_free_device(dev);
+			dev = nullptr;
+		}
+
+		if (pix)
+		{
+			fz_drop_pixmap(m_context, pix);
+		}
+	}
+	fz_catch(ctx)
+	{
+		return E_FAIL;
+	}
+
+	fz_free_context(ctx);
+
+	return S_OK;
+}
+
 
 HRESULT MuPDFDoc::UpdatePage(int pageNumber, unsigned char *bitmap, int x, int y, int width, int height, bool invert)
 {
@@ -553,7 +841,7 @@ HRESULT MuPDFDoc::InitContext()
 	}
 	else
 	{
-		m_cts = fz_malloc_struct(m_context, fz_cookie);
+		m_cts = (fz_cookie*)CoTaskMemAlloc(sizeof(fz_cookie));
 		return S_OK;
 	}
 }
@@ -721,4 +1009,19 @@ void MuPDFDoc::CancelDraw()
 	{
 	}
 	fz_free_context(ctx);
+}
+
+bool MuPDFDoc::IsCanceled() 
+{ 
+	bool f = false;
+	fz_context *ctx = fz_clone_context(m_context);
+	fz_try(ctx)
+	{
+		f = (m_cts->abort == 1);
+	}
+	fz_catch(ctx)
+	{
+	}
+	fz_free_context(ctx);
+	return f;
 }

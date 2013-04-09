@@ -186,7 +186,7 @@ char *
 fz_strdup(fz_context *ctx, char *s)
 {
 	int len = strlen(s) + 1;
-	char *ns = fz_malloc(ctx, len);
+	char *ns = (char *)fz_malloc(ctx, len);
 	memcpy(ns, s, len);
 	return ns;
 }
@@ -195,7 +195,7 @@ char *
 fz_strdup_no_throw(fz_context *ctx, char *s)
 {
 	int len = strlen(s) + 1;
-	char *ns = fz_malloc_no_throw(ctx, len);
+	char *ns = (char *)fz_malloc_no_throw(ctx, len);
 	if (ns)
 		memcpy(ns, s, len);
 	return ns;

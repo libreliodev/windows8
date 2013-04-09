@@ -6,11 +6,13 @@
 #include <Inspectable.h>
 #include <Robuffer.h>
 #include <collection.h>
+#include <ppltasks.h>
 
 #include "Document.h"
 #include "Utilities.h"
 
 using namespace MuPDFWinRT;
+using namespace concurrency;
 
 Document::Document()
 	: m_doc(nullptr), m_buffer(nullptr)
@@ -121,6 +123,357 @@ void Document::DrawPage(
 	unsigned char *data = GetPointerToData(pixels);
 	Utilities::ThrowIfFailed(m_doc->GotoPage(pageNumber));
 	Utilities::ThrowIfFailed(m_doc->DrawPage(data, x, y, width, height, invert));
+}
+
+void Document::DrawTwoPagesConcurrent(
+			int32 firstPage, 
+			Windows::Storage::Streams::IBuffer^ pixels, 
+			int32 width, 
+			int32 height)
+{
+	std::lock_guard<std::mutex> lock(m_lock);
+	unsigned char *bmp1 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp2 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp3 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp4 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	Data *data1 = nullptr;
+	Data *data2 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadTwoPages(bmp1, firstPage, bmp2, firstPage + 1, width, height, &data1, &data2));
+	Data *data3 = nullptr;
+	Data *data4 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadTwoPages(bmp3, firstPage, bmp4, firstPage + 1, width, height, &data3, &data4));
+
+	auto task1 = create_task( [this, data1]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data1, 1, 2));
+	});
+
+	auto task2 = create_task( [this, data2]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data2, 1, 2));
+	});
+
+	auto task3 = create_task( [this, data3]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data3, 2, 2));
+	});
+
+	auto task4 = create_task( [this, data4]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data4, 2, 2));
+	});
+
+	std::vector<task<void>> tasks(4);
+	tasks[0] = task1;
+	tasks[1] = task2;
+	tasks[2] = task3;
+	tasks[3] = task4;
+	concurrency::when_all(tasks.begin(), tasks.end()).then( [this, data1, data2, data3, data4, bmp1, bmp2, bmp3, bmp4, pixels, width, height]
+	{
+		CoTaskMemFree(data1);
+		CoTaskMemFree(data2);
+		CoTaskMemFree(data3);
+		CoTaskMemFree(data4);
+
+		if (!this->m_doc->IsCanceled() && pixels != nullptr && pixels->Length > 1000)
+		{
+			unsigned char *data = GetPointerToData(pixels);
+			auto size = width * 4;
+			for (int x = 0; x < height / 2; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x)), bmp1 + (size * x), size);
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x) + size), bmp2 + (size * x), size);
+			}
+			for (int x = height / 2; x < height; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x)), bmp3 + (size * x), size);
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x) + size), bmp4 + (size * x), size);
+			}
+		}
+
+		CoTaskMemFree(bmp1);
+		CoTaskMemFree(bmp2);
+		CoTaskMemFree(bmp3);
+		CoTaskMemFree(bmp4);
+
+	}).then( [] (task<void> t) 
+	{
+		try
+		{
+			t.get();
+		}
+		catch (std::exception)
+		{
+		}
+	}).wait();;
+}
+
+void Document::DrawFirtPageConcurrent(
+			int32 firstPage, 
+			Windows::Storage::Streams::IBuffer^ pixels, 
+			int32 width, 
+			int32 height)
+{
+	std::lock_guard<std::mutex> lock(m_lock);
+	unsigned char *bmp1 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp3 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	Data *data1 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp1, firstPage, width, height, &data1));
+	Data *data3 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp3, firstPage, width, height, &data3));
+
+	auto task1 = create_task( [this, data1]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data1, 1, 2));
+	});
+
+	auto task3 = create_task( [this, data3]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data3, 2, 2));
+	});
+
+	std::vector<task<void>> tasks(2);
+	tasks[0] = task1;
+	tasks[1] = task3;
+	concurrency::when_all(tasks.begin(), tasks.end()).then( [this, data1, data3, bmp1, bmp3, pixels, width, height]
+	{
+		CoTaskMemFree(data1);
+		CoTaskMemFree(data3);
+
+		if (!this->m_doc->IsCanceled() && pixels != nullptr && pixels->Length > 1000)
+		{
+			unsigned char *data = GetPointerToData(pixels);
+			auto size = width * 4;
+			for (int x = 0; x < height / 2; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x)), bmp1 + (size * x), size);
+			}
+			for (int x = height / 2; x < height; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x)), bmp3 + (size * x), size);
+			}
+		}
+
+		CoTaskMemFree(bmp1);
+		CoTaskMemFree(bmp3);
+
+	}).then( [] (task<void> t) 
+	{
+		try
+		{
+			t.get();
+		}
+		catch (std::exception)
+		{
+		}
+	}).wait();;
+}
+
+void Document::DrawFirtPageConcurrent(
+			int32 firstPage, 
+			Windows::Storage::Streams::IBuffer^ pixels, 
+			Windows::Storage::Streams::IBuffer^ bitmap, 
+			int32 width, 
+			int32 height)
+{
+	std::lock_guard<std::mutex> lock(m_lock);
+	unsigned char *bmp1 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp3 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	Data *data1 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp1, firstPage, width, height, &data1));
+	Data *data3 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp3, firstPage, width, height, &data3));
+
+	auto task1 = create_task( [this, data1]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data1, 1, 2));
+	});
+
+	auto task3 = create_task( [this, data3]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data3, 2, 2));
+	});
+
+	std::vector<task<void>> tasks(2);
+	tasks[0] = task1;
+	tasks[1] = task3;
+	concurrency::when_all(tasks.begin(), tasks.end()).then( [this, data1, data3, bmp1, bmp3, pixels, width, height, bitmap]
+	{
+		CoTaskMemFree(data1);
+		CoTaskMemFree(data3);
+
+		if (!this->m_doc->IsCanceled())
+		{
+			unsigned char *data = GetPointerToData(pixels);
+			unsigned char *secondPage = GetPointerToData(bitmap);
+			auto size = width * 4;
+			for (int x = 0; x < height / 2; x++)
+			{
+				CopyMemory(data + (2 * (size * x)), bmp1 + (size * x), size);
+				CopyMemory(data + (2 * (size * x) + size), secondPage + (size * x), size);
+			}
+			for (int x = height / 2; x < height; x++)
+			{
+				CopyMemory(data + (2 * (size * x)), bmp3 + (size * x), size);
+				CopyMemory(data + (2 * (size * x) + size), secondPage + (size * x), size);
+			}
+		}
+
+		CoTaskMemFree(bmp1);
+		CoTaskMemFree(bmp3);
+
+	}).then( [] (task<void> t) 
+	{
+		try
+		{
+			t.get();
+		}
+		catch (std::exception)
+		{
+		}
+	}).wait();;
+}
+
+void Document::DrawSecondPageConcurrent(
+			int32 firstPage, 
+			Windows::Storage::Streams::IBuffer^ pixels, 
+			int32 width, 
+			int32 height)
+{
+	std::lock_guard<std::mutex> lock(m_lock);
+	unsigned char *bmp2 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp4 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	Data *data2 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage( bmp2, firstPage + 1, width, height, &data2));
+	Data *data4 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp4, firstPage + 1, width, height, &data4));
+
+	auto task2 = create_task( [this, data2]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data2, 1, 2));
+	});
+
+	auto task4 = create_task( [this, data4]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data4, 2, 2));
+	});
+
+	std::vector<task<void>> tasks(2);
+	tasks[0] = task2;
+	tasks[1] = task4;
+	concurrency::when_all(tasks.begin(), tasks.end()).then( [this, data2, data4, bmp2, bmp4, pixels, width, height]
+	{
+		CoTaskMemFree(data2);
+		CoTaskMemFree(data4);
+
+		if (!this->m_doc->IsCanceled())
+		{
+			unsigned char *data = GetPointerToData(pixels);
+			auto size = width * 4;
+			for (int x = 0; x < height / 2; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x) + size), bmp2 + (size * x), size);
+			}
+			for (int x = height / 2; x < height; x++)
+			{
+				if (pixels == nullptr) break;
+				if (pixels->Length < 1000) break;
+				CopyMemory(data + (2 * (size * x) + size), bmp4 + (size * x), size);
+			}
+		}
+
+		CoTaskMemFree(bmp2);
+		CoTaskMemFree(bmp4);
+
+	}).then( [] (task<void> t) 
+	{
+		try
+		{
+			t.get();
+		}
+		catch (std::exception)
+		{
+		}
+	}).wait();;
+}
+
+void Document::DrawSecondPageConcurrent(
+			int32 firstPage, 
+			Windows::Storage::Streams::IBuffer^ pixels, 
+			Windows::Storage::Streams::IBuffer^ bitmap, 
+			int32 width, 
+			int32 height)
+{
+	std::lock_guard<std::mutex> lock(m_lock);
+	unsigned char *bmp2 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	unsigned char *bmp4 = (unsigned char*)CoTaskMemAlloc(4 * width * height * sizeof(unsigned char));
+	Data *data2 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage( bmp2, firstPage + 1, width, height, &data2));
+	Data *data4 = nullptr;
+	Utilities::ThrowIfFailed(m_doc->LoadPage(bmp4, firstPage + 1, width, height, &data4));
+
+	auto task2 = create_task( [this, data2]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data2, 1, 2));
+	});
+
+	auto task4 = create_task( [this, data4]
+	{
+		Utilities::ThrowIfFailed(this->m_doc->Renderer(data4, 2, 2));
+	});
+
+	std::vector<task<void>> tasks(2);
+	tasks[0] = task2;
+	tasks[1] = task4;
+	concurrency::when_all(tasks.begin(), tasks.end()).then( [this, data2, data4, bmp2, bmp4, pixels, width, height, bitmap]
+	{
+		CoTaskMemFree(data2);
+		CoTaskMemFree(data4);
+
+		if (!this->m_doc->IsCanceled())
+		{
+			unsigned char *data = GetPointerToData(pixels);
+			unsigned char *firstPage = GetPointerToData(bitmap);
+			auto size = width * 4;
+			for (int x = 0; x < height / 2; x++)
+			{
+				CopyMemory(data + (2 * (size * x)), firstPage + (size * x), size);
+				CopyMemory(data + (2 * (size * x) + size), bmp2 + (size * x), size);
+			}
+			for (int x = height / 2; x < height; x++)
+			{
+				CopyMemory(data + (2 * (size * x)), firstPage + (size * x), size);
+				CopyMemory(data + (2 * (size * x) + size), bmp4 + (size * x), size);
+			}
+		}
+
+		CoTaskMemFree(bmp2);
+		CoTaskMemFree(bmp4);
+
+	}).then( [] (task<void> t) 
+	{
+		try
+		{
+			t.get();
+		}
+		catch (std::exception)
+		{
+		}
+	}).wait();
 }
 
 bool Document::IsCached(int32 pageNumber)

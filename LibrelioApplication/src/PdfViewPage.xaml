@@ -209,7 +209,7 @@ x:Name="pageRoot"
                         <DataTemplate>
                         <ScrollViewer Width="{Binding Width}" Height="{Binding Height}" 
                                       ZoomMode="Enabled" HorizontalScrollMode="Enabled"
-                                      VerticalScrollMode="Enabled"
+                                      VerticalScrollMode="Auto"
                                       VerticalSnapPointsType="None"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Auto"
