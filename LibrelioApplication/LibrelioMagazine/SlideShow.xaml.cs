@@ -108,6 +108,8 @@ namespace LibrelioApplication
 
         bool noTranstions = false;
 
+        bool enabled = false;
+
         ObservableCollection<ImageData> images = new ObservableCollection<ImageData>();
 
         ScrollViewer scrollViewer;
@@ -133,15 +135,17 @@ namespace LibrelioApplication
                 this.Height = rect.Height;
                 this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+
+                enabled = true;
             }
 
             string startMame = null;
             string endName = null;
 
-            if (!DownloadManager.IsFullScreenAsset(url))
-            {
-                images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
-            }
+            //if (!DownloadManager.IsFullScreenAsset(url))
+            //{
+            //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+            //}
             StorageFolder folder = null;
             try
             {
@@ -178,10 +182,10 @@ namespace LibrelioApplication
             }
             catch
             {
-                if (!DownloadManager.IsFullScreenAsset(url))
-                {
-                    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
-                }
+                //if (!DownloadManager.IsFullScreenAsset(url))
+                //{
+                //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+                //}
 
                 for (int p = 0; p < 1; p++)
                 {
@@ -213,7 +217,7 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            images.Add(new ImageData() { Image = bitmap, Hidden = true, Width = this.Width, Height = this.Height });
+                            images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
                         }
                     }
                 }
@@ -224,12 +228,12 @@ namespace LibrelioApplication
                 }
             }
 
-            if (!DownloadManager.IsFullScreenAsset(url))
-            {
-                images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
-            }
-            else
-            {
+            //if (!DownloadManager.IsFullScreenAsset(url))
+            //{
+            //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+            //}
+            //else
+            //{
                 if (maxHeight > Window.Current.Bounds.Height - 100)
                 {
                     maxWidth = maxWidth * (Window.Current.Bounds.Height - 100) / maxHeight;
@@ -242,17 +246,21 @@ namespace LibrelioApplication
                     image.Width = maxWidth;
                     image.Height = maxHeight;
                 }
-            }
+            //}
             itemListView.ItemsSource = images;
 
             if (DownloadManager.IsAutoPlay(url))
             {
                 autoSlide = true;
+
+                enabled = true;
             }
 
             if (DownloadManager.IsNoTransitions(url))
             {
                 noTranstions = true;
+
+                enabled = true;
             }
 
             if (url.Contains("wadelay="))
@@ -270,7 +278,7 @@ namespace LibrelioApplication
             {
                 await Task.Delay(interval);
 
-                var width = scrollViewer.ExtentWidth / (length + 2);
+                var width = scrollViewer.ExtentWidth / (length);
                 var offset = (int)(scrollViewer.HorizontalOffset / width);
                 var start = scrollViewer.HorizontalOffset;
                 if (offset == length + 1)
@@ -346,6 +354,12 @@ namespace LibrelioApplication
         private void itemListView_Loaded(object sender, RoutedEventArgs e)
         {
             scrollViewer = findFirstInVisualTree<ScrollViewer>(itemListView);
+
+            if (!enabled)
+            {
+                itemListView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            }
+
             if (scrollViewer != null)
             {
                 scrollViewer.HorizontalSnapPointsType = SnapPointsType.MandatorySingle;
@@ -404,7 +418,7 @@ namespace LibrelioApplication
         async Task SwipeLeft()
         {
             isAnimating = true;
-            var width = scrollViewer.ExtentWidth / (length + 2);
+            var width = scrollViewer.ExtentWidth / (length);
             while (scrollViewer.HorizontalOffset < (scrollViewer.ExtentWidth - width))
             {
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + width);
@@ -416,13 +430,24 @@ namespace LibrelioApplication
         async Task SwipeRight()
         {
             isAnimating = true;
-            var width = scrollViewer.ExtentWidth / (length + 2);
+            var width = scrollViewer.ExtentWidth / (length);
             while (scrollViewer.HorizontalOffset >= width)
             {
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - width);
                 await Task.Delay(49);
             }
             isAnimating = false;
+        }
+
+        private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!enabled && scrollViewer != null)
+            {
+                var width = scrollViewer.ExtentWidth / (length);
+                //scrollViewer.ScrollToHorizontalOffset(width);
+                enabled = true;
+                itemListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            }
         }
     }
 }

@@ -78,21 +78,21 @@
 
     </UserControl.Resources>
 
-    <Grid x:Name="frame" Margin="0">
+    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased" >
         
         <GridView  x:Name="itemListView" 
-                           Padding="0"
-                           HorizontalAlignment="Stretch" 
-                           VerticalAlignment="Stretch" 
-                           SelectionMode="None"
-                           IsSwipeEnabled="False"
-                           IsItemClickEnabled="False"
-                           ItemContainerStyle="{StaticResource GridViewItemStyle1}"
-                           ScrollViewer.HorizontalScrollMode="Enabled" 
-                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                           ScrollViewer.VerticalScrollMode="Disabled" 
-                           ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                           ScrollViewer.ZoomMode="Disabled" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False" Loaded="itemListView_Loaded">
+                   Padding="0"
+                   HorizontalAlignment="Stretch" 
+                   VerticalAlignment="Stretch" 
+                   SelectionMode="None"
+                   IsSwipeEnabled="False"
+                   IsItemClickEnabled="False"
+                   ItemContainerStyle="{StaticResource GridViewItemStyle1}"
+                   ScrollViewer.HorizontalScrollMode="Enabled" 
+                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                   ScrollViewer.VerticalScrollMode="Disabled" 
+                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                   ScrollViewer.ZoomMode="Disabled" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False" Loaded="itemListView_Loaded">
             
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -103,7 +103,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate>
 
-                    <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0">
+                    <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0" Background="Black">
                         <Image Source="{Binding Image}" Stretch="{Binding ImgStretch}" Width="{Binding Width}" Height="{Binding Height}" Visibility="{Binding Hidden, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0"/>
 
                         <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0" Visibility="{Binding NotDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}" Background="White">
