@@ -28,6 +28,84 @@ using System.Diagnostics;
 
 namespace LibrelioApplication.Data
 {
+    /// <summary>
+    /// Base class for <see cref="SampleDataItem"/> and <see cref="SampleDataGroup"/> that
+    /// defines properties common to both.
+    /// </summary>
+    [Windows.Foundation.Metadata.WebHostHidden]
+    public abstract class MagazineDataCommon : LibrelioApplication.Common.BindableBase
+    {
+        private static Uri _baseUri = new Uri("ms-appx:///");
+
+        public MagazineDataCommon(String uniqueId, String title, String subtitle)
+        {
+            this._uniqueId = uniqueId;
+            this._title = title;
+            this._subtitle = subtitle;
+            //this._description = description;
+            //this._imagePath = imagePath;
+        }
+
+        private string _uniqueId = string.Empty;
+        public string UniqueId
+        {
+            get { return this._uniqueId; }
+            set { this.SetProperty(ref this._uniqueId, value); }
+        }
+
+        private string _title = string.Empty;
+        public string Title
+        {
+            get { return this._title; }
+            set { this.SetProperty(ref this._title, value); }
+        }
+
+        private string _subtitle = string.Empty;
+        public string Subtitle
+        {
+            get { return this._subtitle; }
+            set { this.SetProperty(ref this._subtitle, value); }
+        }
+
+        //private string _description = string.Empty;
+        //public string Description
+        //{
+        //    get { return this._description; }
+        //    set { this.SetProperty(ref this._description, value); }
+        //}
+
+        //private ImageSource _image = null;
+        //private String _imagePath = null;
+        //public ImageSource Image
+        //{
+        //    get
+        //    {
+        //        if (this._image == null && this._imagePath != null)
+        //        {
+        //            this._image = new BitmapImage(new Uri(MagazineDataCommon._baseUri, this._imagePath));
+        //        }
+        //        return this._image;
+        //    }
+
+        //    set
+        //    {
+        //        this._imagePath = null;
+        //        this.SetProperty(ref this._image, value);
+        //    }
+        //}
+
+        //public void SetImage(String path)
+        //{
+        //    this._image = null;
+        //    this._imagePath = path;
+        //    this.OnPropertyChanged("Image");
+        //}
+
+        public override string ToString()
+        {
+            return this.Title;
+        }
+    }
 
     public class MagazineModel : LibrelioApplication.Common.BindableBase
     {
@@ -64,7 +142,7 @@ namespace LibrelioApplication.Data
             valuesInit(fileName);
         }
 
-        public MagazineModel(String fileName, String title, String subtitle)
+        public MagazineModel(String title, String subtitle, String fileName)
         {
             this.fileName = fileName;
             this.Title = title;
@@ -219,23 +297,31 @@ namespace LibrelioApplication.Data
 
     }
 
-
-    public class MagazineViewModel : LibrelioApplication.Common.BindableBase
+    public class MagazineViewModel : MagazineDataCommon
     {
         public const string TAG_READ  = "READ";
         public const string TAG_DEL  = "DEL";
         public const string TAG_SAMPLE  = "SAMPLE";
         public const string TAG_DOWNLOAD  = "DOWNLOAD";
 
-        public String Title { get; set; }
-        public String Subtitle { get; set; }
+        private MagazineDataGroup _group;
+        public MagazineDataGroup Group
+        {
+            get { return this._group; }
+            set { this.SetProperty(ref this._group, value); }
+        }
+
+        //public String Title { get; set; }
+        //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
         public String DownloadOrReadButton { get; set; }
         public String SampleOrDeleteButton { get; set; }
         public String Button1Tag { get; set; }
         public String Button2Tag { get; set; }
         public String MagazineTag { get; set; }
-        public MagazineViewModel(string title, string subtitle, string tumb, string b1, string b2) {
+        public MagazineViewModel(String uniqueId, String title, String subtitle, MagazineDataGroup group, string tumb, string b1, string b2)
+            : base(uniqueId, title, subtitle)
+        {
             Title = title;
             Subtitle = subtitle;
             Thumbnail=tumb;
@@ -244,9 +330,13 @@ namespace LibrelioApplication.Data
             Button1Tag = "t1";
             Button2Tag = "t2";
             MagazineTag = "m1";
+
+            this._group = group;
         }
 
-        public MagazineViewModel(MagazineModel m) {
+        public MagazineViewModel(String uniqueId, String title, String subtitle, MagazineDataGroup group, MagazineModel m)
+            : base(uniqueId, title, subtitle)
+        {
             Title = m.Title;
             Subtitle = m.Subtitle;
             Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
@@ -266,11 +356,99 @@ namespace LibrelioApplication.Data
                 Button1Tag = TAG_DOWNLOAD;
                 Button2Tag = TAG_SAMPLE;
             }
-            
+
+            this._group = group;
         }
 
     }
 
+    /// <summary>
+    /// Generic group data model.
+    /// </summary>
+    public class MagazineDataGroup : MagazineDataCommon
+    {
+        public MagazineDataGroup(String uniqueId, String title, String subtitle)
+            : base(uniqueId, title, subtitle)
+        {
+            Items.CollectionChanged += ItemsCollectionChanged;
+        }
+
+        private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // Provides a subset of the full items collection to bind to from a GroupedItemsPage
+            // for two reasons: GridView will not virtualize large items collections, and it
+            // improves the user experience when browsing through groups with large numbers of
+            // items.
+            //
+            // A maximum of 12 items are displayed because it results in filled grid columns
+            // whether there are 1, 2, 3, 4, or 6 rows displayed
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewStartingIndex < 12)
+                    {
+                        TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
+                        if (TopItems.Count > 12)
+                        {
+                            TopItems.RemoveAt(12);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    if (e.OldStartingIndex < 12 && e.NewStartingIndex < 12)
+                    {
+                        TopItems.Move(e.OldStartingIndex, e.NewStartingIndex);
+                    }
+                    else if (e.OldStartingIndex < 12)
+                    {
+                        TopItems.RemoveAt(e.OldStartingIndex);
+                        TopItems.Add(Items[11]);
+                    }
+                    else if (e.NewStartingIndex < 12)
+                    {
+                        TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
+                        TopItems.RemoveAt(12);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    if (e.OldStartingIndex < 12)
+                    {
+                        TopItems.RemoveAt(e.OldStartingIndex);
+                        if (Items.Count >= 12)
+                        {
+                            TopItems.Add(Items[11]);
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    if (e.OldStartingIndex < 12)
+                    {
+                        TopItems[e.OldStartingIndex] = Items[e.OldStartingIndex];
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    TopItems.Clear();
+                    while (TopItems.Count < Items.Count && TopItems.Count < 12)
+                    {
+                        TopItems.Add(Items[TopItems.Count]);
+                    }
+                    break;
+            }
+        }
+
+        private ObservableCollection<MagazineViewModel> _items = new ObservableCollection<MagazineViewModel>();
+        public ObservableCollection<MagazineViewModel> Items
+        {
+            get { return this._items; }
+        }
+
+        private ObservableCollection<MagazineViewModel> _topItem = new ObservableCollection<MagazineViewModel>();
+        public ObservableCollection<MagazineViewModel> TopItems
+        {
+            get { return this._topItem; }
+        }
+    }
 
     /// <summary>
     /// Creates a collection of Magazines. Hardcoded (for design time) and from plist (runtime).
@@ -279,23 +457,55 @@ namespace LibrelioApplication.Data
     {
         private static MagazineDataSource _sampleDataSource = new MagazineDataSource();
 
-        private ObservableCollection<MagazineViewModel> _allMagazines = new ObservableCollection<MagazineViewModel>();
-        public ObservableCollection<MagazineViewModel> AllMagazines
+        private ObservableCollection<MagazineDataGroup> _allGroups = new ObservableCollection<MagazineDataGroup>();
+        public ObservableCollection<MagazineDataGroup> AllGroups
         {
-            get { return this._allMagazines; }
+            get { return this._allGroups; }
         }
 
+        public static IEnumerable<MagazineDataGroup> GetGroups(string uniqueId)
+        {
+            if (!uniqueId.Equals("AllGroups")) throw new ArgumentException("Only 'AllGroups' is supported as a collection of groups");
 
-        public MagazineDataSource(int none) {
+            return _sampleDataSource.AllGroups;
+        }
+
+        public static MagazineDataGroup GetGroup(string uniqueId)
+        {
+            // Simple linear search is acceptable for small data sets
+            var matches = _sampleDataSource.AllGroups.Where((group) => group.UniqueId.Equals(uniqueId));
+            if (matches.Count() == 1) return matches.First();
+            return null;
+        }
+
+        public static MagazineViewModel GetItem(string uniqueId)
+        {
+            // Simple linear search is acceptable for small data sets
+            var matches = _sampleDataSource.AllGroups.SelectMany(group => group.Items).Where((item) => item.UniqueId.Equals(uniqueId));
+            if (matches.Count() == 1) return matches.First();
+            return null;
+        }
+
+        public MagazineDataSource() {
             PList list = new PList("Assets/data/magazines.plist");
             //TODODEBUG try
             {
                 List<dynamic> arr = list[""];
+                var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
                 for (int i = 0; i < arr.Count; i++)
                 {
-                    MagazineModel m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-                    _allMagazines.Add(new MagazineViewModel(m));
+                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+                    group.Items.Add(new MagazineViewModel("", "", "", group, m));
                 }
+                this.AllGroups.Add(group);
+
+                group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+                    group.Items.Add(new MagazineViewModel("", "", "", group, m));
+                }
+                this.AllGroups.Add(group);
 
             }
             //catch (Exception e)
@@ -304,12 +514,12 @@ namespace LibrelioApplication.Data
             //}
         }
         
-        public MagazineDataSource()
-        {
-            _allMagazines.Add(new MagazineViewModel("aaa", "bbb", "vccc", "buy", "sample"));
-            _allMagazines.Add(new MagazineViewModel("aaa1", "bbb2", "vccc", "buy", "sample"));
-            _allMagazines.Add(new MagazineViewModel("aaa2", "bbb3", "vccc", "buy", "sample"));
-            _allMagazines.Add(new MagazineViewModel("aaa3", "bbb4", "vccc", "buy", "sample"));
-        }
+        //public MagazineDataSource()
+        //{
+        //    _allMagazines.Add(new MagazineDataGroup("aaa", "bbb", "vccc", "buy", "sample"));
+        //    _allMagazines.Add(new MagazineDataGroup("aaa1", "bbb2", "vccc", "buy", "sample"));
+            //_allMagazines.Add(new MagazineDataGroup("aaa2", "bbb3", "vccc", "buy", "sample"));
+            //_allMagazines.Add(new MagazineDataGroup("aaa3", "bbb4", "vccc", "buy", "sample"));
+        //}
     }
 }

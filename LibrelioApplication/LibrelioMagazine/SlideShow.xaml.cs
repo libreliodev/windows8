@@ -107,7 +107,7 @@ namespace LibrelioApplication
         int interval = 0;
 
         bool noTranstions = false;
-
+        bool fullScreen = false;
         bool enabled = false;
 
         ObservableCollection<ImageData> images = new ObservableCollection<ImageData>();
@@ -131,12 +131,14 @@ namespace LibrelioApplication
             }
             else
             {
-                this.Width = rect.Width;
-                this.Height = rect.Height;
+                info.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                this.Width = Window.Current.Bounds.Width;
+                this.Height = Window.Current.Bounds.Height;
                 this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
 
                 enabled = true;
+                fullScreen = true;
             }
 
             string startMame = null;
@@ -191,7 +193,7 @@ namespace LibrelioApplication
                 {
                     images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
                 }
-                progressLoad.IsActive = false;
+                //progressLoad.IsActive = false;
                 return;
             }
 
@@ -224,7 +226,7 @@ namespace LibrelioApplication
                 catch
                 {
                     images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
-                    progressLoad.IsActive = false;
+                    //progressLoad.IsActive = false;
                 }
             }
 
@@ -234,18 +236,18 @@ namespace LibrelioApplication
             //}
             //else
             //{
-                if (maxHeight > Window.Current.Bounds.Height - 100)
-                {
-                    maxWidth = maxWidth * (Window.Current.Bounds.Height - 100) / maxHeight;
-                    maxHeight = Window.Current.Bounds.Height - 100;
-                }
-                this.Width = maxWidth;
-                this.Height = maxHeight;
-                foreach (var image in images)
-                {
-                    image.Width = maxWidth;
-                    image.Height = maxHeight;
-                }
+                //if (maxHeight > Window.Current.Bounds.Height)
+                //{
+                //    maxWidth = maxWidth * (Window.Current.Bounds.Height) / maxHeight;
+                //    maxHeight = Window.Current.Bounds.Height;
+                //}
+                //this.Width = maxWidth;
+                //this.Height = maxHeight;
+                //foreach (var image in images)
+                //{
+                //    image.Width = maxWidth;
+                //    image.Height = maxHeight;
+                //}
             //}
             itemListView.ItemsSource = images;
 
@@ -269,7 +271,7 @@ namespace LibrelioApplication
                 interval = Convert.ToInt32(url.Substring(pp + 8, 3));
             }
 
-            progressLoad.IsActive = false;
+            //progressLoad.IsActive = false;
         }
 
         public async void Start(int interval)
@@ -374,9 +376,12 @@ namespace LibrelioApplication
                     Start(interval);
                 }
 
-                if (noTranstions)
+                if (noTranstions || fullScreen)
                 {
-                    scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+                    if (!fullScreen)
+                    {
+                        scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+                    }
                     scrollViewer.ManipulationMode = ManipulationModes.All;
                     scrollViewer.ManipulationStarted += scrollViewer_ManipulationStarted;
                     scrollViewer.ManipulationDelta += scrollViewer_ManipulationDelta;
@@ -386,7 +391,7 @@ namespace LibrelioApplication
 
         void scrollViewer_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (e.IsInertial && isSwiping)
+            if (e.IsInertial && isSwiping && !fullScreen)
             {
                 Point currentpoint = e.Position;
                 if (currentpoint.X - initialPoint.X >= 85)
@@ -408,7 +413,7 @@ namespace LibrelioApplication
 
         void scrollViewer_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            if (!isAnimating)
+            if (!isAnimating && !fullScreen)
             {
                 initialPoint = e.Position;
                 isSwiping = true;

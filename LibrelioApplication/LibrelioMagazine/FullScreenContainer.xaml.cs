@@ -34,6 +34,7 @@ namespace LibrelioApplication
             {
                 slideShow = new SlideShow();
                 await slideShow.SetRect(rect, folderUrl, url, 1f);
+                progressLoad.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 frame.Children.Add(slideShow);
             }
             else if (DownloadManager.IsVideo(url))
@@ -41,6 +42,7 @@ namespace LibrelioApplication
                 rect = new Rect(0, 0, Window.Current.Bounds.Width, Window.Current.Bounds.Height);
                 videoPlayer = new VideoPlayer();
                 videoPlayer.SetRect(rect, folderUrl, url, 1f);
+                progressLoad.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 frame.Children.Add(videoPlayer);
             }
         }
@@ -57,6 +59,7 @@ namespace LibrelioApplication
                 frame.Children.Remove(videoPlayer);
             }
 
+            progressLoad.Visibility = Windows.UI.Xaml.Visibility.Visible;
             this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
     }

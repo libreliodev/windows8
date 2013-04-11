@@ -422,6 +422,8 @@ namespace LibrelioApplication
 
         private bool loadedFirstPage = false;
 
+        private bool switchOrientation = false;
+
         public PdfViewPage()
         {
             this.InitializeComponent();
@@ -781,103 +783,162 @@ namespace LibrelioApplication
             int width = 0;
             int height = 0;
             MuPDFWinRT.Point size = document.GetPageSize(0);
-            // calculate display zoom factor
-            defaultZoomFactor = CalculateZoomFactor(size.Y);
-            currentZoomFactor = defaultZoomFactor;
-
-            if (defaultZoomFactor > 1)
+            
+            if (Window.Current.Bounds.Width > Window.Current.Bounds.Height)
             {
-                // if the screen is bigger the the document size we adjust with offsetZF
-                offsetZF = defaultZoomFactor;
-                defaultZoomFactor = currentZoomFactor = 1.0f;
-            }
+                // calculate display zoom factor
+                defaultZoomFactor = CalculateZoomFactor(size.Y);
+                currentZoomFactor = defaultZoomFactor;
 
-            width = (int)(size.X * currentZoomFactor * offsetZF);
-            height = (int)(size.Y * currentZoomFactor * offsetZF);
+                if (defaultZoomFactor > 1)
+                {
+                    // if the screen is bigger the the document size we adjust with offsetZF
+                    offsetZF = defaultZoomFactor;
+                    defaultZoomFactor = currentZoomFactor = 1.0f;
+                }
 
-            // add the loading DataTemplate to the UI       
-            PageData data = new PageData()
-            {
-                Image = null,
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                Idx = 1,
-                ZoomFactor = defaultZoomFactor,
-                FirstPageZoomFactor = defaultZoomFactor,
-                SecondPageZoomFactor = defaultZoomFactor,
-                PageWidth = width,
-                PageHeight = height,
-                Loading = false
-            };
+                width = (int)(size.X * currentZoomFactor * offsetZF);
+                height = (int)(size.Y * currentZoomFactor * offsetZF);
 
-            pages.Add(data);
+                // add the loading DataTemplate to the UI       
+                PageData data = new PageData()
+                {
+                    Image = null,
+                    Width = Window.Current.Bounds.Width,
+                    Height = Window.Current.Bounds.Height,
+                    Idx = 1,
+                    ZoomFactor = defaultZoomFactor,
+                    FirstPageZoomFactor = defaultZoomFactor,
+                    SecondPageZoomFactor = defaultZoomFactor,
+                    PageWidth = width,
+                    PageHeight = height,
+                    Loading = false
+                };
 
-            for (int p = 1; p < pageCount - 1; p++)
-            {
+                pages.Add(data);
+
+                for (int p = 1; p < pageCount - 1; p++)
+                {
+                    // add the loading DataTemplate to the UI       
+                    data = new PageData()
+                    {
+                        Image = null,
+                        Width = Window.Current.Bounds.Width,
+                        Height = Window.Current.Bounds.Height,
+                        Idx = p + 1,
+                        ZoomFactor = defaultZoomFactor,
+                        FirstPageZoomFactor = defaultZoomFactor,
+                        SecondPageZoomFactor = defaultZoomFactor,
+                        PageWidth = 2 * width,
+                        PageHeight = height,
+                        Loading = false
+                    };
+                    pages.Add(data);
+                }
+
                 // add the loading DataTemplate to the UI       
                 data = new PageData()
                 {
                     Image = null,
                     Width = Window.Current.Bounds.Width,
                     Height = Window.Current.Bounds.Height,
-                    Idx = p + 1,
+                    Idx = pageCount,
                     ZoomFactor = defaultZoomFactor,
                     FirstPageZoomFactor = defaultZoomFactor,
                     SecondPageZoomFactor = defaultZoomFactor,
-                    PageWidth = 2 * width,
+                    PageWidth = width,
                     PageHeight = height,
                     Loading = false
                 };
                 pages.Add(data);
-            }
-
-            // add the loading DataTemplate to the UI       
-            data = new PageData()
-            {
-                Image = null,
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                Idx = pageCount,
-                ZoomFactor = defaultZoomFactor,
-                FirstPageZoomFactor = defaultZoomFactor,
-                SecondPageZoomFactor = defaultZoomFactor,
-                PageWidth = width,
-                PageHeight = height,
-                Loading = false
-            };
-            pages.Add(data);
-            data = new PageData()
-            {
-                Image = null,
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                Idx = pageCount + 1,
-                ZoomFactor = defaultZoomFactor,
-                FirstPageZoomFactor = defaultZoomFactor,
-                SecondPageZoomFactor = defaultZoomFactor,
-                PageWidth = width,
-                PageHeight = height,
-                Loading = false
-            };
-            pages.Add(data);
-
-            // load page to a bitmap buffer on a background thread
-            var image = await DrawToBufferAsync(document, 0, width, height);
-
-            pages[0].Image = image;
-            pages[0].PageWidth = width;
-            pages[0].ZoomFactor = currentZoomFactor;
-
-            for (int p = 1; p < 3; p++)
-            {
-                pages[p].PageWidth = 2 * width;
+                data = new PageData()
+                {
+                    Image = null,
+                    Width = Window.Current.Bounds.Width,
+                    Height = Window.Current.Bounds.Height,
+                    Idx = pageCount + 1,
+                    ZoomFactor = defaultZoomFactor,
+                    FirstPageZoomFactor = defaultZoomFactor,
+                    SecondPageZoomFactor = defaultZoomFactor,
+                    PageWidth = width,
+                    PageHeight = height,
+                    Loading = false
+                };
+                pages.Add(data);
 
                 // load page to a bitmap buffer on a background thread
-                 await DrawTwoPagesForBufferAsync(document, p, width, height);
+                var image = await DrawToBufferAsync(document, 0, width, height);
+
+                pages[0].Image = image;
+                pages[0].PageWidth = width;
+                pages[0].ZoomFactor = currentZoomFactor;
+
+                for (int p = 1; p < 3; p++)
+                {
+                    pages[p].PageWidth = 2 * width;
+
+                    // load page to a bitmap buffer on a background thread
+                    await DrawTwoPagesForBufferAsync(document, p, width, height);
+                }
+            }
+            else
+            {
+                // calculate display zoom factor
+                defaultZoomFactor = CalculateZoomFactor1(size.X);
+                currentZoomFactor = defaultZoomFactor;
+
+                if (defaultZoomFactor > 1)
+                {
+                    // if the screen is bigger the the document size we adjust with offsetZF
+                    offsetZF = defaultZoomFactor;
+                    defaultZoomFactor = currentZoomFactor = 1.0f;
+                }
+                else
+                {
+                    offsetZF = 1.0f;
+                }
+
+                width = (int)(size.X * currentZoomFactor * offsetZF);
+                height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+                for (int p = 0; p <= 2 * (pageCount - 1); p++)
+                {
+                    // add the loading DataTemplate to the UI       
+                    var data = new PageData()
+                    {
+                        Image = null,
+                        Width = Window.Current.Bounds.Width + 20,
+                        Height = Window.Current.Bounds.Height,
+                        Idx = p + 1,
+                        ZoomFactor = defaultZoomFactor,
+                        FirstPageZoomFactor = defaultZoomFactor,
+                        SecondPageZoomFactor = defaultZoomFactor,
+                        PageWidth = width,
+                        PageHeight = height,
+                        Loading = false
+                    };
+                    pages.Add(data);
+                }
+
+                // load page to a bitmap buffer on a background thread
+                var image = await DrawToBufferAsync(document, 0, width, height);
+
+                pages[0].Image = image;
+                pages[0].PageWidth = width;
+                pages[0].ZoomFactor = currentZoomFactor;
+
+                for (int p = 1; p < 3; p++)
+                {
+                    pages[p].PageWidth = width;
+
+                    image = await DrawToBufferAsync(document, p, width, height);
+                    image.Invalidate();
+                    pages[p].Image = image;
+                }
             }
 
-            pageNum = CalcPageNum();
-            pageBuffer = pageNum;
+            pageNum = 0;
+            //pageBuffer = pageNum;
         }
 
         // Set the pagesListView ScrollViewer proprieties
@@ -1466,6 +1527,8 @@ namespace LibrelioApplication
         // Handle zooming and scrolling
         void scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
+            if (switchOrientation) return;
+
             if (!e.IsIntermediate)
             {
                 var p = CalcPageNum();
@@ -1515,6 +1578,8 @@ namespace LibrelioApplication
 
         private void ScrollViewer_ViewChanged_1(object sender, ScrollViewerViewChangedEventArgs e)
         {
+            if (switchOrientation) return;
+
             if (!e.IsIntermediate)
             {
                 var scrView = sender as ScrollViewer;
@@ -1637,7 +1702,7 @@ namespace LibrelioApplication
 
                     var linkVistor = new LinkInfoVisitor();
                     linkVistor.OnURILink += visitor_OnURILink;
-                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = 2 * (pageCount - 1) - 1, count = links.Count, handled = 0 });
+                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = pageCount - 1, count = links.Count, handled = 0 });
 
                     pages[pageCount - 1].Links = new ObservableCollection<PageLink>();
 
@@ -1706,7 +1771,7 @@ namespace LibrelioApplication
                     link.rect = new Rect(__param1.Rect.Left, __param1.Rect.Top, __param1.Rect.Right - __param1.Rect.Left, __param1.Rect.Bottom - __param1.Rect.Top);
                     link.url = __param1.URI;
 
-                    if (visitor.index == 0 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
+                    if (visitor.index == 0 || visitor.index == pageCount - 1 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
                     {
                         //if (pages[index].Links == null)
                         //{
@@ -1951,6 +2016,7 @@ namespace LibrelioApplication
                             if (pages[1].Width < pages[1].Height)
                             {
                                 pageNum = (pageNum + 1) / 2;
+                                switchOrientation = true;
                             }
                         }
 
@@ -2028,7 +2094,11 @@ namespace LibrelioApplication
                         {
                             if (pages[1].Width > pages[1].Height)
                             {
-                                pageNum = pageNum * 2 - 1;
+                                if (pageNum > 0)
+                                {
+                                    pageNum = pageNum * 2 - 1;
+                                    switchOrientation = true;
+                                }
                             }
                         }
                         // calculate display zoom factor
@@ -2098,6 +2168,10 @@ namespace LibrelioApplication
 
                     pagesListView.ScrollIntoView(pages[pageNum]);
                     await BufferPages(pageNum, NUM_NEIGHBOURS_BUFFER);
+
+                    switchOrientation = false;
+
+                    await InitPageLink(pageNum);
                 });
             }
         }

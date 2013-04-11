@@ -104,6 +104,7 @@
                 <DataTemplate>
 
                     <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0" Background="Black">
+                        
                         <Image Source="{Binding Image}" Stretch="{Binding ImgStretch}" Width="{Binding Width}" Height="{Binding Height}" Visibility="{Binding Hidden, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0"/>
 
                         <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0" Visibility="{Binding NotDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}" Background="White">
@@ -118,8 +119,10 @@
             <common:ScrollViewerOffsetMediator x:Name="Mediator" />
 
         </GridView>
-        
-        <ProgressRing x:Name="progressLoad" IsActive="True" Foreground="Black" Width="25" Height="25" />
+
+        <Grid x:Name="info" Background="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
+            <TextBlock Text="Double tap / right click to close" FontSize="10" />
+        </Grid>
         
     </Grid>
 </UserControl>

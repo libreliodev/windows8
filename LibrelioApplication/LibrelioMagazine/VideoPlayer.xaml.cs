@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -32,6 +33,11 @@ namespace LibrelioApplication
         string _url = "";
         float _offset = 0f;
 
+        private bool fullScreen = false;
+        private bool UiHidden = false;
+
+        CancellationTokenSource cancel = null;
+
         public VideoPlayer()
         {
             this.InitializeComponent();
@@ -52,12 +58,19 @@ namespace LibrelioApplication
             started = true;
             frame.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,0,0,0));
             content.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            if (DownloadManager.IsEmbedAsset(_url)) return;
+
             if (!error && loaded)
             {
                 videoPlayer.Play();
                 btnPlayPause.Content = "\xe103";
                 paused = false;
             }
+
+            if (DownloadManager.IsFullScreenAsset(_url)) return;
+
+            await Task.Delay(5000);
+            HideUI();
         }
 
         void videoPlayer_MediaEnded(object sender, RoutedEventArgs e)
@@ -99,13 +112,46 @@ namespace LibrelioApplication
             }
         }
 
-        private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private async void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             //e.Handled = true;
 
             if (!started && !error)
             {
                 Start();
+            }
+            else if (fullScreen)
+            {
+                CloseFullScreen();
+            }
+            else if (UiHidden)
+            {
+                ShowUI();
+                UiHidden = false;
+
+                cancel = new CancellationTokenSource();
+
+                try
+                {
+                    await Task.Delay(5000, cancel.Token);
+                }
+                catch
+                {
+                }
+
+                if (!fullScreen && cancel != null && !cancel.Token.IsCancellationRequested)
+                {
+                    HideUI();
+                }
+                cancel = null;
+            }
+            else if (!fullScreen && !UiHidden)
+            {
+                HideUI();
+                if (cancel != null)
+                {
+                    cancel.Cancel();
+                }
             }
         }
 
@@ -127,9 +173,13 @@ namespace LibrelioApplication
                 this.Height = _rect.Height;
                 this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                btnFullScreen.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
             videoPlayer.Width = this.Width;
             videoPlayer.Height = this.Height;
+
+            webView.Width = this.Width;
+            webView.Height = this.Height;
 
             if (DownloadManager.IsLocalAsset(_url))
             {
@@ -170,7 +220,7 @@ namespace LibrelioApplication
                     tmp = await KnownFolders.DocumentsLibrary.GetFileAsync("tmp.mp4");
                     stream = await tmp.OpenAsync(FileAccessMode.Read);
 
-                    videoPlayer.SetSource(stream, file.ContentType); 
+                    videoPlayer.SetSource(stream, file.ContentType);
 
                     if (DownloadManager.IsFullScreenAsset(_url) || DownloadManager.IsAutoPlay(_url))
                     {
@@ -188,6 +238,84 @@ namespace LibrelioApplication
                     return;
                 }
             }
+            else
+            {
+                Start();
+                videoPlayer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                webView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                webView.Navigate(new Uri(_url));
+                HideUI();
+            }
+        }
+
+        private void btnFullScreen_Click(object sender, RoutedEventArgs e)
+        {
+            if (!fullScreen)
+            {
+                SetFullScreen();
+            }
+            else
+            {
+                CloseFullScreen();
+            }
+        }
+
+        private void SetFullScreen()
+        {
+            this.Margin = new Thickness(0);
+            this.Width = Window.Current.Bounds.Width;
+            this.Height = Window.Current.Bounds.Height;
+            videoPlayer.Width = Window.Current.Bounds.Width;
+            videoPlayer.Height = Window.Current.Bounds.Height;
+            btnFullScreen.Content = "\xe1D8";
+            fullScreen = true;
+
+            if (UiHidden)
+            {
+                ShowUI();
+            }
+        }
+
+        async void CloseFullScreen()
+        {
+            this.Margin = new Thickness(_rect.Left * _offset, (_rect.Top + 1.5) * _offset, 0, 0);
+            this.Width = _rect.Width * _offset;
+            this.Height = _rect.Height * _offset;
+            videoPlayer.Width = this.Width;
+            videoPlayer.Height = this.Height;
+
+            fullScreen = false;
+            UiHidden = false;
+
+            cancel = new CancellationTokenSource();
+
+            try
+            {
+                await Task.Delay(5000, cancel.Token);
+            }
+            catch
+            {
+            }
+
+            if (!fullScreen && cancel != null && !cancel.Token.IsCancellationRequested)
+            {
+                HideUI();
+            }
+            cancel = null;
+        }
+
+        private void ShowUI()
+        {
+            if (DownloadManager.IsEmbedAsset(_url)) return;
+
+            controlsFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            UiHidden = false;
+        }
+
+        private void HideUI()
+        {
+            controlsFrame.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            UiHidden = true;
         }
     }
 }

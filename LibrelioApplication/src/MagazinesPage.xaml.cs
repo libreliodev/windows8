@@ -54,8 +54,8 @@ namespace LibrelioApplication
             //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
-            var sampleDataGroups = new MagazineDataSource(1);
-            this.DefaultViewModel["Items"] = sampleDataGroups.AllMagazines;
+            var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
+            this.DefaultViewModel["Groups"] = sampleDataGroups;
             Debug.WriteLine("LoadState - finished");
         
         }

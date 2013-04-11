@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     >
     
-    <Grid x:Name="frame"  Background="#BBFFFFFF" PointerReleased="Grid_PointerReleased_1">
-
+    <Grid x:Name="frame"  Background="Black" PointerReleased="Grid_PointerReleased_1">
+        <ProgressRing x:Name="progressLoad" IsActive="True" Foreground="#88FFFFFF"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="25" Height="25" />
     </Grid>
 </UserControl>

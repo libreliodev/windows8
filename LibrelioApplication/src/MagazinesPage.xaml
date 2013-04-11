@@ -20,9 +20,15 @@
             Source="{Binding Items}"
             d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>-->
         <CollectionViewSource
+            x:Name="groupedItemsViewSource"
+            Source="{Binding Groups}"
+            IsSourceGrouped="true"
+            ItemsPath="TopItems"
+            d:Source="{Binding AllGroups, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
+        <!--<CollectionViewSource
             x:Name="itemsViewSource"
             Source="{Binding Items}"
-            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
+            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>-->
     </Page.Resources>
     
     <common:LayoutAwarePage.BottomAppBar>
@@ -65,7 +71,7 @@
             TabIndex="1"
             Grid.RowSpan="2"
             Padding="116,136,116,46"
-            ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
             
             SelectionMode="None"
             IsSwipeEnabled="false"
@@ -89,10 +95,41 @@
                     </DataTemplate>
 
             </GridView.ItemTemplate>
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+            <GridView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Margin="1,0,0,6">
+                                <Button
+                                    AutomationProperties.Name="Group Title"
+                                    Style="{StaticResource TextPrimaryButtonStyle}" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Title}" Margin="3,-7,10,10" Style="{StaticResource GroupHeaderTextStyle}" />
+                                        <TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-7,0,10" Style="{StaticResource GroupHeaderTextStyle}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0"/>
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                </GroupStyle>
+            </GridView.GroupStyle>
+
         </GridView>
 
         <!-- Vertical scrolling list only used when snapped -->
-        <ListView
+        <!--<ListView
             x:Name="itemListView"
             AutomationProperties.AutomationId="ItemsListView"
             AutomationProperties.Name="Items"
@@ -106,7 +143,7 @@
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick"/>
+            ItemClick="ItemView_ItemClick"/>-->
 
         <!-- Back button and page title -->
         <Grid>

@@ -253,7 +253,7 @@ namespace LibrelioApplication
 
         public static bool IsVideo(string url)
         {
-            return (url.Contains("mp4"));
+            return (url.Contains("mp4") || IsEmbedAsset(url));
         }
 
         public static bool IsFullScreenAsset(string url)
@@ -278,7 +278,12 @@ namespace LibrelioApplication
 
         public static bool IsLink(string url)
         {
-            return !IsLocalAsset(url);
+            return !IsLocalAsset(url) && !(!IsFullScreenAsset(url) && url.Contains("waplay=auto"));
+        }
+
+        public static bool IsEmbedAsset(string url)
+        {
+            return !IsLocalAsset(url) && !IsFullScreenAsset(url) && url.Contains("waplay=auto");
         }
     }
 
