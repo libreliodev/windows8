@@ -1016,10 +1016,10 @@ namespace LibrelioApplication
 
         private void SetScrollViewer(ScrollViewer scr)
         {
-            if (currentZoomFactor < 1)
-            {
-                scrollViewer.ZoomToFactor(currentZoomFactor);
-            }
+            //if (currentZoomFactor < 1)
+            //{
+            //    scrollViewer.ZoomToFactor(currentZoomFactor);
+            //}
 
             if (!loadedFirstPage)
             {

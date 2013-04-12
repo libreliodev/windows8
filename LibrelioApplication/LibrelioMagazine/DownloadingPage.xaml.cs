@@ -340,7 +340,8 @@ namespace LibrelioApplication
                     magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                    var bitmap = await manager.DownloadThumbnailAsync(url);
+                    var magUrl = manager.FindInMetadata(url);
+                    var bitmap = await manager.DownloadThumbnailAsync(url, magUrl.FolderPath);
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 

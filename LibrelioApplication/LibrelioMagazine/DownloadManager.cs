@@ -163,8 +163,12 @@ namespace LibrelioApplication
                 var title = mag.SelectNodes("title")[0].InnerText;
                 var subtitle = mag.SelectNodes("subtitle")[0].InnerText;
                 var path = mag.SelectNodes("path")[0].InnerText;
-                var pos = path.LastIndexOf('\\');
-                path = path.Substring(0, pos + 1);
+                var pos = 0;
+                if (path != "" && path != "ND")
+                {
+                    pos = path.LastIndexOf('\\');
+                    path = path.Substring(0, pos + 1);
+                }
                 var metadata = mag.SelectNodes("metadata")[0].InnerText;
                 pos = metadata.LastIndexOf('\\');
                 metadata = metadata.Substring(pos + 1);
@@ -330,5 +334,13 @@ namespace LibrelioApplication
         public string MetadataName { get; set; }
         public string Url { get; set; }
         public string RelativePath { get; set; }
+
+        public bool IsDownloaded
+        {
+            get
+            {
+                return FolderPath != "ND";
+            }
+        }
     }
 }

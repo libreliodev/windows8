@@ -187,7 +187,36 @@ namespace LibrelioApplication.Data
             assetsDir = getMagazineDir();
         }
 
+        public MagazineModel(LibrelioLocalUrl url)
+        {
+            this.fileName = url.FullName;
+            this.Title = url.Title;
+            this.Subtitle = url.Subtitle;
 
+            valuesInit(url);
+        }
+
+        async public void valuesInit(LibrelioLocalUrl url)
+        {
+            if ((url.FolderPath == "") || (url.FolderPath == "ND")) {
+                return;
+            }
+
+            isPaid = fileName.Contains("_.");
+
+            pdfPath = url.FolderPath + url.FullName;
+            if (isPaid)
+            {
+                pngPath = pdfPath.Replace("_.pdf", ".png");
+                samplePath = pdfPath.Replace("_.", ".");
+                isSampleDowloaded = url.IsDownloaded;
+            }
+            else
+            {
+                pngPath = pdfPath.Replace(".pdf", ".png");
+            }
+            isDowloaded = url.IsDownloaded;
+        }
 
         public String getMagazineDir()
         {
@@ -314,6 +343,7 @@ namespace LibrelioApplication.Data
         //public String Title { get; set; }
         //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
+        public ImageSource Image { get; set; }
         public String DownloadOrReadButton { get; set; }
         public String SampleOrDeleteButton { get; set; }
         public String Button1Tag { get; set; }
@@ -334,12 +364,20 @@ namespace LibrelioApplication.Data
             this._group = group;
         }
 
-        public MagazineViewModel(String uniqueId, String title, String subtitle, MagazineDataGroup group, MagazineModel m)
+        public MagazineViewModel(String uniqueId, String title, String subtitle, ImageSource img, MagazineDataGroup group, MagazineModel m)
             : base(uniqueId, title, subtitle)
         {
             Title = m.Title;
             Subtitle = m.Subtitle;
-            Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
+            if (img != null)
+            {
+                Image = img;
+            }
+            else 
+            {
+                Image = new BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", m.pngPath)));
+            }
+            //Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
             var resourceLoader = new ResourceLoader();
             MagazineTag = m.fileName;
 
@@ -487,31 +525,72 @@ namespace LibrelioApplication.Data
         }
 
         public MagazineDataSource() {
-            PList list = new PList("Assets/data/magazines.plist");
-            //TODODEBUG try
-            {
-                List<dynamic> arr = list[""];
-                var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
-                for (int i = 0; i < arr.Count; i++)
-                {
-                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-                    group.Items.Add(new MagazineViewModel("", "", "", group, m));
-                }
-                this.AllGroups.Add(group);
+            //PList list = new PList("Assets/data/magazines.plist");
+            ////TODODEBUG try
+            //{
+            //    List<dynamic> arr = list[""];
+            //    var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+            //    for (int i = 0; i < arr.Count; i++)
+            //    {
+            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+            //        group.Items.Add(new MagazineViewModel("", "", "", group, m));
+            //    }
+            //    this.AllGroups.Add(group);
 
-                group = new MagazineDataGroup("All Magazines", "All Magazines", "");
-                for (int i = 0; i < arr.Count; i++)
-                {
-                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-                    group.Items.Add(new MagazineViewModel("", "", "", group, m));
-                }
-                this.AllGroups.Add(group);
+            //    group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+            //    for (int i = 0; i < arr.Count; i++)
+            //    {
+            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+            //        group.Items.Add(new MagazineViewModel("", "", "", group, m));
+            //    }
+            //    this.AllGroups.Add(group);
 
-            }
+            //}
             //catch (Exception e)
             //{
             //    throw new Exception("Failed to load list");
             //}
+        }
+
+        public static async Task LoadMagazinesAsync()
+        {
+            if (_sampleDataSource.AllGroups.Count > 0) return;
+
+            var manager = new MagazineManager("Magazines");
+            await manager.LoadLocalMagazineList();
+
+            var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++)
+            {
+                if (manager.MagazineLocalUrl[i].IsDownloaded)
+                {
+                    var m = new MagazineModel(manager.MagazineLocalUrl[i]);
+                    BitmapImage image = null;
+                    try
+                    {
+                        var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+                        image = new BitmapImage();
+                        await image.SetSourceAsync(await file.OpenReadAsync());
+                    }
+                    catch
+                    {
+                    }
+                    group.Items.Add(new MagazineViewModel("", "", "", image, group, m));
+                }
+            }
+            _sampleDataSource.AllGroups.Add(group);
+
+            PList list = new PList("Assets/data/magazines.plist");
+            //TODODEBUG try
+
+                List<dynamic> arr = list[""];
+                group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+                    group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
+                }
+                _sampleDataSource.AllGroups.Add(group);
         }
         
         //public MagazineDataSource()

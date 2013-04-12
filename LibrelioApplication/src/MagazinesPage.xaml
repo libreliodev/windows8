@@ -81,7 +81,7 @@
                     <DataTemplate >
                     <Grid HorizontalAlignment="Left" Width="130" Height="260" Tag="{Binding MagazineTag}" Margin="10" >
                             <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
-                                <Image Source="{Binding Thumbnail}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="130" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="130" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>
                             <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
                                 <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Margin="0" TextAlignment="Center" LineHeight="18"/>
@@ -120,7 +120,7 @@
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0"/>
+                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" MaximumRowsOrColumns="6" />
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>

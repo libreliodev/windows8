@@ -44,6 +44,14 @@ namespace LibrelioApplication
 
         IList<string> links = new List<string>();
 
+
+        public MagazineManager(string name)
+        {
+            this._path = "";
+            this._name = name;
+            StatusText = "";
+        }
+
         /// <summary>
         /// You can download .plist, .pdf, and different assets
         /// </summary>
@@ -85,11 +93,17 @@ namespace LibrelioApplication
             await LoadLocalMetadata();
         }
 
-        public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioUrl magUrl)
+        public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioUrl magUrl, string folderUrl)
         {
             var pos = magUrl.AbsoluteUrl.LastIndexOf(".");
             var url = magUrl.AbsoluteUrl.Substring(0, pos) + ".png";
             var stream = await DownloadManager.DownloadFileAsync(url);
+
+            if (folderUrl != "" && folderUrl != "ND")
+            {
+                var folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
+                await DownloadManager.StoreToFolderAsync(magUrl.FullName.Replace(".pdf", ".png"), folder, stream);
+            }
 
             var bitmap = new BitmapImage();
             try
@@ -122,6 +136,11 @@ namespace LibrelioApplication
             StatusText = "Done";
 
             return stream;
+        }
+
+        public LibrelioLocalUrl FindInMetadata(LibrelioUrl url)
+        {
+            return DownloadManager.FindInMetadata(url, localXml);
         }
 
         public async Task<IRandomAccessStream> DownloadPDFAsync(LibrelioUrl magUrl, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))

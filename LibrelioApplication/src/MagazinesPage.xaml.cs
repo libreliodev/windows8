@@ -47,17 +47,17 @@ namespace LibrelioApplication
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected override async void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             Debug.WriteLine("LoadState");
             //var dataSrc = new LibrelioApplication.Data.MagazineDataSource();
             //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
+            await MagazineDataSource.LoadMagazinesAsync();
             var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
             this.DefaultViewModel["Groups"] = sampleDataGroups;
             Debug.WriteLine("LoadState - finished");
-        
         }
 
         /// <summary>
