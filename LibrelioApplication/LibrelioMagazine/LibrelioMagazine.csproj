@@ -163,6 +163,9 @@
       <DependentUpon>PageButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseModule.xaml.cs">
+      <DependentUpon>PurchaseModule.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SlideShow.xaml.cs">
       <DependentUpon>SlideShow.xaml</DependentUpon>
     </Compile>
@@ -181,6 +184,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="CustomizationAssets\application_.xml" />
+    <Page Include="PurchaseModule.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VideoPlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

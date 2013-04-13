@@ -196,7 +196,7 @@ namespace LibrelioApplication.Data
             valuesInit(url);
         }
 
-        async public void valuesInit(LibrelioLocalUrl url)
+        public void valuesInit(LibrelioLocalUrl url)
         {
             if ((url.FolderPath == "") || (url.FolderPath == "ND")) {
                 return;
@@ -343,6 +343,8 @@ namespace LibrelioApplication.Data
         //public String Title { get; set; }
         //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
+        public bool IsDownloaded { get; set; }
+        public String FileName { get; set; }
         public ImageSource Image { get; set; }
         public String DownloadOrReadButton { get; set; }
         public String SampleOrDeleteButton { get; set; }
@@ -369,6 +371,8 @@ namespace LibrelioApplication.Data
         {
             Title = m.Title;
             Subtitle = m.Subtitle;
+            IsDownloaded = m.isDowloaded;
+            FileName = m.fileName;
             if (img != null)
             {
                 Image = img;
@@ -516,6 +520,13 @@ namespace LibrelioApplication.Data
             return null;
         }
 
+        public static void RemoveGroup(string uniqueId)
+        {
+            // Simple linear search is acceptable for small data sets
+            var matches = _sampleDataSource.AllGroups.Where((group) => group.UniqueId.Equals(uniqueId));
+            if (matches.Count() == 1) _sampleDataSource.AllGroups.Remove(matches.First());
+        }
+
         public static MagazineViewModel GetItem(string uniqueId)
         {
             // Simple linear search is acceptable for small data sets
@@ -552,33 +563,48 @@ namespace LibrelioApplication.Data
             //}
         }
 
-        public static async Task LoadMagazinesAsync()
+        public static async Task<MagazineManager> LoadMagazinesAsync()
         {
-            if (_sampleDataSource.AllGroups.Count > 0) return;
+            //if (_sampleDataSource.AllGroups.Count > 0) return;
 
             var manager = new MagazineManager("Magazines");
             await manager.LoadLocalMagazineList();
 
-            var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
-            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++)
-            {
-                if (manager.MagazineLocalUrl[i].IsDownloaded)
-                {
+            bool newGroup = false;
+            MagazineDataGroup group = null;
+            if (GetGroup("My Magazines") == null) {
+
+                group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+                newGroup = true;
+
+            } else {
+
+                group = GetGroup("My Magazines");
+            }
+            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++) {
+
+                if (manager.MagazineLocalUrl[i].IsDownloaded) {
+
                     var m = new MagazineModel(manager.MagazineLocalUrl[i]);
+                    if (GetItem(m.Title + m.Subtitle) != null) continue;
                     BitmapImage image = null;
-                    try
-                    {
+                    try {
+
                         var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
                         image = new BitmapImage();
                         await image.SetSourceAsync(await file.OpenReadAsync());
-                    }
-                    catch
-                    {
-                    }
-                    group.Items.Add(new MagazineViewModel("", "", "", image, group, m));
+
+                    } catch { }
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, m.Title, m.Subtitle, image, group, m));
                 }
             }
-            _sampleDataSource.AllGroups.Add(group);
+            if (newGroup && group.Items.Count > 0) {
+
+                _sampleDataSource.AllGroups.Insert(0, group);
+                newGroup = false;
+            }
+
+            if (GetGroup("All Magazines") != null) return null;
 
             PList list = new PList("Assets/data/magazines.plist");
             //TODODEBUG try
@@ -591,6 +617,8 @@ namespace LibrelioApplication.Data
                     group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
                 }
                 _sampleDataSource.AllGroups.Add(group);
+
+            return manager;
         }
         
         //public MagazineDataSource()

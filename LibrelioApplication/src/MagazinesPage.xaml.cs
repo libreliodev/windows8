@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
@@ -27,6 +29,8 @@ namespace LibrelioApplication
     /// </summary>
     public sealed partial class ItemsPage : LibrelioApplication.Common.LayoutAwarePage
     {
+        private MagazineManager manager = null;
+
         public ItemsPage()
         {
             this.InitializeComponent();
@@ -54,7 +58,7 @@ namespace LibrelioApplication
             //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
-            await MagazineDataSource.LoadMagazinesAsync();
+            manager = await MagazineDataSource.LoadMagazinesAsync();
             var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
             this.DefaultViewModel["Groups"] = sampleDataGroups;
             Debug.WriteLine("LoadState - finished");
@@ -66,15 +70,29 @@ namespace LibrelioApplication
         /// <param name="sender">The GridView (or ListView when the application is snapped)
         /// displaying the item clicked.</param>
         /// <param name="e">Event data that describes the item clicked.</param>
-        void ItemView_ItemClick(object sender, ItemClickEventArgs e)
+        async void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
             //// Navigate to the appropriate destination page, configuring the new page
             //// by passing required information as a navigation parameter
             //var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
             //this.Frame.Navigate(typeof(SplitPage), groupId);
-            string sParam = ((MagazineViewModel)e.ClickedItem).MagazineTag;
+            var item = ((MagazineViewModel)e.ClickedItem);
             //sParam += LibrelioApplication.PdfViewPage.qqq;
-            Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage), sParam);
+            if (!item.IsDownloaded) {
+
+                Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage));
+
+            } else {
+
+                if (manager == null) {
+
+                    manager = new MagazineManager("Magazines");
+                    await manager.LoadLocalMagazineList();
+                }
+
+                var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
+                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = await DownloadManager.OpenPdfFile(mag), folderUrl = mag.FolderPath });
+            }
         }
 
         private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,14 +100,68 @@ namespace LibrelioApplication
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(DownloadingPage));
+            var button = sender as Button;
+            if (button.Content.Equals("Read"))
+            {
+                var item = ((MagazineViewModel)button.DataContext);
+
+                if (manager == null)
+                {
+                    manager = new MagazineManager("Magazines");
+                    await manager.LoadLocalMagazineList();
+                }
+
+                var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
+                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = await DownloadManager.OpenPdfFile(mag), folderUrl = mag.FolderPath });
+            }
+            else
+            {
+                this.Frame.Navigate(typeof(DownloadingPage));
+            }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            int i2 = 2;
+            var button = sender as Button;
+            if (button.Content.Equals("Delete"))
+            {
+                var item = ((MagazineViewModel)button.DataContext);
+
+                if (manager == null)
+                {
+                    manager = new MagazineManager("Magazines");
+                    await manager.LoadLocalMagazineList();
+                }
+
+                var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
+                var folder = await StorageFolder.GetFolderFromPathAsync(mag.FolderPath);
+                var files = await folder.GetFilesAsync();
+                foreach (var file in files) {
+
+                    try {
+
+                        await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
+                    } catch { }
+                }
+
+                try {
+
+                    await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
+                } catch { }
+
+                mag = DownloadManager.DeleteLocalUrl(mag);
+                await manager.AddUpdateMetadataEntry(mag);
+                var group = MagazineDataSource.GetGroup("My Magazines");
+                group.Items.Remove(item);
+                if (group.Items.Count == 0)
+                {
+                    MagazineDataSource.RemoveGroup(group.UniqueId);
+                }
+            }
         }
 
         private void Appbar_Click(object sender, RoutedEventArgs e)

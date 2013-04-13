@@ -245,6 +245,26 @@ namespace LibrelioApplication
             return unprotectedData;
         }
 
+        public static async Task<IRandomAccessStream> OpenPdfFile(LibrelioLocalUrl url)
+        {
+            var folder = await StorageFolder.GetFolderFromPathAsync(url.FolderPath);
+            if (folder == null) return null;
+            var file = await folder.GetFileAsync(url.FullName);
+            if (file == null) return null;
+
+            var stream = await file.OpenAsync(FileAccessMode.Read);
+
+            return await UnprotectPDFStream(stream);
+        }
+
+        public static LibrelioLocalUrl DeleteLocalUrl(LibrelioLocalUrl url)
+        {
+            url.MetadataName = "";
+            url.FolderPath = "ND";
+
+            return url;
+        }
+
         public static bool IsFullScreenButton(string url)
         {
             return url.Contains("warect=full");

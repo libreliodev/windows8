@@ -173,124 +173,124 @@ namespace LibrelioApplication
             }
         }
 
-        private async Task<StorageFile> CreateMetadataFile(string name)
-        {
-            //var roamingFolder = Windows.Storage.ApplicationData.Current.RoamingFolder;
-            var roamingFolder = KnownFolders.DocumentsLibrary;
-            var file = await roamingFolder.CreateFileAsync(name + ".pmd", CreationCollisionOption.ReplaceExisting);
-            folder = await roamingFolder.CreateFolderAsync(name, CreationCollisionOption.GenerateUniqueName);
-            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+        //private async Task<StorageFile> CreateMetadataFile(string name)
+        //{
+        //    //var roamingFolder = Windows.Storage.ApplicationData.Current.RoamingFolder;
+        //    var roamingFolder = KnownFolders.DocumentsLibrary;
+        //    var file = await roamingFolder.CreateFileAsync(name + ".pmd", CreationCollisionOption.ReplaceExisting);
+        //    folder = await roamingFolder.CreateFolderAsync(name, CreationCollisionOption.GenerateUniqueName);
+        //    var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
 
-            using (var outputStream = stream.GetOutputStreamAt(0))
-            using (var dataWriter = new DataWriter(outputStream))
-            {
-                string data = name + "\r\n" + DateTime.Today.Month.ToString() + "/" + DateTime.Today.Day.ToString() + "/" + DateTime.Today.Year.ToString() + "\r\n";
+        //    using (var outputStream = stream.GetOutputStreamAt(0))
+        //    using (var dataWriter = new DataWriter(outputStream))
+        //    {
+        //        string data = name + "\r\n" + DateTime.Today.Month.ToString() + "/" + DateTime.Today.Day.ToString() + "/" + DateTime.Today.Year.ToString() + "\r\n";
 
-                dataWriter.WriteString(data);
+        //        dataWriter.WriteString(data);
 
-                await dataWriter.StoreAsync();
-                await outputStream.FlushAsync();
-            }
+        //        await dataWriter.StoreAsync();
+        //        await outputStream.FlushAsync();
+        //    }
 
-            return file;
-        }
+        //    return file;
+        //}
 
-        private async Task<IRandomAccessStream> DownloadFileAsyncWithProgress(string url, StorageFile pdfFile, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken)) 
-        {
-            HttpClient client = new HttpClient();
+        //private async Task<IRandomAccessStream> DownloadFileAsyncWithProgress(string url, StorageFile pdfFile, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken)) 
+        //{
+        //    HttpClient client = new HttpClient();
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url); 
+        //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url); 
 
-            int read = 0; 
-            int offset = 0;
-            byte[] responseBuffer = new byte[1024];
+        //    int read = 0; 
+        //    int offset = 0;
+        //    byte[] responseBuffer = new byte[1024];
 
-            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancelToken);
-            var length = response.Content.Headers.ContentLength;
+        //    var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancelToken);
+        //    var length = response.Content.Headers.ContentLength;
 
-            cancelToken.ThrowIfCancellationRequested();
+        //    cancelToken.ThrowIfCancellationRequested();
 
-            var stream = new InMemoryRandomAccessStream();
+        //    var stream = new InMemoryRandomAccessStream();
 
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                do
-                {
-                    cancelToken.ThrowIfCancellationRequested();
+        //    using (var responseStream = await response.Content.ReadAsStreamAsync())
+        //    {
+        //        do
+        //        {
+        //            cancelToken.ThrowIfCancellationRequested();
 
-                    read = await responseStream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
+        //            read = await responseStream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
 
-                    cancelToken.ThrowIfCancellationRequested();
+        //            cancelToken.ThrowIfCancellationRequested();
 
-                    await stream.AsStream().WriteAsync(responseBuffer, 0, read);
+        //            await stream.AsStream().WriteAsync(responseBuffer, 0, read);
 
-                    offset += read;
-                    int val = (int)(offset * 100 / length);
-                    progress.Report(val);
-                }
-                while (read != 0);
-            }
+        //            offset += read;
+        //            int val = (int)(offset * 100 / length);
+        //            progress.Report(val);
+        //        }
+        //        while (read != 0);
+        //    }
 
-            await stream.FlushAsync();
+        //    await stream.FlushAsync();
 
-            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
-            using (var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-            //using (var unprotectedStream = await UnprotectPDFStream(protectedStream))
-            {
+        //    using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
+        //    using (var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+        //    //using (var unprotectedStream = await UnprotectPDFStream(protectedStream))
+        //    {
 
-                await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));
+        //        await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));
 
-                await fileStream.FlushAsync();
-            }
+        //        await fileStream.FlushAsync();
+        //    }
 
-            return stream;
-        }
+        //    return stream;
+        //}
 
-        private async Task GetUrlsFromPDF(IRandomAccessStream stream)
-        {
-            using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
-            {
-                uint u = await dataReader.LoadAsync((uint)stream.Size);
-                IBuffer buffer = dataReader.ReadBuffer(u);
+        //private async Task GetUrlsFromPDF(IRandomAccessStream stream)
+        //{
+        //    using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
+        //    {
+        //        uint u = await dataReader.LoadAsync((uint)stream.Size);
+        //        IBuffer buffer = dataReader.ReadBuffer(u);
 
-                GetPDFLinks(buffer);
+        //        GetPDFLinks(buffer);
 
-                TimeSpan t = new TimeSpan(0, 0, 1);
-                await Task.Delay(t);
-            }
-        }
+        //        TimeSpan t = new TimeSpan(0, 0, 1);
+        //        await Task.Delay(t);
+        //    }
+        //}
 
-        private void GetPDFLinks(IBuffer buffer)
-        {
-            var document = Document.Create(
-                        buffer, // - file
-                        DocumentType.PDF, // type
-                        72 // - dpi
-                      );
+        //private void GetPDFLinks(IBuffer buffer)
+        //{
+        //    var document = Document.Create(
+        //                buffer, // - file
+        //                DocumentType.PDF, // type
+        //                72 // - dpi
+        //              );
 
-            var linkVistor = new LinkInfoVisitor();
-            linkVistor.OnURILink += linkVistor_OnURILink;
+        //    var linkVistor = new LinkInfoVisitor();
+        //    linkVistor.OnURILink += linkVistor_OnURILink;
 
-            for (int i = 0; i < document.PageCount; i++)
-            {
-                var links = document.GetLinks(i);
+        //    for (int i = 0; i < document.PageCount; i++)
+        //    {
+        //        var links = document.GetLinks(i);
 
-                for (int j = 0; j < links.Count; j++)
-                {
-                    links[j].AcceptVisitor(linkVistor);
+        //        for (int j = 0; j < links.Count; j++)
+        //        {
+        //            links[j].AcceptVisitor(linkVistor);
                     
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
-        void linkVistor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
-        {
-            string str = __param1.URI;
-            if (str.Contains("localhost"))
-            {
-                links.Add(str);
-            }
-        }
+        //void linkVistor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
+        //{
+        //    string str = __param1.URI;
+        //    if (str.Contains("localhost"))
+        //    {
+        //        links.Add(str);
+        //    }
+        //}
 
         //private async Task DownloadAssetsAsync(StorageFile metadataFile)
         //{
@@ -340,8 +340,8 @@ namespace LibrelioApplication
                     magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                    var magUrl = manager.FindInMetadata(url);
-                    var bitmap = await manager.DownloadThumbnailAsync(url, magUrl.FolderPath);
+                    var folder = await manager.AddMagazineFolderStructure(url);
+                    var bitmap = await manager.DownloadThumbnailAsync(url, folder);
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 
@@ -357,7 +357,7 @@ namespace LibrelioApplication
 
                     try
                     {
-                        var stream = await manager.DownloadMagazineAsync(url, progressIndicator, cts.Token);
+                        var stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
                         statusText.Text = "Done.";
                         await Task.Delay(1000);
 
