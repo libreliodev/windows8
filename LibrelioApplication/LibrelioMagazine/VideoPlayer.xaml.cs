@@ -53,6 +53,12 @@ namespace LibrelioApplication
             _offset = offset;
         }
 
+        public void Close()
+        {
+            webView.NavigateToString("<html><body></body></html>");
+            webView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        }
+
         async void Start()
         {
             started = true;
@@ -283,6 +289,7 @@ namespace LibrelioApplication
             this.Height = _rect.Height * _offset;
             videoPlayer.Width = this.Width;
             videoPlayer.Height = this.Height;
+            btnFullScreen.Content = "\xe1D9";
 
             fullScreen = false;
             UiHidden = false;

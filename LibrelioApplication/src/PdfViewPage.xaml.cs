@@ -579,7 +579,7 @@ namespace LibrelioApplication
         float CalculateZoomFactor1(int width)
         {
             var rect = Window.Current.Bounds;
-            return (float)(rect.Width + 20) / width;
+            return (float)(rect.Width) / width;
         }
 
         void PdfViewPage_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -1978,6 +1978,11 @@ namespace LibrelioApplication
             var grid = children as Grid;
             foreach (var addon in pages[page].Addons)
             {
+                var video = addon.element as VideoPlayer;
+                if (video != null)
+                {
+                    video.Close();
+                }
                 grid.Children.Remove(addon.element);
             }
             pages[page].Addons.Clear();
@@ -2127,7 +2132,7 @@ namespace LibrelioApplication
                             var data = new PageData()
                             {
                                 Image = null,
-                                Width = Window.Current.Bounds.Width + 20,
+                                Width = Window.Current.Bounds.Width,
                                 Height = Window.Current.Bounds.Height,
                                 Idx = p + 1,
                                 ZoomFactor = defaultZoomFactor,

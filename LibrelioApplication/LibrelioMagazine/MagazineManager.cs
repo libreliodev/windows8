@@ -95,7 +95,12 @@ namespace LibrelioApplication
 
         public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioUrl magUrl)
         {
-            var pos = magUrl.AbsoluteUrl.LastIndexOf(".");
+            String s = ".";
+            if (magUrl.FullName.Contains("_"))
+            {
+                s = "_.";
+            }
+            var pos = magUrl.AbsoluteUrl.LastIndexOf(s);
             var url = magUrl.AbsoluteUrl.Substring(0, pos) + ".png";
             var stream = await DownloadManager.DownloadFileAsync(url);
 
@@ -113,7 +118,12 @@ namespace LibrelioApplication
 
         public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioUrl magUrl, StorageFolder folder)
         {
-            var pos = magUrl.AbsoluteUrl.LastIndexOf(".");
+            string s = ".";
+            if (magUrl.FullName.Contains("_."))
+            {
+                s = "_.";
+            }
+            var pos = magUrl.AbsoluteUrl.LastIndexOf(s);
             var url = magUrl.AbsoluteUrl.Substring(0, pos) + ".png";
             var stream = await DownloadManager.DownloadFileAsync(url);
 
@@ -140,7 +150,7 @@ namespace LibrelioApplication
             await GetUrlsFromPDF(stream);
 
             StatusText = "Downloading 2/" + (links.Count+1);
-            var url = DownloadManager.FindInMetadata(magUrl, localXml);
+            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
 
             if (url != null)
             {
@@ -252,18 +262,32 @@ namespace LibrelioApplication
 
             if (currentFolder != _folder)
             {
-                var magLocal = new LibrelioLocalUrl(magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\", 
+            //    var magLocal = new LibrelioLocalUrl(magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\", 
+            //                                        magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl);
+
+            //    if (!UpdataLocalUrl(magLocal))
+            //        _magazinesLocalUrl.Add(magLocal);
+
+            //    await AddUpdateMetadataEntry(magLocal);
+
+                return currentFolder;
+            }
+
+            return null;
+        }
+
+        public async Task MarkAsDownloaded(LibrelioUrl magUrl, StorageFolder currentFolder)
+        {
+            if (currentFolder != _folder)
+            {
+                var magLocal = new LibrelioLocalUrl(magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\",
                                                     magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl);
 
                 if (!UpdataLocalUrl(magLocal))
                     _magazinesLocalUrl.Add(magLocal);
 
                 await AddUpdateMetadataEntry(magLocal);
-
-                return currentFolder;
             }
-
-            return null;
         }
 
         public async Task AddMagazineFolderStructure(LibrelioLocalUrl magLocal)
@@ -626,9 +650,9 @@ namespace LibrelioApplication
 
             var cancelation = new CancellationTokenSource();
 
-            var task2 = Task.Run( async () =>
+            var task2 = Task.Run(async () =>
             {
-                for (int i = 0; i < length; i+=9000)
+                for (int i = 0; i < length; i += 9000)
                 {
                     await Task.Delay(1);
                     int val = (int)(i * 100 / length);
@@ -642,45 +666,44 @@ namespace LibrelioApplication
                 }
             }, cancelation.Token);
 
-            await task1;
+            var result = await task1;
 
             cancelation.Cancel();
             progress.Report(99);
 
-            await task1.Result.CopyToAsync(stream.AsStream());
-
-            await Task.Delay(670);
-
-            //using (var responseStream = await response.Content.ReadAsStreamAsync())
-            //{
-            //    do
-            //    {
-            //        cancelToken.ThrowIfCancellationRequested();
-
-            //        read = await responseStream.dAsync(responseBuffer, 0, responseBuffer.Length);
-
-            //        cancelToken.ThrowIfCancellationRequested();
-
-            //        await stream.AsStream().WriteAsync(responseBuffer, 0, read);
-
-            //        offset += read;
-            //        int val = (int)(offset * 100 / length);
-            //        progress.Report(val);
-            //    }
-            //    while (read > 0);
-            //}
-
+            await result.CopyToAsync(stream.AsStream());
             await stream.FlushAsync();
 
-            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
-            using (var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+            //await Task.Delay(670);
+
+            //var responseStream = await response.Content.ReadAsStreamAsync();
+
+            //do
+            //{
+            //    cancelToken.ThrowIfCancellationRequested();
+
+            //    read = await responseStream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
+
+            //    cancelToken.ThrowIfCancellationRequested();
+
+            //    await stream.AsStream().WriteAsync(responseBuffer, 0, read);
+
+            //    offset += read;
+            //    int val = (int)(offset * 100 / length);
+            //    progress.Report(val);
+            //}
+            //while (read > 0);
+
+            //await stream.FlushAsync();
+            //await Task.Delay(670);
+
+            var protectedStream = await DownloadManager.ProtectPDFStream(stream);
+            var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
             //using (var unprotectedStream = await DownloadManager.UnprotectPDFStream(protectedStream))
-            {
 
-                await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));
+            await RandomAccessStream.CopyAndCloseAsync(protectedStream, fileStream.GetOutputStreamAt(0));
 
-                await fileStream.FlushAsync();
-            }
+            //await fileStream.FlushAsync();
 
             return stream;
         }

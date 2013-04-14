@@ -91,7 +91,10 @@ namespace LibrelioApplication
                 }
 
                 var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
-                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = await DownloadManager.OpenPdfFile(mag), folderUrl = mag.FolderPath });
+                if (mag == null) return;
+                var str = await DownloadManager.OpenPdfFile(mag);
+                if (str == null) return;
+                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
         }
 
@@ -105,6 +108,7 @@ namespace LibrelioApplication
             var button = sender as Button;
             if (button.Content.Equals("Read"))
             {
+                button.Content = "Opening";
                 var item = ((MagazineViewModel)button.DataContext);
 
                 if (manager == null)
@@ -114,10 +118,16 @@ namespace LibrelioApplication
                 }
 
                 var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
-                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = await DownloadManager.OpenPdfFile(mag), folderUrl = mag.FolderPath });
+                if (mag == null) return;
+                var str = await DownloadManager.OpenPdfFile(mag);
+                if (str == null) return;
+                this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
             else
             {
+                var item = ((MagazineViewModel)button.DataContext);
+                var group = MagazineDataSource.GetGroup("All Magazines");
+                group.Items.Remove(item);
                 this.Frame.Navigate(typeof(DownloadingPage));
             }
         }
@@ -127,6 +137,7 @@ namespace LibrelioApplication
             var button = sender as Button;
             if (button.Content.Equals("Delete"))
             {
+                button.Content = "Deleting";
                 var item = ((MagazineViewModel)button.DataContext);
 
                 if (manager == null)

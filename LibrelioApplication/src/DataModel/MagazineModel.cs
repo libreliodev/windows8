@@ -230,7 +230,32 @@ namespace LibrelioApplication.Data
             return "";//TODODEBUG? Possible will be empty so as we used StorageFolder - not full path!
         }
 
-        
+        public MagazineModel(LibrelioUrl url)
+        {
+            this.fileName = url.FullName;
+            this.Title = url.Title;
+            this.Subtitle = url.Subtitle;
+
+            valuesInit(url);
+        }
+
+        public void valuesInit(LibrelioUrl url)
+        {
+            isPaid = fileName.Contains("_.");
+
+            pdfUrl = url.AbsoluteUrl;
+            if (isPaid)
+            {
+                pngUrl = pdfUrl.Replace("_.pdf", ".png");
+                //samplePath = pdfPath.Replace("_.", ".");
+                isSampleDowloaded = false;
+            }
+            else
+            {
+                pngUrl = pdfUrl.Replace(".pdf", ".png");
+            }
+            isDowloaded = false;
+        }
 
         /*
             public MagazineModel(Cursor cursor, Context context) {
@@ -344,6 +369,7 @@ namespace LibrelioApplication.Data
         //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
         public bool IsDownloaded { get; set; }
+        public bool SecondButtonVisible { get; set; }
         public String FileName { get; set; }
         public ImageSource Image { get; set; }
         public String DownloadOrReadButton { get; set; }
@@ -373,6 +399,7 @@ namespace LibrelioApplication.Data
             Subtitle = m.Subtitle;
             IsDownloaded = m.isDowloaded;
             FileName = m.fileName;
+            SecondButtonVisible = true;
             if (img != null)
             {
                 Image = img;
@@ -395,6 +422,10 @@ namespace LibrelioApplication.Data
             else {
                 DownloadOrReadButton = resourceLoader.GetString("download");
                 SampleOrDeleteButton = resourceLoader.GetString("sample");
+                if (!m.isDowloaded && !m.isPaid)
+                {
+                    SecondButtonVisible = false;
+                }
                 Button1Tag = TAG_DOWNLOAD;
                 Button2Tag = TAG_SAMPLE;
             }
@@ -428,50 +459,50 @@ namespace LibrelioApplication.Data
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewStartingIndex < 12)
+                    if (e.NewStartingIndex < 22)
                     {
                         TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
-                        if (TopItems.Count > 12)
+                        if (TopItems.Count > 22)
                         {
-                            TopItems.RemoveAt(12);
+                            TopItems.RemoveAt(22);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    if (e.OldStartingIndex < 12 && e.NewStartingIndex < 12)
+                    if (e.OldStartingIndex < 22 && e.NewStartingIndex < 22)
                     {
                         TopItems.Move(e.OldStartingIndex, e.NewStartingIndex);
                     }
-                    else if (e.OldStartingIndex < 12)
+                    else if (e.OldStartingIndex < 22)
                     {
                         TopItems.RemoveAt(e.OldStartingIndex);
-                        TopItems.Add(Items[11]);
+                        TopItems.Add(Items[21]);
                     }
-                    else if (e.NewStartingIndex < 12)
+                    else if (e.NewStartingIndex < 22)
                     {
                         TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
                         TopItems.RemoveAt(12);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    if (e.OldStartingIndex < 12)
+                    if (e.OldStartingIndex < 22)
                     {
                         TopItems.RemoveAt(e.OldStartingIndex);
-                        if (Items.Count >= 12)
+                        if (Items.Count >= 22)
                         {
-                            TopItems.Add(Items[11]);
+                            TopItems.Add(Items[21]);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    if (e.OldStartingIndex < 12)
+                    if (e.OldStartingIndex < 22)
                     {
                         TopItems[e.OldStartingIndex] = Items[e.OldStartingIndex];
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     TopItems.Clear();
-                    while (TopItems.Count < Items.Count && TopItems.Count < 12)
+                    while (TopItems.Count < Items.Count && TopItems.Count < 22)
                     {
                         TopItems.Add(Items[TopItems.Count]);
                     }
@@ -489,6 +520,7 @@ namespace LibrelioApplication.Data
         public ObservableCollection<MagazineViewModel> TopItems
         {
             get { return this._topItem; }
+            set { _topItem = value; }
         }
     }
 
@@ -567,7 +599,9 @@ namespace LibrelioApplication.Data
         {
             //if (_sampleDataSource.AllGroups.Count > 0) return;
 
-            var manager = new MagazineManager("Magazines");
+            var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+
+            await manager.LoadPLISTAsync();
             await manager.LoadLocalMagazineList();
 
             bool newGroup = false;
@@ -604,19 +638,69 @@ namespace LibrelioApplication.Data
                 newGroup = false;
             }
 
-            if (GetGroup("All Magazines") != null) return null;
+            newGroup = false;
 
-            PList list = new PList("Assets/data/magazines.plist");
-            //TODODEBUG try
+            if (GetGroup("All Magazines") == null) {
 
-                List<dynamic> arr = list[""];
                 group = new MagazineDataGroup("All Magazines", "All Magazines", "");
-                for (int i = 0; i < arr.Count; i++)
-                {
-                    var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-                    group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
-                }
+                newGroup = true;
+
+            } else {
+
+                group = GetGroup("All Magazines");
+            }
+
+            for (int i = 0; i < manager.MagazineUrl.Count; i++) {
+
+                var localUrl = manager.FindInMetadata(manager.MagazineUrl[i]);
+                MagazineModel m = null;
+                if (localUrl != null && localUrl.IsDownloaded)
+                    m = new MagazineModel(localUrl);
+                else
+                    m = new MagazineModel(manager.MagazineUrl[i]);
+                    
+
+                if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
+                BitmapImage image = null;
+                try {
+
+                    if (localUrl != null && localUrl.IsDownloaded) {
+
+                        var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+                        image = new BitmapImage();
+                        await image.SetSourceAsync(await file.OpenReadAsync());
+
+                    } else {
+
+                        image = new BitmapImage(new Uri(m.pngUrl));
+                    }
+
+                } catch { }
+                var item = new MagazineViewModel(m.Title + m.Subtitle + "1", m.Title, m.Subtitle, image, group, m);
+                if (localUrl != null && localUrl.IsDownloaded)
+                    item.SecondButtonVisible = false;
+                group.Items.Add(item);
+            }
+            group.TopItems = new ObservableCollection<MagazineViewModel>(group.Items.OrderBy(item => item.Title));
+            if (newGroup && group.Items.Count > 0) {
+
                 _sampleDataSource.AllGroups.Add(group);
+                newGroup = false;
+            }
+
+            //if (GetGroup("All Magazines") != null) return null;
+
+            //PList list = new PList("Assets/data/magazines.plist");
+            ////TODODEBUG try
+
+            //    List<dynamic> arr = list[""];
+            //    group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+            //    for (int i = 0; i < arr.Count; i++)
+            //    {
+            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+            //        group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
+            //    }
+            //    _sampleDataSource.AllGroups.Add(group);
 
             return manager;
         }

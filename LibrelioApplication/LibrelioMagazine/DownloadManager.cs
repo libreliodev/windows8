@@ -126,6 +126,11 @@ namespace LibrelioApplication
             return new LibrelioLocalUrl(url.Title, url.Subtitle, "ND", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
         }
 
+        public static LibrelioLocalUrl ConvertToLocalUrl(LibrelioUrl url, StorageFolder folder)
+        {
+            return new LibrelioLocalUrl(url.Title, url.Subtitle, folder.Path + "\\", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
+        }
+
         public static LibrelioLocalUrl FindInMetadata(LibrelioUrl url, XmlDocument xml)
         {
             if (xml == null) return null;
@@ -138,11 +143,17 @@ namespace LibrelioApplication
                 var title = nodes[0].SelectNodes("title")[0].InnerText;
                 var subtitle = nodes[0].SelectNodes("subtitle")[0].InnerText;
                 var path = nodes[0].SelectNodes("path")[0].InnerText;
-                var pos = path.LastIndexOf('\\');
-                path = path.Substring(0, pos + 1);
+                if (path != "ND")
+                {
+                    var pos = path.LastIndexOf('\\');
+                    path = path.Substring(0, pos + 1);
+                }
                 var metadata = nodes[0].SelectNodes("metadata")[0].InnerText;
-                pos = metadata.LastIndexOf('\\');
-                metadata = metadata.Substring(pos + 1);
+                if (metadata != "ND")
+                {
+                    var pos = metadata.LastIndexOf('\\');
+                    metadata = metadata.Substring(pos + 1);
+                }
                 var u = nodes[0].SelectNodes("url")[0].InnerText;
                 var rel = nodes[0].SelectNodes("relPath")[0].InnerText;
 
@@ -247,9 +258,19 @@ namespace LibrelioApplication
 
         public static async Task<IRandomAccessStream> OpenPdfFile(LibrelioLocalUrl url)
         {
-            var folder = await StorageFolder.GetFolderFromPathAsync(url.FolderPath);
+            StorageFolder folder = null;
+            try {
+
+                folder = await StorageFolder.GetFolderFromPathAsync(url.FolderPath);
+
+            } catch { }
             if (folder == null) return null;
-            var file = await folder.GetFileAsync(url.FullName);
+            StorageFile file = null;
+            try {
+
+                file = await folder.GetFileAsync(url.FullName);
+
+            } catch { }
             if (file == null) return null;
 
             var stream = await file.OpenAsync(FileAccessMode.Read);

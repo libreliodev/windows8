@@ -359,6 +359,7 @@ namespace LibrelioApplication
                     {
                         var stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
                         statusText.Text = "Done.";
+                        await manager.MarkAsDownloaded(url, folder);
                         await Task.Delay(1000);
 
                         var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FullName);
@@ -372,6 +373,10 @@ namespace LibrelioApplication
                             var messageDialog = new MessageDialog("This is a paid app. You need to purchase it first");
                             var task = messageDialog.ShowAsync().AsTask();
                             return;
+                        }
+                        else if (ex.Message == "The operation was canceled.")
+                        {
+                            int x = 0;
                         }
                         else
                         {
@@ -425,7 +430,8 @@ namespace LibrelioApplication
                 var receipt = dataReader.ReadString(size);
 
                 receipt = Uri.EscapeDataString(receipt);
-                url += "?receipt=" + receipt;
+                var productId = "Product1";
+                url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/wind_358/wind_358_.pdf";
                 try
                 {
                     str = await new HttpClient().GetAsync(url).Result.Content.ReadAsStringAsync();
@@ -436,6 +442,13 @@ namespace LibrelioApplication
                     testOutput.Text = "error";
                 }
             }
+        }
+
+        private void GoBack(object sender, RoutedEventArgs e)
+        {
+            if (cts != null) cts.Cancel();
+            if (this.Frame.CanGoBack)
+                this.Frame.GoBack();
         }
     }
 }
