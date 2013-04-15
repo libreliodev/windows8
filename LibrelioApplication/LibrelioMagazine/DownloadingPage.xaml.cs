@@ -39,6 +39,12 @@ namespace LibrelioApplication
         public string FullName { get; set; }
     }
 
+    public class DownloadMagazine
+    {
+        public MagazineManager manager { get; set; }
+        public LibrelioUrl url { get; set; }
+    }
+
     /// <summary>
     /// A basic page that provides characteristics common to most applications.
     /// </summary>
@@ -50,6 +56,8 @@ namespace LibrelioApplication
         StorageFolder folder = null;
 
         MagazineManager manager = null;
+
+        bool needtoGoBack = false;
 
         public DownloadingPage()
         {
@@ -65,8 +73,78 @@ namespace LibrelioApplication
         /// </param>
         /// <param name="pageState">A dictionary of state preserved by this page during an earlier
         /// session.  This will be null the first time a page is visited.</param>
-        protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
+        protected override async void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            var item = navigationParameter as DownloadMagazine;
+
+            if (item != null)
+            {
+                statusText.Text = "Download in progress";
+
+                manager = item.manager;
+                var url = item.url;
+
+                magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                var folder = await manager.AddMagazineFolderStructure(url);
+                var bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
+                pdfThumbnail.Source = bitmap;
+
+                pRing.IsActive = false;
+
+                var progressIndicator = new Progress<int>((value) =>
+                {
+                    if (statusText.Text != manager.StatusText)
+                        statusText.Text = manager.StatusText;
+                    progressBar.Value = value;
+                });
+                cts = new CancellationTokenSource();
+
+                try
+                {
+                    var stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                    statusText.Text = "Done.";
+                    await manager.MarkAsDownloaded(url, folder);
+                    await Task.Delay(1000);
+
+                    var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, url.FullName);
+                    this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = stream, folderUrl = mag.FolderPath });
+                }
+                catch (Exception ex)
+                {
+                    statusText.Text = "Error";
+                    if (ex.Message == "Response status code does not indicate success: 403 (Forbidden).")
+                    {
+                        var messageDialog = new MessageDialog("This is a paid app. You need to purchase it first");
+                        var task = messageDialog.ShowAsync().AsTask();
+                        return;
+                    }
+                    else if (ex.Message == "The operation was canceled.")
+                    {
+                        int x = 0;
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Unexpected error");
+                        var task = messageDialog.ShowAsync().AsTask();
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                string s = navigationParameter as string;
+                if (s == "test")
+                {
+                    testView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                }
+                else
+                {
+                    needtoGoBack = true;
+                }
+            }
         }
 
         /// <summary>
@@ -83,6 +161,12 @@ namespace LibrelioApplication
         {
             try
             {
+                if (needtoGoBack)
+                {
+                    if (this.Frame.CanGoBack) this.Frame.GoBack();
+                    return;
+                }
+
                 var fileHandle =
                     await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
 

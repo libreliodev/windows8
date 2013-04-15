@@ -369,6 +369,7 @@ namespace LibrelioApplication.Data
         //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
         public bool IsDownloaded { get; set; }
+        public bool IsPaid { get; set; }
         public bool SecondButtonVisible { get; set; }
         public String FileName { get; set; }
         public ImageSource Image { get; set; }
@@ -398,6 +399,7 @@ namespace LibrelioApplication.Data
             Title = m.Title;
             Subtitle = m.Subtitle;
             IsDownloaded = m.isDowloaded;
+            IsPaid = m.isPaid;
             FileName = m.fileName;
             SecondButtonVisible = true;
             if (img != null)

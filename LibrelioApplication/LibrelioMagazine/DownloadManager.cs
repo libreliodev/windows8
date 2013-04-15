@@ -286,6 +286,10 @@ namespace LibrelioApplication
             return url;
         }
 
+        public static async Task StoreReceiptAsync(string receipt)
+        {
+        }
+
         public static bool IsFullScreenButton(string url)
         {
             return url.Contains("warect=full");

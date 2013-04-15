@@ -9,7 +9,13 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
     
-    <Grid>
+    <Grid Background="White" Width="400" Height="300">
+        
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="Black">
+            <Button x:Name="subscribeBtn" Width="200" Content="Subscribe" Visibility="Collapsed" Click="subscribeBtn_Click" />
+            <Button x:Name="buyMag" Width="200" Content="" Visibility="Collapsed" Click="buyMag_Click" />
+            <Button Width="200" Content="Cancel" Click="Button_Click_1" />
+        </StackPanel>
 
     </Grid>
 </UserControl>

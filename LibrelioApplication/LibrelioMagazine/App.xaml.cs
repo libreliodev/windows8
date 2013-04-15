@@ -58,7 +58,7 @@ namespace WindMagazine
             {
                 var licenseInformation = CurrentAppSimulator.LicenseInformation;
 
-                await LibrelioApplication.Utils.Utils.prepareTestData();
+                //await LibrelioApplication.Utils.Utils.prepareTestData();
 
                 var fileHandle =
                     await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");

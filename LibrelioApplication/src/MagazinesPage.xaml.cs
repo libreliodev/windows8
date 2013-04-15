@@ -123,12 +123,22 @@ namespace LibrelioApplication
                 if (str == null) return;
                 this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
-            else
+            else if (button.Content.Equals("Download ..."))
             {
                 var item = ((MagazineViewModel)button.DataContext);
-                var group = MagazineDataSource.GetGroup("All Magazines");
-                group.Items.Remove(item);
-                this.Frame.Navigate(typeof(DownloadingPage));
+                if (item.IsPaid)
+                {
+                    purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    purchaseModule.Init(item);
+                }
+                else
+                {
+                    var group = MagazineDataSource.GetGroup("All Magazines");
+                    group.Items.Remove(item);
+                    var param = new DownloadMagazine() { manager = manager, 
+                                                         url = manager.MagazineUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName)).First() };
+                    this.Frame.Navigate(typeof(DownloadingPage), param);
+                }
             }
         }
 
@@ -172,6 +182,13 @@ namespace LibrelioApplication
                 {
                     MagazineDataSource.RemoveGroup(group.UniqueId);
                 }
+            }
+            else if (button.Content.Equals("Sample"))
+            {
+                var item = ((MagazineViewModel)button.DataContext);
+                var group = MagazineDataSource.GetGroup("All Magazines");
+                group.Items.Remove(item);
+                this.Frame.Navigate(typeof(DownloadingPage), "test");
             }
         }
 

@@ -129,6 +129,10 @@
             </GridView.GroupStyle>
 
         </GridView>
+        
+        <Grid Grid.RowSpan="2">
+            <local:PurchaseModule x:Name="purchaseModule" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+        </Grid>
 
         <!-- Vertical scrolling list only used when snapped -->
         <!--<ListView
