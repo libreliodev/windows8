@@ -61,6 +61,9 @@ namespace LibrelioApplication
             manager = await MagazineDataSource.LoadMagazinesAsync();
             var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
             this.DefaultViewModel["Groups"] = sampleDataGroups;
+
+            purchaseModule.Bought += purchaseModule_Bought;
+            
             Debug.WriteLine("LoadState - finished");
         }
 
@@ -128,8 +131,16 @@ namespace LibrelioApplication
                 var item = ((MagazineViewModel)button.DataContext);
                 if (item.IsPaid)
                 {
-                    purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    purchaseModule.Init(item);
+                    button.Content = "Preparing ...";
+                    try
+                    {
+                        await purchaseModule.Init(item, button);
+                    }
+                    catch
+                    {
+                        purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    }
+                    button.Content = "Download ...";
                 }
                 else
                 {
@@ -140,6 +151,31 @@ namespace LibrelioApplication
                     this.Frame.Navigate(typeof(DownloadingPage), param);
                 }
             }
+        }
+
+        private async void purchaseModule_Bought(object sender, string url)
+        {
+            var purchase = sender as PurchaseModule;
+
+            var button = purchase.GetCurrentButton();
+            button.Content = "Opening";
+            var item = ((MagazineViewModel)button.DataContext);
+
+            if (manager == null)
+            {
+                manager = new MagazineManager("Magazines");
+                await manager.LoadLocalMagazineList();
+            }
+
+            var group = MagazineDataSource.GetGroup("All Magazines");
+            group.Items.Remove(item);
+            var param = new DownloadMagazine()
+            {
+                manager = manager,
+                url = manager.MagazineUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName)).First(),
+                redirectUrl = url
+            };
+            this.Frame.Navigate(typeof(DownloadingPage), param);
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)

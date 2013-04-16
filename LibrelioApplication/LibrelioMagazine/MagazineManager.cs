@@ -127,7 +127,7 @@ namespace LibrelioApplication
             var url = magUrl.AbsoluteUrl.Substring(0, pos) + ".png";
             var stream = await DownloadManager.DownloadFileAsync(url);
 
-            await DownloadManager.StoreToFolderAsync(magUrl.FullName.Replace(".pdf", ".png"), folder, stream);
+            await DownloadManager.StoreToFolderAsync(magUrl.FullName.Replace(s + "pdf", ".png"), folder, stream);
 
             var bitmap = new BitmapImage();
             try
@@ -150,6 +150,30 @@ namespace LibrelioApplication
             await GetUrlsFromPDF(stream);
 
             StatusText = "Downloading 2/" + (links.Count+1);
+            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
+
+            if (url != null)
+            {
+                await DownloadPDFAssetsAsync(url, links, progress, cancelToken);
+            }
+
+            StatusText = "Done";
+
+            return stream;
+        }
+
+        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, string redirectUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        {
+            StatusText = "Download in progress";
+
+            var tmpUrl = magUrl.AbsoluteUrl;
+            magUrl.AbsoluteUrl = redirectUrl;
+            var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+            magUrl.AbsoluteUrl = tmpUrl;
+
+            await GetUrlsFromPDF(stream);
+
+            StatusText = "Downloading 2/" + (links.Count + 1);
             var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
 
             if (url != null)
@@ -557,17 +581,17 @@ namespace LibrelioApplication
                     {
                         pos1 = str.IndexOf(".jpg");
                     }
-                    else
+
+                    if (pos >= 0 && pos1 >= 0)
                     {
-                        pos1 = str.IndexOf(".jpg");
-                    }
-                    var s = str.Substring(0, pos1);
-                    var ss = s.Substring(pos + 1);
-                    int x = Convert.ToInt32(ss);
-                    if (x > 1 && x < 50)
-                    {
-                        for (int i = 1; i < x; i++)
-                            links.Add(str.Replace("_" + ss + ".", "_" + Convert.ToString(i) + "."));
+                        var s = str.Substring(0, pos1);
+                        var ss = s.Substring(pos + 1);
+                        int x = Convert.ToInt32(ss);
+                        if (x > 1 && x < 50)
+                        {
+                            for (int i = 1; i < x; i++)
+                                links.Add(str.Replace("_" + ss + ".", "_" + Convert.ToString(i) + "."));
+                        }
                     }
 
                     links.Add(str);

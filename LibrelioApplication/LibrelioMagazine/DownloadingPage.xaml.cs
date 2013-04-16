@@ -43,6 +43,7 @@ namespace LibrelioApplication
     {
         public MagazineManager manager { get; set; }
         public LibrelioUrl url { get; set; }
+        public string redirectUrl { get; set; }
     }
 
     /// <summary>
@@ -87,24 +88,32 @@ namespace LibrelioApplication
                 magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                var folder = await manager.AddMagazineFolderStructure(url);
-                var bitmap = await manager.DownloadThumbnailAsync(url, folder);
-                pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
-                pdfThumbnail.Source = bitmap;
-
-                pRing.IsActive = false;
-
-                var progressIndicator = new Progress<int>((value) =>
-                {
-                    if (statusText.Text != manager.StatusText)
-                        statusText.Text = manager.StatusText;
-                    progressBar.Value = value;
-                });
-                cts = new CancellationTokenSource();
-
                 try
                 {
-                    var stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                    var folder = await manager.AddMagazineFolderStructure(url);
+                    var bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                    pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
+                    pdfThumbnail.Source = bitmap;
+
+                    pRing.IsActive = false;
+
+                    var progressIndicator = new Progress<int>((value) =>
+                    {
+                        if (statusText.Text != manager.StatusText)
+                            statusText.Text = manager.StatusText;
+                        progressBar.Value = value;
+                    });
+                    cts = new CancellationTokenSource();
+
+                    IRandomAccessStream stream = null;
+                    if (item.redirectUrl == null) {
+
+                        stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+
+                    } else {
+
+                        stream = await manager.DownloadMagazineAsync(url, item.redirectUrl, folder, progressIndicator, cts.Token);
+                    }
                     statusText.Text = "Done.";
                     await manager.MarkAsDownloaded(url, folder);
                     await Task.Delay(1000);
@@ -514,7 +523,7 @@ namespace LibrelioApplication
                 var receipt = dataReader.ReadString(size);
 
                 receipt = Uri.EscapeDataString(receipt);
-                var productId = "Product1";
+                var productId = "wind_358_";
                 url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/wind_358/wind_358_.pdf";
                 try
                 {

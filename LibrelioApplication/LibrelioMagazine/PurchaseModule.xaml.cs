@@ -14,24 +14,34 @@ using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Store;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Popups;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace LibrelioApplication
 {
+    public delegate void BoughtEventHandler(object sender, string url);
+
     public sealed partial class PurchaseModule : UserControl
     {
         private LicenseInformation licenseInformation = null;
         private string product_id = "";
+        private string relativePath = "";
+        private Button _button = null;
+
+        public event BoughtEventHandler Bought;
 
         public PurchaseModule()
         {
             this.InitializeComponent();
         }
 
-        public async Task Init(Data.MagazineViewModel mag)
+        public async Task Init(Data.MagazineViewModel mag, Button button)
         {
+            _button = button;
             product_id = mag.FileName.Replace(".pdf", "");
+            relativePath = mag.RelativePath;
             licenseInformation = CurrentAppSimulator.LicenseInformation;
 
             var appListing = await CurrentAppSimulator.LoadListingInformationAsync();
@@ -42,6 +52,8 @@ namespace LibrelioApplication
 
             } catch { }
 
+            this.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
             if (product != null)
             {
                 if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
@@ -51,6 +63,25 @@ namespace LibrelioApplication
                 }
                 else
                 {
+                    if (Bought != null)
+                    {
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        var url = await DownloadManager.GetUrl("Subscription", relativePath);
+                        if (url.Equals("NoReceipt"))
+                        {
+                            var messageDialog = new MessageDialog("No Receipt");
+                            var task = messageDialog.ShowAsync().AsTask();
+                        }
+                        else
+                        {
+                            Bought(this, url);
+                        }
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
                 }
             }
 
@@ -70,8 +101,32 @@ namespace LibrelioApplication
                 }
                 else
                 {
+                    if (Bought != null)
+                    {
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        var url = await DownloadManager.GetUrl(product_id, relativePath);
+                        if (url.Equals("NoReceipt"))
+                        {
+                            var messageDialog = new MessageDialog("No Receipt");
+                            var task = messageDialog.ShowAsync().AsTask();
+                        }
+                        else
+                        {
+                            Bought(this, url);
+                        }
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
                 }
             }
+        }
+
+        public Button GetCurrentButton()
+        {
+            return _button;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -95,17 +150,44 @@ namespace LibrelioApplication
                     // show the purchase dialog.
 
                     var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync("Subscription", true);
-                    await DownloadManager.StoreReceiptAsync(receipt);
+                    if (!licenseInformation.ProductLicenses["Subscription"].IsActive || receipt == "") return;
+                    await DownloadManager.StoreReceiptAsync("Subscription", receipt);
                     // the in-app purchase was successful
+
+                    // TEST ONLY
+                    // =================================================
+                    var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+                    var xml = new XmlDocument();
+                    xml = await XmlDocument.LoadFromFileAsync(f);
+                    var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+                    item.SetAttribute("ProductId", "Subscription");
+                    receipt = xml.GetXml();
+                    // =================================================
+
+                    buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    if (Bought != null)
+                    {
+                        Bought(this, DownloadManager.GetUrl("Subscription", receipt, relativePath));
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
                 }
                 catch (Exception)
                 {
                     // The in-app purchase was not completed because 
                     // an error occurred.
+                    var messageDialog = new MessageDialog("Unexpected error");
+                    var task = messageDialog.ShowAsync().AsTask();
                 }
             }
             else
             {
+                var messageDialog = new MessageDialog("You are already subscribed");
+                var task = messageDialog.ShowAsync().AsTask();
             }
         }
 
@@ -121,17 +203,44 @@ namespace LibrelioApplication
                     // show the purchase dialog.
 
                     var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync(product_id, true);
-                    await DownloadManager.StoreReceiptAsync(receipt);
+                    if (!licenseInformation.ProductLicenses[product_id].IsActive || receipt == "") return;
+                    await DownloadManager.StoreReceiptAsync(product_id, receipt);
                     // the in-app purchase was successful
+
+                    // TEST ONLY
+                    // =================================================
+                    var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+                    var xml = new XmlDocument();
+                    xml = await XmlDocument.LoadFromFileAsync(f);
+                    var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+                    item.SetAttribute("ProductId", product_id);
+                    receipt = xml.GetXml();
+                    // =================================================
+
+                    buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    if (Bought != null)
+                    {
+                        Bought(this, DownloadManager.GetUrl(product_id, receipt, relativePath));
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
                 }
                 catch (Exception)
                 {
                     // The in-app purchase was not completed because 
                     // an error occurred.
+                    var messageDialog = new MessageDialog("Unexpected error");
+                    var task = messageDialog.ShowAsync().AsTask();
                 }
             }
             else
             {
+                var messageDialog = new MessageDialog("You already purchased this app");
+                var task = messageDialog.ShowAsync().AsTask();
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Storage.BulkAccess;
@@ -9,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Net.Http;
 using Windows.Data.Xml.Dom;
 using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
 using Windows.Security.Cryptography.DataProtection;
 using System.Collections.Generic;
 
@@ -210,6 +212,100 @@ namespace LibrelioApplication
             return url.FolderPath != "ND";
         }
 
+        private static IBuffer CipherEncryption(String strMsg)
+        {
+            /////////////////////////////////////////////////////////////////////////////
+            // Perform symmetric encryption and decryption.
+            var strAlgName = SymmetricAlgorithmNames.AesCbcPkcs7;
+            //UInt32 keyLength = 32;
+
+            // Initialize the initialization vector.
+            IBuffer iv = null;
+
+            // Initialize the binary encoding value.
+            var encoding = BinaryStringEncoding.Utf8;
+
+            // Create a buffer that contains the encoded message to be encrypted. 
+            IBuffer buffMsg = CryptographicBuffer.ConvertStringToBinary(strMsg, encoding);
+
+            // Open a symmetric algorithm provider for the specified algorithm. 
+            SymmetricKeyAlgorithmProvider objAlg = SymmetricKeyAlgorithmProvider.OpenAlgorithm(strAlgName);
+
+            // Determine whether the message length is a multiple of the block length.
+            // This is not necessary for PKCS #7 algorithms which automatically pad the
+            // message to an appropriate length.
+            if (!strAlgName.Contains("PKCS7"))
+            {
+                if ((buffMsg.Length % objAlg.BlockLength) != 0)
+                {
+                    throw new Exception("Message buffer length must be multiple of block length.");
+                }
+            }
+
+            // Create a symmetric key.
+            IBuffer keyMaterial = CryptographicBuffer.ConvertStringToBinary("12345678901234567890123456789012", encoding);
+            var key = objAlg.CreateSymmetricKey(keyMaterial);
+
+            // CBC algorithms require an initialization vector. Here, a random
+            // number is used for the vector.
+            if (strAlgName.Contains("CBC"))
+            {
+                iv = CryptographicBuffer.ConvertStringToBinary("1234567890123456", encoding);
+            }
+
+            // Encrypt the data and return.
+            IBuffer buffEncrypt = CryptographicEngine.Encrypt(key, buffMsg, iv);
+            return buffEncrypt;
+        }
+
+        private static String CipherDecryption(IBuffer buffEncrypt)
+        {
+            var strAlgName = SymmetricAlgorithmNames.AesCbcPkcs7;
+            //UInt32 keyLength = 32;
+
+            // Initialize the binary encoding value.
+            var encoding = BinaryStringEncoding.Utf8;
+
+            // Initialize the initialization vector.
+            IBuffer iv = CryptographicBuffer.ConvertStringToBinary("1234567890123456", encoding);
+
+            // Open a symmetric algorithm provider for the specified algorithm. 
+            SymmetricKeyAlgorithmProvider objAlg = SymmetricKeyAlgorithmProvider.OpenAlgorithm(strAlgName);
+
+            // Determine whether the message length is a multiple of the block length.
+            // This is not necessary for PKCS #7 algorithms which automatically pad the
+            // message to an appropriate length.
+            if (!strAlgName.Contains("PKCS7"))
+            {
+                if ((buffEncrypt.Length % objAlg.BlockLength) != 0)
+                {
+                    throw new Exception("Message buffer length must be multiple of block length.");
+                }
+            }
+
+            // Create a symmetric key.
+            IBuffer keyMaterial = CryptographicBuffer.ConvertStringToBinary("12345678901234567890123456789012", encoding);
+            var key = objAlg.CreateSymmetricKey(keyMaterial);
+
+            // Declare a buffer to contain the decrypted data.
+            IBuffer buffDecrypted;
+
+            // The input key must be securely shared between the sender of the encrypted message
+            // and the recipient. The initialization vector must also be shared but does not
+            // need to be shared in a secure manner. If the sender encodes a message string 
+            // to a buffer, the binary encoding method must also be shared with the recipient.
+            buffDecrypted = CryptographicEngine.Decrypt(key, buffEncrypt, iv);
+
+            // Convert the decrypted buffer to a string (for display). If the sender created the
+            // original message buffer from a string, the sender must tell the recipient what 
+            // BinaryStringEncoding value was used. Here, BinaryStringEncoding.Utf8 is used to
+            // convert the message to a buffer before encryption and to convert the decrypted
+            // buffer back to the original plaintext.
+            String strDecrypted = CryptographicBuffer.ConvertBinaryToString(encoding, buffDecrypted);
+
+            return strDecrypted;
+        }
+
         public static async Task<IRandomAccessStream> ProtectPDFStream(IRandomAccessStream source)
         {
             // Create a DataProtectionProvider object for the specified descriptor.
@@ -286,8 +382,91 @@ namespace LibrelioApplication
             return url;
         }
 
-        public static async Task StoreReceiptAsync(string receipt)
+        public static async Task StoreReceiptAsync(string productId, string receipt)
         {
+            var encryptedFilename = CipherEncryption(productId);
+            var encodedFileName = Convert.ToBase64String(encryptedFilename.ToArray());
+            var encodedAndEscapedFilename = encodedFileName.Replace('/', '-');
+
+            // TEST ONLY
+            // =================================================
+            var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+            var xml = new XmlDocument();
+            xml = await XmlDocument.LoadFromFileAsync(f);
+            var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+            item.SetAttribute("ProductId", productId);
+            receipt = xml.GetXml();
+            // =================================================
+            
+            //var folder = ApplicationData.Current.RoamingFolder;
+            var folder = KnownFolders.DocumentsLibrary;
+            folder = await folder.CreateFolderAsync("Receipts", CreationCollisionOption.OpenIfExists);
+
+            var file = await folder.CreateFileAsync(encodedAndEscapedFilename + ".pmd", CreationCollisionOption.ReplaceExisting);
+
+            IBuffer buffEncrypted = CipherEncryption(receipt);
+
+            var stream = await file.OpenAsync(FileAccessMode.ReadWrite);
+            await stream.WriteAsync(buffEncrypted);
+            await stream.FlushAsync();
+            stream.Dispose();
+
+            stream = null;
+            buffEncrypted = null;
+            file = null;
+
+            //CipherDecryption(buffEncrypted);
+        }
+
+        private static async Task<string> GetReceiptAsync(string productId)
+        {
+            var encryptedFilename = CipherEncryption(productId);
+            var encodedFileName = Convert.ToBase64String(encryptedFilename.ToArray());
+            var encodedAndEscapedFilename = encodedFileName.Replace('/', '-');
+
+            //var folder = ApplicationData.Current.RoamingFolder;
+            var folder = KnownFolders.DocumentsLibrary;
+            folder = await folder.CreateFolderAsync("Receipts", CreationCollisionOption.OpenIfExists);
+            try
+            {
+                var file = await folder.GetFileAsync(encodedAndEscapedFilename + ".pmd");
+
+                var stream = await file.OpenAsync(FileAccessMode.Read);
+                var dataReader = new DataReader(stream.GetInputStreamAt(0));
+                uint u = await dataReader.LoadAsync((uint)stream.Size);
+                IBuffer buffEncrypted = dataReader.ReadBuffer(u);
+
+                dataReader.DetachStream();
+                stream.Dispose();
+                stream = null;
+
+                return CipherDecryption(buffEncrypted);
+            }
+            catch (Exception e)
+            {
+                return "NoReceipt";
+            }
+        }
+
+        public static async Task<string> GetUrl(string productId, string relUrl)
+        {
+            var receipt = await GetReceiptAsync(productId);
+            if (receipt == "NoReceipt") return receipt;
+
+            receipt = Uri.EscapeDataString(receipt);
+            var url = "http://download.librelio.com/downloads/win8_verify.php";
+            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;
+
+            return url;
+        }
+
+        public static string GetUrl(string productId, string receipt, string relUrl)
+        {
+            receipt = Uri.EscapeDataString(receipt);
+            var url = "http://download.librelio.com/downloads/win8_verify.php";
+            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;
+
+            return url;
         }
 
         public static bool IsFullScreenButton(string url)

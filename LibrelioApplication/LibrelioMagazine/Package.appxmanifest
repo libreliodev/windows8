@@ -29,6 +29,7 @@
               <FileType>.jpeg</FileType>
               <FileType>.png</FileType>
               <FileType>.mp4</FileType>
+              <FileType>.pmd</FileType>
             </SupportedFileTypes>
           </FileTypeAssociation>
         </Extension>

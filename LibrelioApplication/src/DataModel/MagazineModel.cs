@@ -122,6 +122,7 @@ namespace LibrelioApplication.Data
         public String Title { get; set; }
         public String Subtitle { get; set; }
         public String fileName { get; set; }
+        public String relativePath { get; set; }
         public String pdfPath { get; set; }
         public String pngPath { get; set; }
         public String samplePath { get; set; }
@@ -202,6 +203,8 @@ namespace LibrelioApplication.Data
                 return;
             }
 
+            relativePath = url.RelativePath;
+
             isPaid = fileName.Contains("_.");
 
             pdfPath = url.FolderPath + url.FullName;
@@ -241,6 +244,8 @@ namespace LibrelioApplication.Data
 
         public void valuesInit(LibrelioUrl url)
         {
+            relativePath = url.RelativeUrl;
+
             isPaid = fileName.Contains("_.");
 
             pdfUrl = url.AbsoluteUrl;
@@ -372,6 +377,7 @@ namespace LibrelioApplication.Data
         public bool IsPaid { get; set; }
         public bool SecondButtonVisible { get; set; }
         public String FileName { get; set; }
+        public String RelativePath { get; set; }
         public ImageSource Image { get; set; }
         public String DownloadOrReadButton { get; set; }
         public String SampleOrDeleteButton { get; set; }
@@ -401,6 +407,7 @@ namespace LibrelioApplication.Data
             IsDownloaded = m.isDowloaded;
             IsPaid = m.isPaid;
             FileName = m.fileName;
+            RelativePath = m.relativePath;
             SecondButtonVisible = true;
             if (img != null)
             {

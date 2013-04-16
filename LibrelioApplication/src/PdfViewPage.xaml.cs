@@ -141,11 +141,18 @@ namespace LibrelioApplication
         PageButton
     };
 
+    public enum ActivePage
+    {
+        Left,
+        Right
+    };
+
     public struct UIAddon
     {
         public UIElement element { get; set; }
         public UIType type { get; set; }
         public string url { get; set; }
+        public ActivePage page { get; set; }
     }
 
     // Changed the structure to a bindable class so the UI will update when changes are 
@@ -1873,7 +1880,8 @@ namespace LibrelioApplication
                     bool alreadyInserted = false;
                     foreach (var addon in pages[page].Addons)
                     {
-                        if (addon.url == item.url)
+                        if (addon.page == ActivePage.Left &&
+                            addon.url == item.url)
                         {
                             alreadyInserted = true;
                             break;
@@ -1897,21 +1905,21 @@ namespace LibrelioApplication
                         button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(button);
                         button.Clicked += button_Clicked;
-                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url, page = ActivePage.Left });
                     }
                     else if (DownloadManager.IsImage(item.url))
                     {
                         var slideShow = new SlideShow();
                         await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(slideShow);
-                        pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                        pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url, page = ActivePage.Left });
                     }
                     else if (DownloadManager.IsVideo(item.url))
                     {
                         var videoPlayer = new VideoPlayer();
                         videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                         grid.Children.Add(videoPlayer);
-                        pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
+                        pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url, page = ActivePage.Left });
                     }
                 }
             }
@@ -1923,7 +1931,8 @@ namespace LibrelioApplication
                     bool alreadyInserted = false;
                     foreach (var addon in pages[page].Addons)
                     {
-                        if (addon.url == item.url)
+                        if (addon.page == ActivePage.Right && 
+                            addon.url == item.url)
                         {
                             alreadyInserted = true;
                             break;
@@ -1941,27 +1950,27 @@ namespace LibrelioApplication
                         var grid = children as Grid;
 
                         var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / (offsetZF * defaultZoomFactor)), item.rect.Top, item.rect.Width, item.rect.Height);
-                        if (DownloadManager.IsFullScreenButton(item.url))
+                        if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
                         {
                             var button = new PageButton();
                             button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                             grid.Children.Add(button);
                             button.Clicked += button_Clicked;
-                            pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url });
+                            pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = item.url, page = ActivePage.Right });
                         }
                         else if (DownloadManager.IsImage(item.url))
                         {
                             var slideShow = new SlideShow();
                             await slideShow.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                             grid.Children.Add(slideShow);
-                            pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url });
+                            pages[page].Addons.Add(new UIAddon { element = slideShow, type = UIType.SlideShow, url = item.url, page = ActivePage.Right });
                         }
                         else if (DownloadManager.IsVideo(item.url))
                         {
                             var videoPlayer = new VideoPlayer();
                             videoPlayer.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
                             grid.Children.Add(videoPlayer);
-                            pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
+                            pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url, page = ActivePage.Right });
                         }
                 }
             }
