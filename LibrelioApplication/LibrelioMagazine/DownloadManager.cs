@@ -517,8 +517,9 @@ namespace LibrelioApplication
 
     public sealed class LibrelioUrl
     {
-        public LibrelioUrl(string absUrl, string relUrl)
+        public LibrelioUrl(int index, string absUrl, string relUrl)
         {
+            Index = index;
             AbsoluteUrl = absUrl + relUrl;
             RelativeUrl = relUrl;
 
@@ -531,6 +532,7 @@ namespace LibrelioApplication
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string FullName { get; set; }
+        public int    Index { get; set; }
     }
 
     public sealed class LibrelioLocalUrl

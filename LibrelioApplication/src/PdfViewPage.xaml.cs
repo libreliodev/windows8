@@ -112,6 +112,8 @@ namespace LibrelioApplication
     {
         private Rect _rect = new Rect(0, 0, 0, 0);
         private string _url = "";
+        private bool _internalLink = false;
+        private int _pageNum = -1;
 
         public Rect rect
         {
@@ -130,6 +132,19 @@ namespace LibrelioApplication
             {
                 _url = value;
                 OnPropertyChanged("url");
+            }
+        }
+
+        public bool IsInternalLink { get { return _internalLink; } }
+
+        public int PageNumber
+        {
+            get { return _pageNum; }
+            set
+            {
+                _internalLink = true;
+                _pageNum = value;
+                OnPropertyChanged("PageNumber");
             }
         }
     }
@@ -152,6 +167,7 @@ namespace LibrelioApplication
         public UIElement element { get; set; }
         public UIType type { get; set; }
         public string url { get; set; }
+        public int PageNum { get; set; }
         public ActivePage page { get; set; }
     }
 
@@ -1683,6 +1699,7 @@ namespace LibrelioApplication
 
                     var linkVistor = new LinkInfoVisitor();
                     linkVistor.OnURILink += visitor_OnURILink;
+                    linkVistor.OnInternalLink += vis_OnInternalLink;
                     visitorList.Add(new LinkInfo() { visitor = linkVistor, index = page, count = links.Count, handled = 0 });
 
                     pages[page].Links = new ObservableCollection<PageLink>();
@@ -1709,6 +1726,7 @@ namespace LibrelioApplication
 
                     var linkVistor = new LinkInfoVisitor();
                     linkVistor.OnURILink += visitor_OnURILink;
+                    linkVistor.OnInternalLink += vis_OnInternalLink;
                     visitorList.Add(new LinkInfo() { visitor = linkVistor, index = pageCount - 1, count = links.Count, handled = 0 });
 
                     pages[pageCount - 1].Links = new ObservableCollection<PageLink>();
@@ -1733,6 +1751,7 @@ namespace LibrelioApplication
                 LinkInfoVisitor vis = new LinkInfoVisitor();
                 visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page - 1, count = links.Count, handled = 0 });
                 vis.OnURILink += visitor_OnURILink;
+                vis.OnInternalLink += vis_OnInternalLink;
 
                 pages[page].LinksLeft = new ObservableCollection<PageLink>();
 
@@ -1751,6 +1770,7 @@ namespace LibrelioApplication
                 LinkInfoVisitor vis = new LinkInfoVisitor();
                 visitorList.Add(new LinkInfo() { visitor = vis, index = 2 * page, count = links.Count, handled = 0 });
                 vis.OnURILink += visitor_OnURILink;
+                vis.OnInternalLink += vis_OnInternalLink;
 
                 pages[page].LinksRight = new ObservableCollection<PageLink>();
 
@@ -1764,6 +1784,40 @@ namespace LibrelioApplication
             }
 
             await LoadLinks(page);
+        }
+
+        void vis_OnInternalLink(LinkInfoVisitor __param0, LinkInfoInternal __param1)
+        {
+            foreach (var visitor in visitorList)
+            {
+                if (visitor.visitor == __param0)
+                {
+                    int index = 0;
+
+                    PageLink link = new PageLink();
+                    link.rect = new Rect(__param1.Rect.Left, __param1.Rect.Top, __param1.Rect.Right - __param1.Rect.Left, __param1.Rect.Bottom - __param1.Rect.Top);
+                    link.PageNumber = __param1.PageNumber;
+
+                    if (visitor.index == 0 || visitor.index == pageCount - 1 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
+                    {
+                        pages[visitor.index].Links.Add(link);
+                    }
+                    else if (visitor.index == pageCount - 1)
+                    {
+                        pages[pageCount - 1].Links.Add(link);
+                    }
+                    else if (visitor.index % 2 == 0)
+                    {
+                        index = (int)(visitor.index / 2);
+                        pages[index].LinksRight.Add(link);
+                    }
+                    else if (visitor.index % 2 == 1)
+                    {
+                        index = (int)(visitor.index / 2) + 1;
+                        pages[index].LinksLeft.Add(link);
+                    }
+                }
+            }
         }
 
         private void visitor_OnURILink(LinkInfoVisitor __param0, LinkInfoURI __param1)
@@ -1848,7 +1902,15 @@ namespace LibrelioApplication
                     var grid = children as Grid;
 
                     var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                    if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
+                    if (item.IsInternalLink)
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, item.PageNumber, offsetZF);
+                        grid.Children.Add(button);
+                        button.InternalClicked += button_InternalClicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "InternalLink", PageNum = item.PageNumber });
+                    }
+                    else if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
                     {
                         var button = new PageButton();
                         button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF);
@@ -1899,7 +1961,15 @@ namespace LibrelioApplication
                     var grid = children as Grid;
 
                     var rect = new Rect(item.rect.Left, item.rect.Top, item.rect.Width, item.rect.Height);
-                    if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
+                    if (item.IsInternalLink)
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, item.PageNumber, offsetZF);
+                        grid.Children.Add(button);
+                        button.InternalClicked += button_InternalClicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "InternalLink", PageNum = item.PageNumber });
+                    }
+                    else if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
                     {
                         var button = new PageButton();
                         button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
@@ -1950,7 +2020,15 @@ namespace LibrelioApplication
                         var grid = children as Grid;
 
                         var rect = new Rect(item.rect.Left + (pages[page].PageWidth / 2 / (offsetZF * defaultZoomFactor)), item.rect.Top, item.rect.Width, item.rect.Height);
-                        if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
+                        if (item.IsInternalLink)
+                        {
+                            var button = new PageButton();
+                            button.SetRect(rect, item.PageNumber, offsetZF);
+                            grid.Children.Add(button);
+                            button.InternalClicked += button_InternalClicked;
+                            pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "InternalLink", PageNum = item.PageNumber });
+                        }
+                        else if (DownloadManager.IsFullScreenButton(item.url) || DownloadManager.IsLink(item.url))
                         {
                             var button = new PageButton();
                             button.SetRect(rect, pdfStream.folderUrl, item.url, offsetZF * defaultZoomFactor);
@@ -1973,6 +2051,21 @@ namespace LibrelioApplication
                             pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url, page = ActivePage.Right });
                         }
                 }
+            }
+        }
+
+        void button_InternalClicked(int pageNum)
+        {
+            if (ApplicationView.Value != ApplicationViewState.FullScreenPortrait)
+            {
+                if (pageNum > 0)
+                {
+                    pageNum = (pageNum + 1) / 2;
+                }
+            }
+            if (pageNum > 0)
+            {
+                pagesListView.ScrollIntoView(pages[pageNum]);
             }
         }
 
@@ -2187,6 +2280,14 @@ namespace LibrelioApplication
 
                     await InitPageLink(pageNum);
                 });
+            }
+        }
+
+        private void GoBack(object sender, RoutedEventArgs e)
+        {
+            if (!this.Frame.Navigate(typeof(LibrelioApplication.ItemsPage), "AllGroups"))
+            {
+                throw new Exception("Failed to create initial page");
             }
         }
 

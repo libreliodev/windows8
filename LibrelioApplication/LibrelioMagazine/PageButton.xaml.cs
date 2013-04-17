@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 namespace LibrelioApplication
 {
     public delegate void CustomClickedEventHandler(string folderUrl, string url);
+    public delegate void CustomInternalClickedEventHandler(int pageNum);
 
     public sealed partial class PageButton : UserControl
     {
@@ -26,7 +27,11 @@ namespace LibrelioApplication
 
         bool isPressed = false;
 
+        bool _isInternalLink = false;
+        int _pageNum = -1;
+
         public event CustomClickedEventHandler Clicked;
+        public event CustomInternalClickedEventHandler InternalClicked;
 
         public PageButton()
         {
@@ -45,6 +50,19 @@ namespace LibrelioApplication
             _folderUrl = folderUrl;
         }
 
+        public void SetRect(Rect rect, int PageNum, float offset)
+        {
+            _isInternalLink = true;
+
+            this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
+            this.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+            this.Margin = new Thickness(rect.Left * offset, (rect.Top + 1.5) * offset, 0, 0);
+            this.Width = rect.Width * offset;
+            this.Height = rect.Height * offset;
+
+            _pageNum = PageNum;
+        }
+
         private void frame_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             isPressed = true;
@@ -52,9 +70,13 @@ namespace LibrelioApplication
 
         private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            if (isPressed)
+            if (isPressed && !_isInternalLink)
             {
                 Clicked(_folderUrl, _url);
+            }
+            else if (_isInternalLink)
+            {
+                InternalClicked(_pageNum);
             }
             isPressed = false;
         }

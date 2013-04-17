@@ -63,7 +63,7 @@ namespace LibrelioApplication
             this._name = name;
             StatusText = "";
 
-            _pList = new LibrelioUrl(path, name + ".plist");
+            _pList = new LibrelioUrl(0, path, name + ".plist");
         }
 
         public async Task LoadPLISTAsync()
@@ -419,8 +419,10 @@ namespace LibrelioApplication
 
         private async Task ReadPList(XmlDocument plist)
         {
-            foreach (var dict in plist.SelectNodes("/plist/array/dict"))
+            var items = plist.SelectNodes("/plist/array/dict");
+            for (int i = 0; i < items.Count; i++)
             {
+                var dict = items[i];
                 LibrelioUrl url = null;
                 string tite = "";
                 string subtitle = "";
@@ -432,7 +434,7 @@ namespace LibrelioApplication
                         var relUrl = GetValue(key);
 
                         if (relUrl != "")
-                            url = new LibrelioUrl(this._path, relUrl);
+                            url = new LibrelioUrl(i, this._path, relUrl);
                     }
                     else if (key.InnerText == "Title")
                     {

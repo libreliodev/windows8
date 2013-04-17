@@ -212,11 +212,18 @@ namespace LibrelioApplication
 
                 mag = DownloadManager.DeleteLocalUrl(mag);
                 await manager.AddUpdateMetadataEntry(mag);
+                var title = item.FileName;
                 var group = MagazineDataSource.GetGroup("My Magazines");
                 group.Items.Remove(item);
                 if (group.Items.Count == 0)
                 {
                     MagazineDataSource.RemoveGroup(group.UniqueId);
+                }
+                group = MagazineDataSource.GetGroup("All Magazines");
+                item = group.Items.Where((magazine) => magazine.FileName.Equals(title)).First();
+                if (item != null)
+                {
+                    item.IsDownloaded = false;
                 }
             }
             else if (button.Content.Equals("Sample"))
