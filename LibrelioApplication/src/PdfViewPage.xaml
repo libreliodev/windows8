@@ -131,6 +131,13 @@ x:Name="pageRoot"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
             ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150">
+
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" Margin="0"/>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+
                     <GridView.ItemTemplate>
                         <DataTemplate >
                             <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Width="150"  Height="150">
@@ -201,7 +208,7 @@ x:Name="pageRoot"
                                ScrollViewer.ZoomMode="Disabled" Loaded="pagesListView_Loaded" IsTapEnabled="False" IsRightTapEnabled="False" IsHoldingEnabled="False" IsDoubleTapEnabled="False">
                  <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="0"/>
+                            <VirtualizingStackPanel Orientation="Horizontal" Margin="0"/>
                         </ItemsPanelTemplate>
                 </GridView.ItemsPanel>
 

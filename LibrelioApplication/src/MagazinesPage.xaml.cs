@@ -31,6 +31,8 @@ namespace LibrelioApplication
     {
         private MagazineManager manager = null;
 
+        private bool isOpening = false;
+
         public ItemsPage()
         {
             this.InitializeComponent();
@@ -79,11 +81,16 @@ namespace LibrelioApplication
             //// by passing required information as a navigation parameter
             //var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
             //this.Frame.Navigate(typeof(SplitPage), groupId);
+            if (isOpening) return;
             var item = ((MagazineViewModel)e.ClickedItem);
+            if (item.IsOpening) return;
             //sParam += LibrelioApplication.PdfViewPage.qqq;
             if (!item.IsDownloaded) {
 
-                Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage));
+                //Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage));
+                var group = MagazineDataSource.GetGroup("All Magazines");
+                group.Items.Remove(item);
+                this.Frame.Navigate(typeof(DownloadingPage), "test");
 
             } else {
 
@@ -93,10 +100,14 @@ namespace LibrelioApplication
                     await manager.LoadLocalMagazineList();
                 }
 
+                item.IsOpening = true;
+                isOpening = true;
                 var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
-                if (mag == null) return;
+                if (mag == null) { isOpening = false; item.IsOpening = false; return; }
                 var str = await DownloadManager.OpenPdfFile(mag);
-                if (str == null) return;
+                if (str == null) { isOpening = false; item.IsOpening = false; return; }
+                item.IsOpening = false;
+                isOpening = false;
                 this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
         }
@@ -108,9 +119,11 @@ namespace LibrelioApplication
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            if (isOpening) return;
             var button = sender as Button;
             if (button.Content.Equals("Read"))
             {
+                isOpening = true;
                 button.Content = "Opening";
                 var item = ((MagazineViewModel)button.DataContext);
 
@@ -121,9 +134,10 @@ namespace LibrelioApplication
                 }
 
                 var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FileName);
-                if (mag == null) return;
+                if (mag == null) { isOpening = false; return; }
                 var str = await DownloadManager.OpenPdfFile(mag);
-                if (str == null) return;
+                if (str == null) { isOpening = false; return; }
+                isOpening = false;
                 this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
             else if (button.Content.Equals("Download ..."))
@@ -180,6 +194,7 @@ namespace LibrelioApplication
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            if (isOpening) return;
             var button = sender as Button;
             if (button.Content.Equals("Delete"))
             {

@@ -362,6 +362,7 @@ namespace LibrelioApplication.Data
     public class MagazineViewModel : MagazineDataCommon
     {
         private bool _isDownloaded = false;
+        private bool _isOpening = false;
         public const string TAG_READ  = "READ";
         public const string TAG_DEL  = "DEL";
         public const string TAG_SAMPLE  = "SAMPLE";
@@ -417,6 +418,24 @@ namespace LibrelioApplication.Data
         public int Index { get; set; }
         public bool IsPaid { get; set; }
         public bool SecondButtonVisible { get; set; }
+        public bool IsOpening 
+        {
+            get { return _isOpening; }
+            set
+            {
+                _isOpening = value;
+                var resourceLoader = new ResourceLoader();
+                if (_isOpening)
+                {
+                    DownloadOrReadButton = "Opening";
+                }
+                else
+                {
+                    DownloadOrReadButton = resourceLoader.GetString("read");
+                }
+                OnPropertyChanged("DownloadOrReadButton");
+            }
+        }
         public String FileName { get; set; }
         public String RelativePath { get; set; }
         public ImageSource Image { get; set; }
@@ -652,8 +671,12 @@ namespace LibrelioApplication.Data
 
             var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
 
-            await manager.LoadPLISTAsync();
             await manager.LoadLocalMagazineList();
+
+            //if (manager.MagazineLocalUrl.Count == 0)
+            //{
+                await manager.LoadPLISTAsync();
+            //}
 
             bool newGroup = false;
             MagazineDataGroup group = null;
@@ -712,15 +735,26 @@ namespace LibrelioApplication.Data
                 group = GetGroup("All Magazines");
             }
 
-            for (int i = 0; i < manager.MagazineUrl.Count; i++)
+            var count = manager.MagazineLocalUrl.Count;
+            if (count == 0)
+                count = manager.MagazineUrl.Count;
+            for (int i = 0; i < count; i++)
             {
-                var localUrl = manager.FindInMetadata(manager.MagazineUrl[i]);
+                LibrelioLocalUrl localUrl = null;
                 MagazineModel m = null;
-                if (localUrl != null && localUrl.IsDownloaded)
-                    m = new MagazineModel(localUrl, manager.MagazineUrl[i].Index);
-                else
-                    m = new MagazineModel(manager.MagazineUrl[i]);
-
+                //if (manager.MagazineLocalUrl.Count == 0)
+                //{
+                    localUrl = manager.FindInMetadata(manager.MagazineUrl[i]);
+                    if (localUrl != null && localUrl.IsDownloaded)
+                        m = new MagazineModel(localUrl, manager.MagazineUrl[i].Index);
+                    else
+                        m = new MagazineModel(manager.MagazineUrl[i]);
+                //}
+                //else
+                //{
+                    //localUrl = manager.MagazineLocalUrl[i];
+                    //m = new MagazineModel(localUrl, i);
+                //}
 
                 if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
                 BitmapImage image = null;

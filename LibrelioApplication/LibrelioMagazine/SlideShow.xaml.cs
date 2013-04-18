@@ -148,87 +148,88 @@ namespace LibrelioApplication
             //{
             //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
             //}
-            StorageFolder folder = null;
-            try
-            {
-                folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
 
-                int start = 0;
-                int end = 0;
-                if (url.Contains(".jpg"))
-                {
-                    start = url.IndexOf('_');
-                    end = url.IndexOf(".jpg");
-
-                    startMame = url.Substring(0, start + 1);
-                    startMame = startMame.Replace("http://localhost/", "");
-                    endName = ".jpg";
-                }
-                else if (url.Contains(".png"))
-                {
-                    start = url.IndexOf('_');
-                    end = url.IndexOf(".png");
-
-                    startMame = url.Substring(0, start + 1);
-                    endName = ".png";
-                }
-
-                if (start == -1 || end == -1)
-                {
-                    throw new Exception();
-                }
-
-                var test = url.Substring(start + 1, end - start);
-                length = Convert.ToInt32(url.Substring(start + 1, end - start - 1));
-
-            }
-            catch
-            {
-                //if (!DownloadManager.IsFullScreenAsset(url))
-                //{
-                //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
-                //}
-
-                for (int p = 0; p < 1; p++)
-                {
-                    images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
-                }
-                //progressLoad.IsActive = false;
-                return;
-            }
-
-            var maxWidth = this.Width;
-            var maxHeight = this.Height;
-            for (int i = 1; i <= length; i++)
-            {
-                StorageFile file = null;
+                StorageFolder folder = null;
                 try
                 {
-                    var str = folder.Path + "\\" + startMame + i + endName;
-                    file = await StorageFile.GetFileFromPathAsync(folder.Path + "\\" + startMame + i + endName);
-                    using (var stream = await file.OpenAsync(FileAccessMode.Read))
+                    folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
+
+                    int start = 0;
+                    int end = 0;
+                    if (url.Contains(".jpg"))
                     {
-                        var unprotected = await DownloadManager.UnprotectPDFStream(stream);
-                        var bitmap = new BitmapImage();
-                        await bitmap.SetSourceAsync(unprotected);
-                        if (DownloadManager.IsFullScreenAsset(url))
-                        {
-                            maxWidth = maxWidth < bitmap.PixelWidth ? bitmap.PixelWidth : maxWidth;
-                            maxHeight = maxHeight < bitmap.PixelHeight ? bitmap.PixelHeight : maxHeight;
-                            images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
-                        }
-                        else
-                        {
-                            images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
-                        }
+                        start = url.IndexOf('_');
+                        end = url.IndexOf(".jpg");
+
+                        startMame = url.Substring(0, start + 1);
+                        startMame = startMame.Replace("http://localhost/", "");
+                        endName = ".jpg";
                     }
+                    else if (url.Contains(".png"))
+                    {
+                        start = url.IndexOf('_');
+                        end = url.IndexOf(".png");
+
+                        startMame = url.Substring(0, start + 1);
+                        endName = ".png";
+                    }
+
+                    if (start == -1 || end == -1)
+                    {
+                        throw new Exception();
+                    }
+
+                    var test = url.Substring(start + 1, end - start);
+                    length = Convert.ToInt32(url.Substring(start + 1, end - start - 1));
+
                 }
                 catch
                 {
-                    images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
+                    //if (!DownloadManager.IsFullScreenAsset(url))
+                    //{
+                    //    images.Add(new ImageData() { Image = null, Width = this.Width, Height = this.Height });
+                    //}
+
+                    for (int p = 0; p < 1; p++)
+                    {
+                        images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
+                    }
                     //progressLoad.IsActive = false;
+                    return;
                 }
-            }
+
+                var maxWidth = this.Width;
+                var maxHeight = this.Height;
+                for (int i = 1; i <= length; i++)
+                {
+                    StorageFile file = null;
+                    try
+                    {
+                        var str = folder.Path + "\\" + startMame + i + endName;
+                        file = await StorageFile.GetFileFromPathAsync(folder.Path + "\\" + startMame + i + endName);
+                        using (var stream = await file.OpenAsync(FileAccessMode.Read))
+                        {
+                            var unprotected = await DownloadManager.UnprotectPDFStream(stream);
+                            var bitmap = new BitmapImage();
+                            await bitmap.SetSourceAsync(unprotected);
+                            if (DownloadManager.IsFullScreenAsset(url))
+                            {
+                                maxWidth = maxWidth < bitmap.PixelWidth ? bitmap.PixelWidth : maxWidth;
+                                maxHeight = maxHeight < bitmap.PixelHeight ? bitmap.PixelHeight : maxHeight;
+                                images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
+                            }
+                            else
+                            {
+                                images.Add(new ImageData() { Image = bitmap, ImgStretch = Stretch.Uniform, Hidden = true, Width = this.Width, Height = this.Height });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        images.Add(new ImageData() { Image = null, NotDownloaded = true, Width = this.Width, Height = this.Height });
+                        //progressLoad.IsActive = false;
+                    }
+                }
 
             //if (!DownloadManager.IsFullScreenAsset(url))
             //{
