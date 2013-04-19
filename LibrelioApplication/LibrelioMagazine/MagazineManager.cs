@@ -12,6 +12,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Xaml;
 using Windows.Graphics.Imaging;
 using MuPDFWinRT;
 
@@ -141,6 +143,31 @@ namespace LibrelioApplication
             return bitmap;
         }
 
+        public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioLocalUrl magUrl, StorageFolder folder)
+        {
+            string s = ".";
+            if (magUrl.FullName.Contains("_."))
+            {
+                s = "_.";
+            }
+            var pos = magUrl.Url.LastIndexOf(s);
+            var url = magUrl.Url.Substring(0, pos) + ".png";
+            var stream = await DownloadManager.DownloadFileAsync(url);
+
+            await DownloadManager.StoreToFolderAsync(magUrl.FullName.Replace(s + "pdf", ".png"), folder, stream);
+
+            var bitmap = new BitmapImage();
+            try
+            {
+                await bitmap.SetSourceAsync(stream);
+            }
+            catch
+            {
+                bitmap = null;
+            }
+            return bitmap;
+        }
+
         public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             StatusText = "Download in progress";
@@ -155,6 +182,28 @@ namespace LibrelioApplication
             if (url != null)
             {
                 await DownloadPDFAssetsAsync(url, links, progress, cancelToken);
+            }
+
+            StatusText = "Done";
+
+            return stream;
+        }
+
+        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioLocalUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        {
+            StatusText = "Download in progress";
+
+            var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+
+            await GetUrlsFromPDF(stream);
+
+            StatusText = "Downloading 2/" + (links.Count + 1);
+            magUrl.FolderPath = folder.Path + "\\";
+            //var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
+
+            if (magUrl != null)
+            {
+                await DownloadPDFAssetsAsync(magUrl, links, progress, cancelToken);
             }
 
             StatusText = "Done";
@@ -186,6 +235,29 @@ namespace LibrelioApplication
             return stream;
         }
 
+        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioLocalUrl magUrl, string redirectUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        {
+            StatusText = "Download in progress";
+
+            var tmpUrl = magUrl.Url;
+            magUrl.Url = redirectUrl;
+            var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+            magUrl.Url = tmpUrl;
+
+            await GetUrlsFromPDF(stream);
+
+            StatusText = "Downloading 2/" + (links.Count + 1);
+
+            if (magUrl != null)
+            {
+                await DownloadPDFAssetsAsync(magUrl, links, progress, cancelToken);
+            }
+
+            StatusText = "Done";
+
+            return stream;
+        }
+
         public LibrelioLocalUrl FindInMetadata(LibrelioUrl url)
         {
             return DownloadManager.FindInMetadata(url, localXml);
@@ -196,6 +268,75 @@ namespace LibrelioApplication
             HttpClient client = new HttpClient();
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, magUrl.AbsoluteUrl);
+
+            int read = 0;
+            int offset = 0;
+            byte[] responseBuffer = new byte[1024];
+
+            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancelToken);
+            response.EnsureSuccessStatusCode();
+
+            var length = response.Content.Headers.ContentLength;
+
+            cancelToken.ThrowIfCancellationRequested();
+
+            var stream = new InMemoryRandomAccessStream();
+
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                do
+                {
+                    cancelToken.ThrowIfCancellationRequested();
+
+                    read = await responseStream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
+
+                    cancelToken.ThrowIfCancellationRequested();
+
+                    await stream.AsStream().WriteAsync(responseBuffer, 0, read);
+
+                    offset += read;
+                    uint val = (uint)(offset * 100 / length);
+                    if (val >= 100) val = 99;
+                    if (val <= 0) val = 1;
+                    progress.Report((int)val);
+                }
+                while (read != 0);
+            }
+
+            progress.Report(100);
+
+            await stream.FlushAsync();
+
+            //var folder = await AddMagazineFolderStructure(magUrl);
+            //var folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
+            var file = await folder.CreateFileAsync(magUrl.FullName, CreationCollisionOption.ReplaceExisting);
+
+            using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
+            using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+            //using (var unprotectedStream = await DownloadManager.UnprotectPDFStream(protectedStream))
+            {
+
+                await RandomAccessStream.CopyAsync(protectedStream, fileStream.GetOutputStreamAt(0));
+
+                await fileStream.FlushAsync();
+            }
+            var pdfStream = new MagazineData();
+            pdfStream.folderUrl = folder.Path + "\\";
+            pdfStream.stream = stream;
+            //var fileHandle =
+            //    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\testmagazine.pdf");
+
+            //pdfStream.folderUrl = "C:\\Users\\Dorin\\Documents\\Magazines\\wind_355\\";
+            //pdfStream.stream = await fileHandle.OpenReadAsync();
+
+            return pdfStream.stream;
+        }
+
+        public async Task<IRandomAccessStream> DownloadPDFAsync(LibrelioLocalUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        {
+            HttpClient client = new HttpClient();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, magUrl.Url);
 
             int read = 0;
             int offset = 0;
@@ -314,7 +455,18 @@ namespace LibrelioApplication
             }
         }
 
-        public async Task AddMagazineFolderStructure(LibrelioLocalUrl magLocal)
+        public async Task MarkAsDownloaded(LibrelioLocalUrl magUrl, StorageFolder currentFolder)
+        {
+            if (currentFolder != _folder)
+            {
+                if (!UpdataLocalUrl(magUrl))
+                    _magazinesLocalUrl.Add(magUrl);
+
+                await AddUpdateMetadataEntry(magUrl);
+            }
+        }
+
+        public async Task<StorageFolder> AddMagazineFolderStructure(LibrelioLocalUrl magLocal)
         {
             var currentFolder = _folder;
 
@@ -328,23 +480,30 @@ namespace LibrelioApplication
                 {
                     try
                     {
-                        var fld = await currentFolder.CreateFolderAsync(folder, CreationCollisionOption.ReplaceExisting);
+                        var fld = await currentFolder.CreateFolderAsync(folder, CreationCollisionOption.OpenIfExists);
                         currentFolder = fld;
                     }
                     catch
                     {
-                        return;
+                        return null;
                     }
                 }
             }
 
             if (currentFolder != _folder)
             {
-                magLocal.FolderPath = currentFolder.Path + "\\";
-                await LoadLocalMetadata();
+                //    var magLocal = new LibrelioLocalUrl(magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\", 
+                //                                        magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl);
 
-                await AddUpdateMetadataEntry(magLocal);
+                //    if (!UpdataLocalUrl(magLocal))
+                //        _magazinesLocalUrl.Add(magLocal);
+
+                //    await AddUpdateMetadataEntry(magLocal);
+
+                return currentFolder;
             }
+
+            return null;
         }
 
         public async Task AddUpdateMetadataEntry(LibrelioLocalUrl magLocal)
@@ -653,52 +812,60 @@ namespace LibrelioApplication
             return file;
         }
 
-        private async Task<IRandomAccessStream> DownloadFileAsyncWithProgress(string url, StorageFile pdfFile, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        private async Task DownloadFileAsyncWithProgress(string url, StorageFile pdfFile, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
-            HttpClient client = new HttpClient();
+            //HttpClient client = new HttpClient();
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 
-            int read = 0;
-            int offset = 0;
-            byte[] responseBuffer = new byte[10000];
+            //int read = 0;
+            //int offset = 0;
+            //byte[] responseBuffer = new byte[2000];
 
-            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancelToken);
-            response.EnsureSuccessStatusCode();
+            //var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancelToken);
+            //response.EnsureSuccessStatusCode();
 
-            var length = response.Content.Headers.ContentLength;
+            //var length = response.Content.Headers.ContentLength;
 
-            cancelToken.ThrowIfCancellationRequested();
+            //byte[] img = await response.Content.ReadAsByteArrayAsync();
 
-            var stream = new InMemoryRandomAccessStream();
+            //cancelToken.ThrowIfCancellationRequested();
 
-            var task1 = client.GetStreamAsync(new Uri(url));
+            //var stream = new InMemoryRandomAccessStream();
+            //DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0));
 
-            var cancelation = new CancellationTokenSource();
+            //writer.WriteBytes(img);
 
-            var task2 = Task.Run(async () =>
-            {
-                for (int i = 0; i < length; i += 9000)
-                {
-                    await Task.Delay(1);
-                    int val = (int)(i * 100 / length);
-                    progress.Report(val);
+            //await writer.StoreAsync();
 
-                    if (cancelation.Token.IsCancellationRequested)
-                    {
-                        progress.Report(99);
-                        return;
-                    }
-                }
-            }, cancelation.Token);
 
-            var result = await task1;
+            //var task1 = client.GetStreamAsync(new Uri(url));
 
-            cancelation.Cancel();
-            progress.Report(99);
+            //var cancelation = new CancellationTokenSource();
 
-            await result.CopyToAsync(stream.AsStream());
-            await stream.FlushAsync();
+            //var task2 = Task.Run(async () =>
+            //{
+            //    for (int i = 0; i < length; i += 9000)
+            //    {
+            //        await Task.Delay(1);
+            //        int val = (int)(i * 100 / length);
+            //        progress.Report(val);
+
+            //        if (cancelation.Token.IsCancellationRequested)
+            //        {
+            //            progress.Report(99);
+            //            return;
+            //        }
+            //    }
+            //}, cancelation.Token);
+
+            //var result = await task1;
+
+            //cancelation.Cancel();
+            //progress.Report(99);
+
+            //await result.CopyToAsync(stream.AsStream());
+            //await stream.FlushAsync();
 
             //await Task.Delay(670);
 
@@ -720,18 +887,81 @@ namespace LibrelioApplication
             //}
             //while (read > 0);
 
+            //await responseStream.FlushAsync();
+            //responseStream.Dispose();
+            //responseStream = null;
             //await stream.FlushAsync();
-            //await Task.Delay(670);
 
-            var protectedStream = await DownloadManager.ProtectPDFStream(stream);
-            var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+            //var protectedStream = await DownloadManager.ProtectPDFStream(stream);
+            //var fileStream = await pdfFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
             //using (var unprotectedStream = await DownloadManager.UnprotectPDFStream(protectedStream))
 
-            await RandomAccessStream.CopyAndCloseAsync(protectedStream, fileStream.GetOutputStreamAt(0));
+            //await RandomAccessStream.CopyAndCloseAsync(stream.GetInputStreamAt(0), fileStream.GetOutputStreamAt(0));
 
+            //await stream.FlushAsync();
+            //stream.Dispose();
+            ///stream = null;
+            //await protectedStream.FlushAsync();
+            //protectedStream.Dispose();
+            //protectedStream = null;
             //await fileStream.FlushAsync();
+            //fileStream.Dispose();
+            //fileStream = null;
+            //pdfFile = null;
 
-            return stream;
+            progress.Report(0);
+            BackgroundDownloader downloader = new BackgroundDownloader();
+            DownloadOperation download = downloader.CreateDownload(new Uri(url), pdfFile);
+
+            await HandleDownloadAsync(download,  true, progress, cancelToken);
+
+            progress.Report(100);
+
+            var stream = await download.ResultFile.OpenAsync(FileAccessMode.ReadWrite);
+            var protectedStram = await DownloadManager.ProtectPDFStream(stream);
+            await RandomAccessStream.CopyAndCloseAsync(protectedStram.GetInputStreamAt(0), stream.GetOutputStreamAt(0));
+            await protectedStram.FlushAsync();
+            await stream.FlushAsync();
+            protectedStram.Dispose();
+            stream.Dispose();
         }
+
+        private async Task HandleDownloadAsync(DownloadOperation download, bool start, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        {
+            var app = Application.Current as App;
+
+            try
+            {
+                // Store the download so we can pause/resume. 
+                app.activeDownloads.Add(download);
+
+                Progress<DownloadOperation> progressCallback = new Progress<DownloadOperation>((operation) =>
+                {
+                    ulong val = (ulong)(operation.Progress.BytesReceived * 100 / operation.Progress.TotalBytesToReceive);
+                    progress.Report((int)val);
+                });
+
+                if (start)
+                {
+                    // Start the download and attach a progress handler. 
+                    await download.StartAsync().AsTask(cancelToken, progressCallback);
+                }
+                else
+                {
+                    // The download was already running when the application started, re-attach the progress handler. 
+                    await download.AttachAsync().AsTask(cancelToken, progressCallback);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                app.activeDownloads.Remove(download);
+            }
+        } 
     }
 }

@@ -28,7 +28,7 @@ namespace LibrelioApplication
         private LicenseInformation licenseInformation = null;
         private string product_id = "";
         private string relativePath = "";
-        private Button _button = null;
+        private Data.MagazineViewModel _item = null;
 
         public event BoughtEventHandler Bought;
 
@@ -37,9 +37,9 @@ namespace LibrelioApplication
             this.InitializeComponent();
         }
 
-        public async Task Init(Data.MagazineViewModel mag, Button button)
+        public async Task Init(Data.MagazineViewModel mag)
         {
-            _button = button;
+            _item = mag;
             product_id = mag.FileName.Replace(".pdf", "");
             relativePath = mag.RelativePath;
             licenseInformation = CurrentAppSimulator.LicenseInformation;
@@ -124,9 +124,9 @@ namespace LibrelioApplication
             }
         }
 
-        public Button GetCurrentButton()
+        public Data.MagazineViewModel GetCurrentItem()
         {
-            return _button;
+            return _item;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

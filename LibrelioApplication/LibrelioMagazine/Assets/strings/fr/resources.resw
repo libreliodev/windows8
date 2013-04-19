@@ -117,278 +117,289 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
   <data name="app_name" xml:space="preserve">
-  <value>Wind</value>  
+    <value>Wind</value>
   </data>
   <data name="no_media_warning" xml:space="preserve">
-  <value>No media</value>  
+    <value>No media</value>
   </data>
   <data name="no_media_hint" xml:space="preserve">
-  <value>Disconnect from PC</value>  
+    <value>Disconnect from PC</value>
   </data>
   <data name="open_failed" xml:space="preserve">
-  <value>Cant open PDF. Please put file wind_355.pdf on SD card for testing …</value>  
+    <value>Cant open PDF. Please put file wind_355.pdf on SD card for testing …</value>
   </data>
   <data name="search_backwards" xml:space="preserve">
-  <value>Search back</value>  
+    <value>Search back</value>
   </data>
   <data name="search_forwards" xml:space="preserve">
-  <value>Search forward</value>  
+    <value>Search forward</value>
   </data>
   <data name="search_document" xml:space="preserve">
-  <value>Search in document</value>  
+    <value>Search in document</value>
   </data>
   <data name="picker_title" xml:space="preserve">
-  <value>Wind</value>  
+    <value>Wind</value>
   </data>
   <data name="outline_title" xml:space="preserve">
-  <value>Outline</value>  
+    <value>Outline</value>
   </data>
   <data name="enter_password" xml:space="preserve">
-  <value>Enter your password</value>  
+    <value>Enter your password</value>
   </data>
   <data name="text_not_found" xml:space="preserve">
-  <value>Not found</value>  
+    <value>Not found</value>
   </data>
   <data name="items_you_own" xml:space="preserve">
-  <value>Items you own</value>  
+    <value>Items you own</value>
   </data>
   <data name="recent_transactions" xml:space="preserve">
-  <value>Recent activity</value>  
+    <value>Recent activity</value>
   </data>
   <data name="edit_payload" xml:space="preserve">
-  <value>Edit Payload</value>  
+    <value>Edit Payload</value>
   </data>
   <data name="items_for_sale" xml:space="preserve">
-  <value>Items for sale</value>  
+    <value>Items for sale</value>
   </data>
   <data name="searching_" xml:space="preserve">
-  <value>Searching…</value>  
+    <value>Searching…</value>
   </data>
   <data name="link_control" xml:space="preserve">
-  <value>Link highlight</value>  
+    <value>Link highlight</value>
   </data>
   <data name="exit" xml:space="preserve">
-  <value>Exit</value>  
+    <value>Exit</value>
   </data>
   <data name="reload" xml:space="preserve">
-  <value>Reload</value>  
+    <value>Reload</value>
   </data>
   <data name="not_connected" xml:space="preserve">
-  <value>Not connected to Internet…</value>  
+    <value>Not connected to Internet…</value>
   </data>
   <data name="restore_purchise" xml:space="preserve">
-  <value>Restore purchises</value>  
+    <value>Restore purchises</value>
   </data>
   <data name="subscription_monthly" xml:space="preserve">
-  <value>Subscribe month</value>  
+    <value>Subscribe month</value>
   </data>
   <data name="subscription_yearly" xml:space="preserve">
-  <value>Subscribe year</value>  
+    <value>Subscribe year</value>
   </data>
   <data name="android_purchased" xml:space="preserve">
-  <value>Purchase finished</value>  
+    <value>Purchase finished</value>
   </data>
   <data name="android_canceled" xml:space="preserve">
-  <value>Purchase cancelled</value>  
+    <value>Purchase cancelled</value>
   </data>
   <data name="android_refunded" xml:space="preserve">
-  <value>Purchase refunded</value>  
+    <value>Purchase refunded</value>
   </data>
   <data name="android_item_unavailable" xml:space="preserve">
-  <value>Product unavailable</value>  
+    <value>Product unavailable</value>
   </data>
   <data name="cannot_connect_title" xml:space="preserve">
-  <value>Cant connect</value>  
+    <value>Cant connect</value>
   </data>
   <data name="cannot_connect_message" xml:space="preserve">
-  <value>Cant connect Google Play server</value>  
+    <value>Cant connect Google Play server</value>
   </data>
   <data name="billing_not_supported_message" xml:space="preserve">
-  <value>Google Play not supported on your device</value>  
+    <value>Google Play not supported on your device</value>
   </data>
   <data name="subscriptions_not_supported_title" xml:space="preserve">
-  <value>Subscriptions not supported</value>  
+    <value>Subscriptions not supported</value>
   </data>
   <data name="subscriptions_not_supported_message" xml:space="preserve">
-  <value>Subscriptions not supported on your device</value>  
+    <value>Subscriptions not supported on your device</value>
   </data>
   <data name="billing_not_supported_title" xml:space="preserve">
-  <value>Billing not supported.</value>  
+    <value>Billing not supported.</value>
   </data>
   <data name="android_test_canceled" xml:space="preserve">
-  <value>android.test.canceled</value>  
+    <value>android.test.canceled</value>
   </data>
   <data name="android_test_purchased" xml:space="preserve">
-  <value>android.test.purchased</value>  
+    <value>android.test.purchased</value>
   </data>
   <data name="android_test_item_unavailable" xml:space="preserve">
-  <value>android.test.item unavailable</value>  
+    <value>android.test.item unavailable</value>
   </data>
   <data name="android_test_refunded" xml:space="preserve">
-  <value>android.test.refunded</value>  
+    <value>android.test.refunded</value>
   </data>
   <data name="edit_subscriptions" xml:space="preserve">
-  <value>Edit Subscriptions</value>  
+    <value>Edit Subscriptions</value>
   </data>
   <data name="help_url" xml:space="preserve">
-  <value>TODO</value>  
+    <value>TODO</value>
   </data>
   <data name="restoring_transactions" xml:space="preserve">
-  <value>Restoring transactions</value>  
+    <value>Restoring transactions</value>
   </data>
   <data name="learn_more" xml:space="preserve">
-  <value>Learn more</value>  
+    <value>Learn more</value>
   </data>
   <data name="buy" xml:space="preserve">
-  <value>Buy</value>  
+    <value>Buy</value>
   </data>
   <data name="select_item" xml:space="preserve">
-  <value>Select item</value>  
+    <value>Select item</value>
   </data>
   <data name="edit_payload_title" xml:space="preserve">
-  <value>Edit the developer payload associated with this purchase</value>  
+    <value>Edit the developer payload associated with this purchase</value>
   </data>
   <data name="edit_payload_accept" xml:space="preserve">
-  <value>Set</value>  
+    <value>Set</value>
   </data>
   <data name="edit_payload_clear" xml:space="preserve">
-  <value>No Payload</value>  
+    <value>No Payload</value>
   </data>
   <data name="purchise" xml:space="preserve">
-  <value>Purchassse</value>  
+    <value>Purchassse</value>
   </data>
   <data name="delete" xml:space="preserve">
-  <value>Delete</value>  
+    <value>Delete</value>
   </data>
   <data name="subscribe_year" xml:space="preserve">
-  <value>Subscribe year</value>  
+    <value>Subscribe year</value>
   </data>
   <data name="no_further_occurences_found" xml:space="preserve">
-  <value>No more found</value>  
+    <value>No more found</value>
   </data>
   <data name="connection_failed" xml:space="preserve">
-  <value>Connection failed!</value>  
+    <value>Connection failed!</value>
   </data>
   <data name="abonnement_wind" xml:space="preserve">
-  <value>Abonnement Wind</value>  
+    <value>Abonnement Wind</value>
   </data>
   <data name="server_error" xml:space="preserve">
-  <value>Bad responce from server.</value>  
+    <value>Bad responce from server.</value>
   </data>
   <data name="connecting" xml:space="preserve">
-  <value>Connexion...</value>  
+    <value>Connexion...</value>
   </data>
   <data name="download_failed_please_check_your_connection" xml:space="preserve">
-  <value>Le téléchargement a échoué, veuillez vérifier votre connection internet</value>  
+    <value>Le téléchargement a échoué, veuillez vérifier votre connection internet</value>
   </data>
   <data name="please_check_your_connection" xml:space="preserve">
-  <value>Veuillez vérifier votre connection internet</value>  
+    <value>Veuillez vérifier votre connection internet</value>
   </data>
   <data name="download_in_progress" xml:space="preserve">
-  <value>Téléchargement en cours</value>  
+    <value>Téléchargement en cours</value>
   </data>
   <data name="caching_operation_in_progress" xml:space="preserve">
-  <value>Opération de cache en cours</value>  
+    <value>Opération de cache en cours</value>
   </data>
   <data name="what_do_you_want_to_buy" xml:space="preserve">
-  <value>Que souhaitez-vous acheter?</value>  
+    <value>Que souhaitez-vous acheter?</value>
   </data>
   <data name="cancel" xml:space="preserve">
-  <value>Annuler</value>  
+    <value>Annuler</value>
   </data>
   <data name="done" xml:space="preserve">
-  <value>Terminé</value>  
+    <value>Terminé</value>
   </data>
   <data name="the_order_failed" xml:space="preserve">
-  <value>La commande a échoué</value>  
+    <value>La commande a échoué</value>
   </data>
   <data name="buy_and_download" xml:space="preserve">
-  <value>Télécharger</value>  
+    <value>Télécharger</value>
   </data>
   <data name="try_again" xml:space="preserve">
-  <value>Réessayer</value>  
+    <value>Réessayer</value>
   </data>
   <data name="downloads" xml:space="preserve">
-  <value>Téléchargements</value>  
+    <value>Téléchargements</value>
   </data>
   <data name="downloaded" xml:space="preserve">
-  <value>Téléchargé</value>  
+    <value>Téléchargé</value>
   </data>
   <data name="free_Download" xml:space="preserve">
-  <value>Téléchargement gratuit</value>  
+    <value>Téléchargement gratuit</value>
   </data>
   <data name="download" xml:space="preserve">
-  <value>Télécharger ...</value>  
+    <value>Télécharger ...</value>
   </data>
   <data name="free_sample" xml:space="preserve">
-  <value>Extrait gratuit</value>  
+    <value>Extrait gratuit</value>
   </data>
   <data name="sample" xml:space="preserve">
-  <value>Extrait</value>  
+    <value>Extrait</value>
   </data>
   <data name="read" xml:space="preserve">
-  <value>Lire</value>  
+    <value>Lire</value>
   </data>
   <data name="magazines" xml:space="preserve">
-  <value>Magazines</value>  
+    <value>Magazines</value>
   </data>
   <data name="do_you_really_want_to_quit_this_app" xml:space="preserve">
-  <value>Voulez-vous vraiment quitter cette application?</value>  
+    <value>Voulez-vous vraiment quitter cette application?</value>
   </data>
   <data name="yes" xml:space="preserve">
-  <value>Oui</value>  
+    <value>Oui</value>
   </data>
   <data name="i_have_a_subscriber_code" xml:space="preserve">
-  <value>J\'ai un code abonné</value>  
+    <value>J\'ai un code abonné</value>
   </data>
   <data name="i_have_a_promo_code" xml:space="preserve">
-  <value>J\'ai un code promo</value>  
+    <value>J\'ai un code promo</value>
   </data>
   <data name="restore_my_purchases" xml:space="preserve">
-  <value>Restaurer mes achats</value>  
+    <value>Restaurer mes achats</value>
   </data>
   <data name="restore_completed" xml:space="preserve">
-  <value>Restauration effectuée</value>  
+    <value>Restauration effectuée</value>
   </data>
   <data name="free_subscription" xml:space="preserve">
-  <value>Abonnement gratuit</value>  
+    <value>Abonnement gratuit</value>
   </data>
   <data name="subscriber_code" xml:space="preserve">
-  <value>Code abonné</value>  
+    <value>Code abonné</value>
   </data>
   <data name="please_enter_your_code" xml:space="preserve">
-  <value>Veuillez saisir votre code</value>  
+    <value>Veuillez saisir votre code</value>
   </data>
   <data name="invalid_code" xml:space="preserve">
-  <value>Code non valide</value>  
+    <value>Code non valide</value>
   </data>
   <data name="share_on_facebook" xml:space="preserve">
-  <value>Partager sur Facebook</value>  
+    <value>Partager sur Facebook</value>
   </data>
   <data name="share_on_twitter" xml:space="preserve">
-  <value>Partager sur Twitter</value>  
+    <value>Partager sur Twitter</value>
   </data>
   <data name="share_by_mail" xml:space="preserve">
-  <value>Partager par mail</value>  
+    <value>Partager par mail</value>
   </data>
   <data name="languages" xml:space="preserve">
-  <value>Langues</value>  
+    <value>Langues</value>
   </data>
   <data name="ios_6_required" xml:space="preserve">
-  <value>Désolé, iOS 6 est requis pour cette opération</value>  
+    <value>Désolé, iOS 6 est requis pour cette opération</value>
   </data>
   <data name="month" xml:space="preserve">
-  <value>mois</value>  
+    <value>mois</value>
   </data>
   <data name="months" xml:space="preserve">
-  <value>mois</value>  
+    <value>mois</value>
   </data>
   <data name="year" xml:space="preserve">
-  <value>an</value>  
+    <value>an</value>
   </data>
   <data name="week" xml:space="preserve">
-  <value>semaine</value>  
+    <value>semaine</value>
+  </data>
+  <data name="deleting" xml:space="preserve">
+    <value>Suppression ...</value>
+  </data>
+  <data name="downloading" xml:space="preserve">
+    <value>Téléchargement</value>
+  </data>
+  <data name="opening" xml:space="preserve">
+    <value>Ouverture ...</value>
+  </data>
+  <data name="preparing" xml:space="preserve">
+    <value>Préparation</value>
   </data>
 </root>

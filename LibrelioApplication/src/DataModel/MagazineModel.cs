@@ -363,6 +363,8 @@ namespace LibrelioApplication.Data
     {
         private bool _isDownloaded = false;
         private bool _isOpening = false;
+        private string _downloadOrReadButton = "";
+        private string _sampleOrDeleteButton = "";
         public const string TAG_READ  = "READ";
         public const string TAG_DEL  = "DEL";
         public const string TAG_SAMPLE  = "SAMPLE";
@@ -427,7 +429,7 @@ namespace LibrelioApplication.Data
                 var resourceLoader = new ResourceLoader();
                 if (_isOpening)
                 {
-                    DownloadOrReadButton = "Opening";
+                    DownloadOrReadButton = resourceLoader.GetString("opening");
                 }
                 else
                 {
@@ -439,8 +441,24 @@ namespace LibrelioApplication.Data
         public String FileName { get; set; }
         public String RelativePath { get; set; }
         public ImageSource Image { get; set; }
-        public String DownloadOrReadButton { get; set; }
-        public String SampleOrDeleteButton { get; set; }
+        public String DownloadOrReadButton 
+        {
+            get { return _downloadOrReadButton;  }
+            set
+            {
+                _downloadOrReadButton = value;
+                OnPropertyChanged("DownloadOrReadButton");
+            }
+        }
+        public String SampleOrDeleteButton 
+        {
+            get { return _sampleOrDeleteButton; }
+            set
+            {
+                _sampleOrDeleteButton = value;
+                OnPropertyChanged("SampleOrDeleteButton");
+            }
+        }
         public String Button1Tag { get; set; }
         public String Button2Tag { get; set; }
         public String MagazineTag { get; set; }

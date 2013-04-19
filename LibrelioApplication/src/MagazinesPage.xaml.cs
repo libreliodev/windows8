@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.ApplicationModel.Resources;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
@@ -85,14 +86,15 @@ namespace LibrelioApplication
             var item = ((MagazineViewModel)e.ClickedItem);
             if (item.IsOpening) return;
             //sParam += LibrelioApplication.PdfViewPage.qqq;
-            if (!item.IsDownloaded) {
+            var resourceLoader = new ResourceLoader();
+            if (!item.IsDownloaded && item.SecondButtonVisible == true) {
 
                 //Utils.Utils.navigateTo(typeof(LibrelioApplication.PdfViewPage));
                 var group = MagazineDataSource.GetGroup("All Magazines");
                 group.Items.Remove(item);
                 this.Frame.Navigate(typeof(DownloadingPage), "test");
 
-            } else {
+            } else if (item.IsDownloaded) {
 
                 if (manager == null) {
 
@@ -109,6 +111,33 @@ namespace LibrelioApplication
                 item.IsOpening = false;
                 isOpening = false;
                 this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
+
+            } else if (item.DownloadOrReadButton == resourceLoader.GetString("download")) {
+
+                if (item.IsPaid)
+                {
+                    item.DownloadOrReadButton = resourceLoader.GetString("preparing");
+                    try
+                    {
+                        await purchaseModule.Init(item);
+                    }
+                    catch
+                    {
+                        purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    }
+                    item.DownloadOrReadButton = resourceLoader.GetString("download");
+                }
+                else
+                {
+                    var group = MagazineDataSource.GetGroup("All Magazines");
+                    group.Items.Remove(item);
+                    var param = new DownloadMagazine()
+                    {
+                        manager = manager,
+                        url = manager.MagazineUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName)).First()
+                    };
+                    this.Frame.Navigate(typeof(DownloadingPage), param);
+                }
             }
         }
 
@@ -121,11 +150,12 @@ namespace LibrelioApplication
         {
             if (isOpening) return;
             var button = sender as Button;
-            if (button.Content.Equals("Read"))
+            var item = ((MagazineViewModel)button.DataContext);
+            var resourceLoader = new ResourceLoader();
+            if (item.DownloadOrReadButton == resourceLoader.GetString("read"))
             {
                 isOpening = true;
-                button.Content = "Opening";
-                var item = ((MagazineViewModel)button.DataContext);
+                item.DownloadOrReadButton = resourceLoader.GetString("opening");
 
                 if (manager == null)
                 {
@@ -138,23 +168,23 @@ namespace LibrelioApplication
                 var str = await DownloadManager.OpenPdfFile(mag);
                 if (str == null) { isOpening = false; return; }
                 isOpening = false;
+                item.DownloadOrReadButton = resourceLoader.GetString("read");
                 this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = str, folderUrl = mag.FolderPath });
             }
-            else if (button.Content.Equals("Download ..."))
+            else if (item.DownloadOrReadButton == resourceLoader.GetString("download"))
             {
-                var item = ((MagazineViewModel)button.DataContext);
                 if (item.IsPaid)
                 {
-                    button.Content = "Preparing ...";
+                    item.DownloadOrReadButton = resourceLoader.GetString("preparing");
                     try
                     {
-                        await purchaseModule.Init(item, button);
+                        await purchaseModule.Init(item);
                     }
                     catch
                     {
                         purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     }
-                    button.Content = "Download ...";
+                    item.DownloadOrReadButton = resourceLoader.GetString("download");
                 }
                 else
                 {
@@ -171,9 +201,9 @@ namespace LibrelioApplication
         {
             var purchase = sender as PurchaseModule;
 
-            var button = purchase.GetCurrentButton();
-            button.Content = "Opening";
-            var item = ((MagazineViewModel)button.DataContext);
+            var item = purchase.GetCurrentItem();
+            var resourceLoader = new ResourceLoader();
+            item.DownloadOrReadButton = resourceLoader.GetString("opening");
 
             if (manager == null)
             {
@@ -189,6 +219,7 @@ namespace LibrelioApplication
                 url = manager.MagazineUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName)).First(),
                 redirectUrl = url
             };
+            item.DownloadOrReadButton = resourceLoader.GetString("read");
             this.Frame.Navigate(typeof(DownloadingPage), param);
         }
 
@@ -196,10 +227,11 @@ namespace LibrelioApplication
         {
             if (isOpening) return;
             var button = sender as Button;
-            if (button.Content.Equals("Delete"))
+            var item = ((MagazineViewModel)button.DataContext);
+            var resourceLoader = new ResourceLoader();
+            if (item.SampleOrDeleteButton == resourceLoader.GetString("delete"))
             {
-                button.Content = "Deleting";
-                var item = ((MagazineViewModel)button.DataContext);
+                item.SampleOrDeleteButton = resourceLoader.GetString("deleting");
 
                 if (manager == null)
                 {
@@ -241,9 +273,8 @@ namespace LibrelioApplication
                     item.IsDownloaded = false;
                 }
             }
-            else if (button.Content.Equals("Sample"))
+            else if (item.SampleOrDeleteButton == resourceLoader.GetString("sample"))
             {
-                var item = ((MagazineViewModel)button.DataContext);
                 var group = MagazineDataSource.GetGroup("All Magazines");
                 group.Items.Remove(item);
                 this.Frame.Navigate(typeof(DownloadingPage), "test");

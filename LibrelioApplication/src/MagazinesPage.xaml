@@ -71,7 +71,7 @@
             AutomationProperties.Name="Items"
             TabIndex="1"
             Grid.RowSpan="2"
-            Padding="116,136,116,46"
+            Padding="116,123,116,40"
             ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
             
             SelectionMode="None"
@@ -80,7 +80,7 @@
             ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
             <GridView.ItemTemplate>
                     <DataTemplate >
-                    <Grid HorizontalAlignment="Left" Width="130" Height="260" Tag="{Binding MagazineTag}" Margin="10" >
+                    <Grid HorizontalAlignment="Left" Width="130" Height="265" Tag="{Binding MagazineTag}" Margin="5" >
                             <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
                                 <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="130" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>

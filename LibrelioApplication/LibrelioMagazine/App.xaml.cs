@@ -19,16 +19,21 @@ using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Store;
 using Windows.Data.Xml.Dom;
 using System.Xml.Linq;
+using Windows.Networking.BackgroundTransfer;
+using System.Threading;
+using System.Threading.Tasks;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
-namespace WindMagazine
+namespace LibrelioApplication
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application
     {
+        public List<DownloadOperation> activeDownloads; 
+
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -67,6 +72,8 @@ namespace WindMagazine
                 var appName = xml.SelectSingleNode("/resources/string[@name='app_name']");
 
                 Application.Current.Resources["AppName"] = appName.InnerText;
+
+                await DiscoverActiveDownloadsAsync(); 
  
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
@@ -117,5 +124,69 @@ namespace WindMagazine
             //await SuspensionManager.SaveAsync();
             //deferral.Complete();
         }
+
+        // Enumerate the downloads that were going on in the background while the app was closed. 
+        private async Task DiscoverActiveDownloadsAsync()
+        {
+            activeDownloads = new List<DownloadOperation>();
+
+            IReadOnlyList<DownloadOperation> downloads = null;
+            try
+            {
+                downloads = await BackgroundDownloader.GetCurrentDownloadsAsync();
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            if (downloads.Count > 0)
+            {
+                List<Task> tasks = new List<Task>();
+                foreach (DownloadOperation download in downloads)
+                {
+                    // Attach progress and completion handlers. 
+                    tasks.Add(HandleDownloadAsync(download, false));
+                }
+
+                // Don't await HandleDownloadAsync() in the foreach loop since we would attach to the second 
+                // download only when the first one completed; attach to the third download when the second one 
+                // completes etc. We want to attach to all downloads immediately. 
+                // If there are actions that need to be taken once downloads complete, await tasks here, outside 
+                // the loop. 
+                await Task.WhenAll(tasks);
+            }
+        }
+
+        private async Task HandleDownloadAsync(DownloadOperation download, bool start)
+        {
+            try
+            {
+                // Store the download so we can pause/resume. 
+                activeDownloads.Add(download);
+
+                if (start)
+                {
+                    // Start the download and attach a progress handler. 
+                    await download.StartAsync();
+                }
+                else
+                {
+                    // The download was already running when the application started, re-attach the progress handler. 
+                    await download.AttachAsync();
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                activeDownloads.Remove(download);
+            }
+        } 
+
     }
 }
