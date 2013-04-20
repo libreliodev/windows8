@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Popups;
+using LibrelioApplication.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -48,7 +49,7 @@ namespace LibrelioApplication
             var productListings = appListing.ProductListings;
             ProductListing product = null;
             try {
-                product = productListings["Subscription"];
+                product = productListings["Subscription1"];
 
             } catch { }
 
@@ -56,21 +57,46 @@ namespace LibrelioApplication
 
             if (product != null)
             {
+                var url = await DownloadManager.GetUrl("Subscription1", relativePath);
                 if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
                 {
-                    subscribeBtn.Content += " : " + product.FormattedPrice;
-                    subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    string receipt = "";
+                    try {
+                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
+
+                    } catch { }
+                    if (receipt != "")
+                    {
+                        Bought(this, url);
+                    }
+                    else
+                    {
+                        subscribeBtn.Content = "Subscribe to Wind for 1 year: " + product.FormattedPrice;
+                        subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    }
                 }
                 else
                 {
                     if (Bought != null)
                     {
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        var url = await DownloadManager.GetUrl("Subscription", relativePath);
                         if (url.Equals("NoReceipt"))
                         {
-                            var messageDialog = new MessageDialog("No Receipt");
-                            var task = messageDialog.ShowAsync().AsTask();
+                            string receipt = "";
+                            try {
+                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+
+                            }  catch { }
+                            if (receipt != "")
+                            {
+                                Bought(this, url);
+                            }
+                            else
+                            {
+                                var messageDialog = new MessageDialog("No Receipt");
+                                var task = messageDialog.ShowAsync().AsTask();
+                            }
                         }
                         else
                         {
@@ -79,6 +105,68 @@ namespace LibrelioApplication
                     }
                     else
                     {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
+                }
+            }
+
+            try {
+                product = productListings["Subscription2"];
+
+            } catch { }
+
+            if (product != null)
+            {
+                var url = await DownloadManager.GetUrl("Subscription2", relativePath);
+                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
+                {
+                    string receipt = "";
+                    try {
+                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
+
+                    } catch { }
+                    if (receipt != "") {
+
+                        Bought(this, url);
+
+                    } else {
+
+                        subscribeBtn1.Content = "Subscribe to Wind for 6 months: " + product.FormattedPrice;
+                        subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    }
+
+                } else {
+
+                    if (Bought != null) {
+
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        if (url.Equals("NoReceipt")) {
+
+                            string receipt = "";
+                            try {
+                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+
+                            } catch { }
+
+                            if (receipt != "") {
+
+                                Bought(this, url);
+
+                            } else {
+
+                                var messageDialog = new MessageDialog("No Receipt");
+                                var task = messageDialog.ShowAsync().AsTask();
+                            }
+
+                        } else {
+
+                            Bought(this, url);
+                        }
+
+                    } else {
+
                         var messageDialog = new MessageDialog("Purchase successfull");
                         var task = messageDialog.ShowAsync().AsTask();
                     }
@@ -94,21 +182,50 @@ namespace LibrelioApplication
 
             if (product != null)
             {
+                var url = await DownloadManager.GetUrl(product_id, relativePath);
                 if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
                 {
-                    buyMag.Content += mag.Title + " : " + product.FormattedPrice;
-                    buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    string receipt = "";
+                    try
+                    {
+                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
+
+                    }
+                    catch { }
+                    if (receipt != "")
+                    {
+                        Bought(this, url);
+                    }
+                    else
+                    {
+                        buyMag.Content = "Buy " + mag.Title + " for: " + product.FormattedPrice;
+                        buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    }
                 }
                 else
                 {
                     if (Bought != null)
                     {
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        var url = await DownloadManager.GetUrl(product_id, relativePath);
                         if (url.Equals("NoReceipt"))
                         {
-                            var messageDialog = new MessageDialog("No Receipt");
-                            var task = messageDialog.ShowAsync().AsTask();
+                            string receipt = "";
+                            try
+                            {
+                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+
+                            }
+                            catch { }
+                            if (receipt != null)
+                            {
+                                Bought(this, url);
+                            }
+                            else
+                            {
+                                var messageDialog = new MessageDialog("No Receipt");
+                                var task = messageDialog.ShowAsync().AsTask();
+                            }
                         }
                         else
                         {

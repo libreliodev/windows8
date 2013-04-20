@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Storage.BulkAccess;
@@ -467,6 +470,33 @@ namespace LibrelioApplication
             url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;
 
             return url;
+        }
+
+        public static string GetProductReceiptFromAppReceipt(string productId, string appReceipt)
+        {
+            var xml = new XmlDocument();
+            xml.LoadXml(appReceipt);
+            try
+            {
+                var xpath = "/Receipt/ProductReceipt[@ProductId='" + productId + "']";
+                var productReceipt = xml.SelectNodes(xpath).First();
+                if (productReceipt == null) return "";
+                var root = xml.SelectNodes("/Receipt").First();
+                while (root.ChildNodes.Last() != productReceipt)
+                {
+                    root.RemoveChild(root.ChildNodes.Last());
+                }
+                while (root.ChildNodes.First() != productReceipt)
+                {
+                    root.RemoveChild(root.ChildNodes.First());
+                }
+            }
+            catch
+            {
+                return "";
+            }
+            
+            return xml.GetXml();
         }
 
         public static bool IsFullScreenButton(string url)
