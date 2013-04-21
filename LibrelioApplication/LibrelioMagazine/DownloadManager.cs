@@ -387,6 +387,8 @@ namespace LibrelioApplication
 
         public static async Task StoreReceiptAsync(string productId, string receipt)
         {
+            if (productId.Contains("subscritpion") && DownloadManager.ReceiptExpired(receipt)) return;
+
             var encryptedFilename = CipherEncryption(productId);
             var encodedFileName = Convert.ToBase64String(encryptedFilename.ToArray());
             var encodedAndEscapedFilename = encodedFileName.Replace('/', '-');
@@ -398,11 +400,17 @@ namespace LibrelioApplication
             xml = await XmlDocument.LoadFromFileAsync(f);
             var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
             item.SetAttribute("ProductId", productId);
+            var date = new DateTimeOffset(DateTime.Now);
+            date = date.AddMinutes(3);
+            var str = date.ToString("u");
+            str = str.Replace(" ", "T");
+            item.SetAttribute("ExpirationDate", str);
             receipt = xml.GetXml();
+            if (DownloadManager.ReceiptExpired(receipt)) return;
             // =================================================
-            
-            //var folder = ApplicationData.Current.RoamingFolder;
-            var folder = KnownFolders.DocumentsLibrary;
+
+            var folder = ApplicationData.Current.RoamingFolder;
+            if (folder == null) return;
             folder = await folder.CreateFolderAsync("Receipts", CreationCollisionOption.OpenIfExists);
 
             var file = await folder.CreateFileAsync(encodedAndEscapedFilename + ".pmd", CreationCollisionOption.ReplaceExisting);
@@ -418,6 +426,8 @@ namespace LibrelioApplication
             buffEncrypted = null;
             file = null;
 
+            ApplicationData.Current.SignalDataChanged();
+
             //CipherDecryption(buffEncrypted);
         }
 
@@ -428,7 +438,8 @@ namespace LibrelioApplication
             var encodedAndEscapedFilename = encodedFileName.Replace('/', '-');
 
             //var folder = ApplicationData.Current.RoamingFolder;
-            var folder = KnownFolders.DocumentsLibrary;
+            var folder = ApplicationData.Current.RoamingFolder;
+            if (folder == null) return "NoReceipt";
             folder = await folder.CreateFolderAsync("Receipts", CreationCollisionOption.OpenIfExists);
             try
             {
@@ -443,7 +454,15 @@ namespace LibrelioApplication
                 stream.Dispose();
                 stream = null;
 
-                return CipherDecryption(buffEncrypted);
+                var receipt = CipherDecryption(buffEncrypted);
+
+                if (productId.Contains("subscritpion") && DownloadManager.ReceiptExpired(receipt))
+                {
+                    await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    return "NoReceipt";
+                }
+
+                return receipt;
             }
             catch (Exception e)
             {
@@ -465,9 +484,11 @@ namespace LibrelioApplication
 
         public static string GetUrl(string productId, string receipt, string relUrl)
         {
+            if (productId.Contains("subscritpion") && DownloadManager.ReceiptExpired(receipt)) return "NoReceipt";
+
             receipt = Uri.EscapeDataString(receipt);
             var url = "http://download.librelio.com/downloads/win8_verify.php";
-            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;
+            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;  
 
             return url;
         }
@@ -497,6 +518,30 @@ namespace LibrelioApplication
             }
             
             return xml.GetXml();
+        }
+
+        public static bool ReceiptExpired(string receipt)
+        {
+            var xml = new XmlDocument();
+            xml.LoadXml(receipt);
+
+            try
+            {
+                var xpath = "/Receipt/ProductReceipt/@ExpirationDate";
+                var node = xml.SelectNodes(xpath).First();
+                var att = node.InnerText;
+                var date = DateTimeOffset.Parse(att);
+                var remainingMinutea = (date - DateTime.Now).TotalMinutes;
+
+                if (remainingMinutea < 1) return true;
+
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+
         }
 
         public static bool IsFullScreenButton(string url)

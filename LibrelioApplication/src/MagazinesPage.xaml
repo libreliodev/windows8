@@ -71,7 +71,7 @@
             AutomationProperties.Name="Items"
             TabIndex="1"
             Grid.RowSpan="2"
-            Padding="116,123,116,40"
+            Padding="116,123,116,30"
             ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
             
             SelectionMode="None"

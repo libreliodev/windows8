@@ -91,7 +91,12 @@ namespace LibrelioApplication
                 try
                 {
                     var folder = await manager.AddMagazineFolderStructure(url);
-                    var bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                    Windows.UI.Xaml.Media.Imaging.BitmapSource bitmap = null;
+                    try
+                    {
+                        bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                    }
+                    catch { }
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 

@@ -547,50 +547,50 @@ namespace LibrelioApplication.Data
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewStartingIndex < 22)
+                    if (e.NewStartingIndex < 12)
                     {
                         TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
-                        if (TopItems.Count > 22)
+                        if (TopItems.Count > 12)
                         {
-                            TopItems.RemoveAt(22);
+                            TopItems.RemoveAt(12);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    if (e.OldStartingIndex < 22 && e.NewStartingIndex < 22)
+                    if (e.OldStartingIndex < 12 && e.NewStartingIndex < 12)
                     {
                         TopItems.Move(e.OldStartingIndex, e.NewStartingIndex);
                     }
-                    else if (e.OldStartingIndex < 22)
+                    else if (e.OldStartingIndex < 12)
                     {
                         TopItems.RemoveAt(e.OldStartingIndex);
                         TopItems.Add(Items[21]);
                     }
-                    else if (e.NewStartingIndex < 22)
+                    else if (e.NewStartingIndex < 12)
                     {
                         TopItems.Insert(e.NewStartingIndex, Items[e.NewStartingIndex]);
                         TopItems.RemoveAt(12);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    if (e.OldStartingIndex < 22)
+                    if (e.OldStartingIndex < 12)
                     {
                         TopItems.RemoveAt(e.OldStartingIndex);
-                        if (Items.Count >= 22)
+                        if (Items.Count >= 12)
                         {
-                            TopItems.Add(Items[21]);
+                            TopItems.Add(Items[11]);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    if (e.OldStartingIndex < 22)
+                    if (e.OldStartingIndex < 12)
                     {
                         TopItems[e.OldStartingIndex] = Items[e.OldStartingIndex];
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     TopItems.Clear();
-                    while (TopItems.Count < Items.Count && TopItems.Count < 22)
+                    while (TopItems.Count < Items.Count && TopItems.Count < 12)
                     {
                         TopItems.Add(Items[TopItems.Count]);
                     }
@@ -602,13 +602,13 @@ namespace LibrelioApplication.Data
         public ObservableCollection<MagazineViewModel> Items
         {
             get { return this._items; }
+            set { _items = value; }
         }
 
         private ObservableCollection<MagazineViewModel> _topItem = new ObservableCollection<MagazineViewModel>();
         public ObservableCollection<MagazineViewModel> TopItems
         {
             get { return this._topItem; }
-            set { _topItem = value; }
         }
     }
 
@@ -800,7 +800,7 @@ namespace LibrelioApplication.Data
                     item.SecondButtonVisible = false;
                 group.Items.Add(item);
             }
-            group.TopItems = new ObservableCollection<MagazineViewModel>(group.Items.OrderBy(item => item.Index));
+            group.Items = new ObservableCollection<MagazineViewModel>(group.Items.OrderBy(item => item.Index));
             if (newGroup && group.Items.Count > 0)
             {
                 _sampleDataSource.AllGroups.Add(group);

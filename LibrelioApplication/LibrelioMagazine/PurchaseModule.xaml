@@ -147,11 +147,15 @@
             <TextBlock Foreground="Black" Text="What would you like to buy?" FontSize="12" />
         </Grid>
 
-        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Grid.RowSpan="2" x:Name="statusContainer" HorizontalAlignment="Center" Width="365" Height="120" VerticalAlignment="Center" Margin="16,16">
+            <TextBlock x:Name="status" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Checking purchase ..." FontSize="17" />
+        </Grid>
+
+        <StackPanel x:Name="buttonContainer" Visibility="Collapsed" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button x:Name="subscribeBtn" Width="365" Content="Subscribe" Visibility="Collapsed" Click="subscribeBtn_Click" Margin="16,2" Style="{StaticResource ButtonStyle1}"/>
-            <Button x:Name="subscribeBtn1" Width="365" Content="Subscribe" Visibility="Collapsed" Click="subscribeBtn_Click" Margin="16,2" Style="{StaticResource ButtonStyle1}"/>
+            <Button x:Name="subscribeBtn1" Width="365" Content="Subscribe" Visibility="Collapsed" Click="subscribeBtn1_Click" Margin="16,2" Style="{StaticResource ButtonStyle1}"/>
             <Button x:Name="buyMag" Width="365" Content="" Visibility="Collapsed" Click="buyMag_Click" Margin="16,2" Style="{StaticResource ButtonStyle1}" />
-            <Button Content="Restore purchases" Width="365" Margin="16,2" Style="{StaticResource ButtonStyle1}" />
+            <!--<Button Content="Restore purchases" Width="365" Margin="16,2" Style="{StaticResource ButtonStyle1}" />-->
             <Button Content="Cancel" Width="365" Click="Button_Click_1" Margin="16,2,16,16" Style="{StaticResource ButtonStyle1}" />
         </StackPanel>
 
