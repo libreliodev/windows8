@@ -126,14 +126,23 @@ namespace LibrelioApplication
             }
         }
 
+        public static LibrelioUrl ConvertFromLocalUrl(LibrelioLocalUrl url)
+        {
+            var mag = new LibrelioUrl(url.Index, url.Url.Replace(url.RelativePath, ""), url.RelativePath);
+            mag.Title = url.Title;
+            mag.Subtitle = url.Subtitle;
+
+            return mag;
+        }
+
         public static LibrelioLocalUrl ConvertToLocalUrl(LibrelioUrl url)
         {
-            return new LibrelioLocalUrl(url.Title, url.Subtitle, "ND", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
+            return new LibrelioLocalUrl(url.Index, url.Title, url.Subtitle, "ND", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
         }
 
         public static LibrelioLocalUrl ConvertToLocalUrl(LibrelioUrl url, StorageFolder folder)
         {
-            return new LibrelioLocalUrl(url.Title, url.Subtitle, folder.Path + "\\", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
+            return new LibrelioLocalUrl(url.Index, url.Title, url.Subtitle, folder.Path + "\\", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
         }
 
         public static LibrelioLocalUrl FindInMetadata(LibrelioUrl url, XmlDocument xml)
@@ -145,6 +154,7 @@ namespace LibrelioApplication
 
             if (nodes.Count > 0)
             {
+                var index = Convert.ToInt32(nodes[0].SelectNodes("index")[0].InnerText);
                 var title = nodes[0].SelectNodes("title")[0].InnerText;
                 var subtitle = nodes[0].SelectNodes("subtitle")[0].InnerText;
                 var path = nodes[0].SelectNodes("path")[0].InnerText;
@@ -162,7 +172,7 @@ namespace LibrelioApplication
                 var u = nodes[0].SelectNodes("url")[0].InnerText;
                 var rel = nodes[0].SelectNodes("relPath")[0].InnerText;
 
-                return new LibrelioLocalUrl(title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
+                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
             }
             else
             {
@@ -176,6 +186,7 @@ namespace LibrelioApplication
 
             if (mag.ChildNodes.Count > 0)
             {
+                var index = Convert.ToInt32(mag.SelectNodes("index")[0].InnerText);
                 var title = mag.SelectNodes("title")[0].InnerText;
                 var subtitle = mag.SelectNodes("subtitle")[0].InnerText;
                 var path = mag.SelectNodes("path")[0].InnerText;
@@ -191,7 +202,7 @@ namespace LibrelioApplication
                 var u = mag.SelectNodes("url")[0].InnerText;
                 var rel = mag.SelectNodes("relPath")[0].InnerText;
 
-                return new LibrelioLocalUrl(title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
+                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
             }
             else
             {
@@ -612,9 +623,11 @@ namespace LibrelioApplication
 
     public sealed class LibrelioLocalUrl
     {
-        public LibrelioLocalUrl(string title, string subtitle, string path, string fullName, string url, string relativePath)
+        public LibrelioLocalUrl(int index, string title, string subtitle, string path, string fullName, string url, string relativePath)
         {
             FolderPath = path;
+
+            Index = index;
 
             Title = title;
             Subtitle = subtitle;
@@ -628,6 +641,7 @@ namespace LibrelioApplication
             RelativePath = relativePath;
         }
 
+        public int Index { get; set; }
         public string FolderPath { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }

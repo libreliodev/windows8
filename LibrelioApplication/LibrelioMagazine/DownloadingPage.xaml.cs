@@ -76,6 +76,11 @@ namespace LibrelioApplication
         /// session.  This will be null the first time a page is visited.</param>
         protected override async void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
+            var app = Application.Current as App;
+            if (app.needToDownload == false) { needtoGoBack = true; return; }
+
+            app.needToDownload = false;
+
             var item = navigationParameter as DownloadMagazine;
 
             if (item != null)
@@ -97,6 +102,7 @@ namespace LibrelioApplication
                         bitmap = await manager.DownloadThumbnailAsync(url, folder);
                     }
                     catch { }
+                    if (bitmap == null) return;
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 
@@ -177,6 +183,7 @@ namespace LibrelioApplication
             {
                 if (needtoGoBack)
                 {
+                    needtoGoBack = false;
                     if (this.Frame.CanGoBack) this.Frame.GoBack();
                     return;
                 }
@@ -542,7 +549,7 @@ namespace LibrelioApplication
             }
         }
 
-        private void GoBack(object sender, RoutedEventArgs e)
+        private void NavBack(object sender, RoutedEventArgs e)
         {
             if (cts != null) cts.Cancel();
             if (this.Frame.CanGoBack)

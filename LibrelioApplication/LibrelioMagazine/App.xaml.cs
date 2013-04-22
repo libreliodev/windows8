@@ -32,7 +32,9 @@ namespace LibrelioApplication
     /// </summary>
     sealed partial class App : Application
     {
-        public List<DownloadOperation> activeDownloads; 
+        public List<DownloadOperation> activeDownloads;
+        public bool loadedPList = false;
+        public bool needToDownload = false;
 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code

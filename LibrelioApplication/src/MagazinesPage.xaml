@@ -54,18 +54,17 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}">
+    <Grid Style="{StaticResource LayoutRootStyle}" Loaded="Grid_Loaded_1" >
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
         
 
         <!-- Horizontal scrolling grid used in most view states -->
         <!--ItemTemplate="{StaticResource Standard250x400ItemTemplate}"-->
-        <GridView
+        <common:VariableGridView
             x:Name="itemGridView"
             AutomationProperties.AutomationId="ItemsGridView"
             AutomationProperties.Name="Items"
@@ -78,11 +77,12 @@
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
             ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
-            <GridView.ItemTemplate>
+            <common:VariableGridView.ItemTemplate>
                     <DataTemplate >
-                    <Grid HorizontalAlignment="Left" Width="130" Height="265" Tag="{Binding MagazineTag}" Margin="5" >
-                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
-                                <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="130" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <!--<Grid HorizontalAlignment="Left" Width="130" Height="265" Tag="{Binding MagazineTag}" Margin="5" >-->
+                    <Grid HorizontalAlignment="Left" Width="{Binding Width}" Height="{Binding Height}" Tag="{Binding MagazineTag}" Margin="5">
+                        <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
+                                <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="{Binding Width}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>
                             <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
                                 <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Margin="0" TextAlignment="Center" LineHeight="18"/>
@@ -96,39 +96,35 @@
                         </Grid>
                     </DataTemplate>
 
-            </GridView.ItemTemplate>
+            </common:VariableGridView.ItemTemplate>
 
-            <GridView.ItemsPanel>
+            <common:VariableGridView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                    <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
+            </common:VariableGridView.ItemsPanel>
 
-            <GridView.GroupStyle>
-                <GroupStyle>
+            <common:VariableGridView.GroupStyle>
+                <GroupStyle HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
                             <Grid Margin="1,0,0,6">
-                                <Button
-                                    AutomationProperties.Name="Group Title"
-                                    Style="{StaticResource TextPrimaryButtonStyle}" >
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Title}" Margin="3,-7,10,10" Style="{StaticResource GroupHeaderTextStyle}" />
-                                        <TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-7,0,10" Style="{StaticResource GroupHeaderTextStyle}"/>
+                                        <!--<TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-7,0,10" Style="{StaticResource GroupHeaderTextStyle}"/>-->
                                     </StackPanel>
-                                </Button>
                             </Grid>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" MaximumRowsOrColumns="6" />
+                            <VariableSizedWrapGrid Orientation="Vertical" ItemWidth="150" ItemHeight="285" Margin="0,0,80,0" />
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
-            </GridView.GroupStyle>
+            </common:VariableGridView.GroupStyle>
 
-        </GridView>
+        </common:VariableGridView>
         
         <Grid Grid.RowSpan="2">
             <local:PurchaseModule x:Name="purchaseModule" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />

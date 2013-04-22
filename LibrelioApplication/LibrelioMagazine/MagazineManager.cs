@@ -445,7 +445,7 @@ namespace LibrelioApplication
         {
             if (currentFolder != _folder)
             {
-                var magLocal = new LibrelioLocalUrl(magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\",
+                var magLocal = new LibrelioLocalUrl(magUrl.Index, magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\",
                                                     magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl);
 
                 if (!UpdataLocalUrl(magLocal))
@@ -516,6 +516,7 @@ namespace LibrelioApplication
 
             if (mags.Count > 0)
             {
+                mags[0].SelectNodes("index")[0].InnerText = magLocal.Index.ToString();
                 mags[0].SelectNodes("title")[0].InnerText = magLocal.Title;
                 mags[0].SelectNodes("subtitle")[0].InnerText = magLocal.Subtitle;
                 if (magLocal.FolderPath != "ND")
@@ -534,6 +535,11 @@ namespace LibrelioApplication
             else
             {
                 var mag = localXml.CreateElement("mag");
+
+                var index = localXml.CreateElement("index");
+                index.InnerText = magLocal.Index.ToString();
+                mag.AppendChild(index);
+
                 var title = localXml.CreateElement("title");
                 title.InnerText = magLocal.Title;
                 mag.AppendChild(title);
@@ -685,9 +691,31 @@ namespace LibrelioApplication
 
             _magazinesLocalUrl.Clear();
             var mags = localXml.SelectNodes("/root/mag");
+            bool error = false;
             foreach (var mag in mags)
             {
-                _magazinesLocalUrl.Add(DownloadManager.GetLocalUrl(mag));
+                try
+                {
+                    _magazinesLocalUrl.Add(DownloadManager.GetLocalUrl(mag));
+                }
+                catch
+                {
+                    error = true;
+                    break;
+                }
+            }
+
+            if (error)
+            {
+                var file = await _folder.CreateFileAsync("magazines.metadata", CreationCollisionOption.ReplaceExisting);
+
+                localXml = new XmlDocument();
+                var root = localXml.CreateElement("root");
+                localXml.AppendChild(root);
+
+                var task = localXml.SaveToFileAsync(file).AsTask();
+
+                _magazinesLocalUrl.Clear();
             }
         }
 
