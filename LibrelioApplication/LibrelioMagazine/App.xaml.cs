@@ -35,6 +35,9 @@ namespace LibrelioApplication
         public List<DownloadOperation> activeDownloads;
         public bool loadedPList = false;
         public bool needToDownload = false;
+        public string ClientName = "";
+        public string MagazineName = "";
+        public string BaseUrl = "";
 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
@@ -72,6 +75,9 @@ namespace LibrelioApplication
 
                 var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
                 var appName = xml.SelectSingleNode("/resources/string[@name='app_name']");
+                BaseUrl = xml.SelectSingleNode("/resources/string[@name='url']").InnerText;
+                ClientName = xml.SelectSingleNode("/resources/string[@name='client_name']").InnerText;
+                MagazineName = xml.SelectSingleNode("/resources/string[@name='magazine_name']").InnerText;
 
                 Application.Current.Resources["AppName"] = appName.InnerText;
 

@@ -18,6 +18,7 @@ using System.Reflection;
 using Windows.Storage;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Windows.UI.Xaml;
 
 // The data model defined by this file serves as a representative example of a strongly-typed
 // model that supports notification when members are added, removed, or modified.  The property
@@ -535,6 +536,7 @@ namespace LibrelioApplication.Data
             IsPaid = m.isPaid;
             FileName = m.fileName;
             RelativePath = m.relativePath;
+            Thumbnail = m.pngUrl;
             SecondButtonVisible = true;
             Index = m.Index;
             ColSpan = colSpan;
@@ -752,7 +754,8 @@ namespace LibrelioApplication.Data
         {
             if (_sampleDataSource.AllGroups.Count > 0) return null;
 
-            var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+            var app = Application.Current as App;
+            var manager = new MagazineManager(app.BaseUrl, "Magazines");
 
             await manager.LoadLocalMagazineList();
 
@@ -790,17 +793,13 @@ namespace LibrelioApplication.Data
                     BitmapImage image = null;
                     try
                     {
-
                         var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
                         image = new BitmapImage();
                         await image.SetSourceAsync(await file.OpenReadAsync());
-
                     }
                     catch { }
-                    if (group.Items.Count == 0)
-                        group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 2, 2, m.Title, m.Subtitle, image, group, m));
-                    else
-                        group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
+  
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
                 }
             }
 
@@ -849,20 +848,24 @@ namespace LibrelioApplication.Data
                 BitmapImage image = null;
                 try
                 {
-
-                    if (localUrl != null && localUrl.IsDownloaded)
-                    {
-
-                        var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
-                        image = new BitmapImage();
-                        await image.SetSourceAsync(await file.OpenReadAsync());
-
-                    }
+                    if (group.Items.Count == 0)
+                        image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
                     else
-                    {
-
                         image = new BitmapImage(new Uri(m.pngUrl));
-                    }
+
+                    //if (localUrl != null && localUrl.IsDownloaded)
+                    //{
+
+                    //    var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+                    //    image = new BitmapImage();
+                    //    await image.SetSourceAsync(await file.OpenReadAsync());
+
+                    //}
+                    //else
+                    //{
+
+                    //    image = new BitmapImage(new Uri(m.pngUrl));
+                    //}
 
                 }
                 catch { }
@@ -900,7 +903,8 @@ namespace LibrelioApplication.Data
         {
             if (_sampleDataSource.AllGroups.Count > 0) return null;
 
-            var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+            var app = Application.Current as App;
+            var manager = new MagazineManager(app.BaseUrl, "Magazines");
 
             await manager.LoadLocalMagazineList();
 
@@ -931,11 +935,9 @@ namespace LibrelioApplication.Data
                     BitmapImage image = null;
                     try
                     {
-
                         var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
                         image = new BitmapImage();
                         await image.SetSourceAsync(await file.OpenReadAsync());
-
                     }
                     catch { }
                     int index = 0;
@@ -945,10 +947,8 @@ namespace LibrelioApplication.Data
                         if (group.Items[p].Index > m.Index)
                             break;
                     }
-                    if (group.Items.Count == 0)
-                        group.Items.Insert(index, new MagazineViewModel(m.Title + m.Subtitle, 2, 2, m.Title, m.Subtitle, image, group, m));
-                    else
-                        group.Items.Insert(index, new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
+
+                    group.Items.Insert(index, new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
                 }
             }
 
@@ -985,6 +985,9 @@ namespace LibrelioApplication.Data
 
                         //} else {
 
+                        if (group.Items.Count == 0)
+                            image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
+                        else
                             image = new BitmapImage(new Uri(m.pngUrl));
                         //}
 

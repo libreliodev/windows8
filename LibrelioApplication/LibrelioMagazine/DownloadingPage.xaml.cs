@@ -502,7 +502,8 @@ namespace LibrelioApplication
             magList.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
-                manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
+                var app = Application.Current as App;
+                manager = new MagazineManager(app.BaseUrl, "Magazines");
 
                 await manager.LoadPLISTAsync();
 

@@ -7,12 +7,12 @@
     <ProjectGuid>{86D8EC50-ACC7-424D-B60A-E0C98D0A36E5}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindMagazine</RootNamespace>
-    <AssemblyName>WindMagazine</AssemblyName>
+    <RootNamespace>LibrelioMagazine</RootNamespace>
+    <AssemblyName>LibrelioMagazine</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>WindMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>LibrelioMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -153,14 +153,21 @@
     <Compile Include="Common\ScrollViewerOffsetMediator.cs" />
     <Compile Include="DownloadingPage.xaml.cs">
       <DependentUpon>DownloadingPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DownloadManager.cs" />
+    <Compile Include="DownloadManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="FullScreenContainer.xaml.cs">
       <DependentUpon>FullScreenContainer.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MagazineManager.cs" />
+    <Compile Include="MagazineManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PageButton.xaml.cs">
       <DependentUpon>PageButton.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PurchaseModule.xaml.cs">
@@ -177,18 +184,28 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\firstpge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\test\p9video.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\test\testmagazine.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\WideLogo.scale-100.png" />
+    <Content Include="Assets\WideLogo.scale-140.png" />
+    <Content Include="Assets\WideLogo.scale-180.png" />
+    <Content Include="Assets\WideLogo.scale-80.png" />
     <Content Include="CustomizationAssets\application_.xml" />
-    <Page Include="PurchaseModule.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="VideoPlayer.xaml">
+    <Content Include="CustomizationAssets\icon.png" />
+    <Content Include="CustomizationAssets\SmallLogo.png" />
+    <Content Include="CustomizationAssets\startup_background.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-180.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-80.png" />
+    <Page Include="DownloadingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -196,15 +213,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PageButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SlideShow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DownloadingPage.xaml">
+    <Page Include="VideoPlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -298,6 +307,18 @@
     <Content Include="Assets\test\wind_365.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Page Include="PageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PurchaseModule.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SlideShow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\MagazineStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -335,7 +356,6 @@
     <Content Include="Assets\test\receipt.pmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="WindMagaine_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

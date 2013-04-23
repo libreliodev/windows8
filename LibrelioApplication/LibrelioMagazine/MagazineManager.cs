@@ -965,8 +965,11 @@ namespace LibrelioApplication
 
                 Progress<DownloadOperation> progressCallback = new Progress<DownloadOperation>((operation) =>
                 {
-                    ulong val = (ulong)(operation.Progress.BytesReceived * 100 / operation.Progress.TotalBytesToReceive);
-                    progress.Report((int)val);
+                    if (operation.Progress.TotalBytesToReceive != 0)
+                    {
+                        ulong val = (ulong)(operation.Progress.BytesReceived * 100 / operation.Progress.TotalBytesToReceive);
+                        progress.Report((int)val);
+                    }
                 });
 
                 if (start)

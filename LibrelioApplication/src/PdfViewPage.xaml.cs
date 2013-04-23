@@ -400,8 +400,6 @@ namespace LibrelioApplication
 
         MagazineData pdfStream = null;
 
-        string pdfFileName;
-        string curPageFileName;
         int pageNum;
         Collection<int> pagesInView = new Collection<int>();
         int pageCount;
@@ -437,6 +435,7 @@ namespace LibrelioApplication
 
         IList<LinkInfo> visitorList = new List<LinkInfo>();
 
+        
         Windows.Foundation.Point touchPoint;
         bool controlPressed = false;
         UIElement currentElement = null;
@@ -584,14 +583,14 @@ namespace LibrelioApplication
             return foundChild;
         }
 
-        string getPageName(int page) {
-            return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + ".png"));
-        }
+        //string getPageName(int page) {
+        //    return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + ".png"));
+        //}
 
-        string getThumbName(int page)
-        {
-            return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + "_thumb" + ".png"));
-        }
+        //string getThumbName(int page)
+        //{
+        //    return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + "_thumb" + ".png"));
+        //}
 
         float CalculateZoomFactor(int height)
         {
@@ -1607,7 +1606,11 @@ namespace LibrelioApplication
 
                     var task1 = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                     {
-                        await InitPageLink(pageNum);
+                        try
+                        {
+                            await InitPageLink(pageNum);
+                        }
+                        catch { }
                     });
 
                     currentZoomFactor = defaultZoomFactor;
@@ -2359,14 +2362,6 @@ namespace LibrelioApplication
 
                     await InitPageLink(pageNum);
                 });
-            }
-        }
-
-        private void GoBack(object sender, RoutedEventArgs e)
-        {
-            while (this.Frame.CanGoBack)
-            {
-                this.Frame.GoBack();
             }
         }
 

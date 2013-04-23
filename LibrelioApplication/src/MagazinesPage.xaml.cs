@@ -15,10 +15,17 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.ApplicationModel.Resources;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
+using Windows.Graphics.Imaging;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Collections.ObjectModel;
+
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
@@ -83,6 +90,11 @@ namespace LibrelioApplication
         /// <param name="e">Event data that describes the item clicked.</param>
         async void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
+            bool unsnapped = ((ApplicationView.Value != ApplicationViewState.Snapped) || ApplicationView.TryUnsnap());
+            if (!unsnapped)
+            {
+                return;
+            }
             //// Navigate to the appropriate destination page, configuring the new page
             //// by passing required information as a navigation parameter
             //var groupId = ((SampleDataGroup)e.ClickedItem).UniqueId;
@@ -345,6 +357,20 @@ namespace LibrelioApplication
                 var title = item.FileName;
                 var group = MagazineDataSource.GetGroup("My Magazines");
                 group.Items.Remove(item);
+                if (group.Items.Count == 0)
+                {
+                    group = MagazineDataSource.GetGroup("All Magazines");
+                    if (group.Items.Count != 0)
+                    {
+                        snappedView.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                        noMagazineSnapped.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        titleSnapped.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        snappedGridView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        var source = new ObservableCollection<MagazineViewModel>();
+                        source.Add(group.Items.First());
+                        itemListView.ItemsSource = source;
+                    }
+                }
                 group = MagazineDataSource.GetGroup("All Magazines");
                 item = group.Items.Where((magazine) => magazine.FileName.Equals(title)).First();
                 if (item != null)
@@ -369,14 +395,94 @@ namespace LibrelioApplication
                 var app = Application.Current as App;
                 if (!app.loadedPList)
                 {
-                    manager = await MagazineDataSource.LoadMagazinesAsync();
+                    try
+                    {
+                        manager = await MagazineDataSource.LoadMagazinesAsync();
+                    }
+                    catch
+                    {
+                        return;
+                    }
                     app.loadedPList = true;
                 }
                 else
                 {
-                    manager = await MagazineDataSource.LoadLocalMagazinesAsync();
+                    try
+                    {
+                        manager = await MagazineDataSource.LoadLocalMagazinesAsync();
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
+
+                var group = MagazineDataSource.GetGroup("My Magazines");
+                if (group.Items.Count == 0)
+                {
+                    group = MagazineDataSource.GetGroup("All Magazines");
+                    if (group.Items.Count != 0)
+                    {
+                        var source = new ObservableCollection<MagazineViewModel>();
+                        source.Add(group.Items.First());
+                        itemListView.ItemsSource = source;
+                    }
+                }
+                else
+                {
+                    snappedView.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+                    noMagazineSnapped.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    titleSnapped.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    snappedGridView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                    if (group.Items.Count != 0)
+                    {
+                        snappedGridView.ItemsSource = group.Items;
+                    }
+                }
+
+                try
+                {
+                    await UpdateTile();
+                }
+                catch { }
             });
+        }
+
+        private async Task UpdateTile()
+        {
+            var group = MagazineDataSource.GetGroup("All Magazines");
+            if (group.Items.Count == 0) return;
+
+            var item = group.Items[0];
+            var tileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWideSmallImageAndText04);
+
+            XmlNodeList tileTextAttributes = tileXml.GetElementsByTagName("text");
+            tileTextAttributes[0].InnerText = item.Title;
+            tileTextAttributes[1].InnerText = item.Subtitle;
+
+            XmlNodeList tileImageAttributes = tileXml.GetElementsByTagName("image");
+            var tempFolder = ApplicationData.Current.LocalFolder;
+            var imageFile = await tempFolder.CreateFileAsync("firstpge.png", CreationCollisionOption.ReplaceExisting);
+            //var fileHandle =
+            //        await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\firstpge.png");
+
+            //((XmlElement)tileImageAttributes[0]).SetAttribute("src", "ms-appx:///Assets/WideLogo.png");
+            //((XmlElement)tileImageAttributes[0]).SetAttribute("alt", "background");
+            ((XmlElement)tileImageAttributes[0]).SetAttribute("src", item.Thumbnail);
+            ((XmlElement)tileImageAttributes[0]).SetAttribute("alt", "magazine image");
+
+            //XmlDocument squareTileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquareText04);
+            //XmlNodeList squareTileTextAttributes = squareTileXml.GetElementsByTagName("text");
+            //squareTileTextAttributes[0].AppendChild(squareTileXml.CreateTextNode("Hello World! My very own tile notification"));
+            //IXmlNode node = tileXml.ImportNode(squareTileXml.GetElementsByTagName("binding").Item(0), true);
+            //tileXml.GetElementsByTagName("visual").Item(0).AppendChild(node);
+
+            TileNotification tileNotification = new TileNotification(tileXml);
+
+            //tileNotification.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
+
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
         }
 
         private async void Appbar_Click(object sender, RoutedEventArgs e)
@@ -444,6 +550,15 @@ namespace LibrelioApplication
                 FindChilds(uiElement, isObject, res);
             }
             return res;
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            bool unsnapped = ((ApplicationView.Value != ApplicationViewState.Snapped) || ApplicationView.TryUnsnap());
+            if (!unsnapped)
+            {
+                return;
+            }
         }
 
     }

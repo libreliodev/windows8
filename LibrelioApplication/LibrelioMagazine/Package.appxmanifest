@@ -2,7 +2,7 @@
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
   <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=voyager" Version="1.0.0.1" />
   <Properties>
-    <DisplayName>WindMagazine</DisplayName>
+    <DisplayName>LibrelioMagazine</DisplayName>
     <PublisherDisplayName>voyager</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -14,10 +14,10 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="WindMagazine.App">
-      <VisualElements DisplayName="ms-resource:app_name" Logo="Assets\icon.png" SmallLogo="Assets\SmallLogo.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="#464646">
-        <DefaultTile ShowName="allLogos" />
-        <SplashScreen Image="Assets\startup_background.png" />
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
+      <VisualElements DisplayName="ms-resource:app_name" Logo="CustomizationAssets\icon.png" SmallLogo="CustomizationAssets\SmallLogo.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="red">
+        <DefaultTile ShowName="logoOnly" WideLogo="CustomizationAssets\WideLogo.png" />
+        <SplashScreen Image="CustomizationAssets\startup_background.png" />
       </VisualElements>
       <Extensions>
         <Extension Category="windows.fileTypeAssociation">

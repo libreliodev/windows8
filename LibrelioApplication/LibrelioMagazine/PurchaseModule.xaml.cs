@@ -74,7 +74,8 @@ namespace LibrelioApplication
                     if (receipt != "")
                     {
                         await DownloadManager.StoreReceiptAsync("yearlysubscritpion", receipt);
-                        var url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath);
+                        var app = Application.Current as App;
+                        var url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -82,13 +83,14 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to Wind for 1 year: " + product.FormattedPrice;
+                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 year: " + product.FormattedPrice;
                             subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                     else 
                     {
-                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -96,7 +98,7 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to Wind for 1 year: " + product.FormattedPrice;
+                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 year: " + product.FormattedPrice;
                             subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -109,7 +111,8 @@ namespace LibrelioApplication
                     //var remainingDays = (productLicense1.ExpirationDate - DateTime.Now).Days;
                     if (Bought != null)
                     {
-                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath, app.ClientName, app.MagazineName);
                         if (url.Equals("NoReceipt"))
                         {
                             string receipt = "";
@@ -120,7 +123,7 @@ namespace LibrelioApplication
                             if (receipt != "")
                             {
                                 await DownloadManager.StoreReceiptAsync("yearlysubscritpion", receipt);
-                                url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath);
+                                url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName);
                                 if (!url.Equals("NoReceipt"))
                                 {
                                     Bought(this, url);
@@ -172,7 +175,8 @@ namespace LibrelioApplication
                     if (receipt != "")
                     {
                         await DownloadManager.StoreReceiptAsync("monthlysubscription", receipt);
-                        var url = DownloadManager.GetUrl("monthlysubscription", receipt, relativePath);
+                        var app = Application.Current as App;
+                        var url = DownloadManager.GetUrl("monthlysubscription", receipt, relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -180,13 +184,14 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn1.Content = "Subscribe to Wind for 6 months: " + product.FormattedPrice;
+                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 month: " + product.FormattedPrice;
                             subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                     else
                     {
-                        var url = await DownloadManager.GetUrl("monthlysubscription", relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl("monthlysubscription", relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -194,7 +199,7 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn1.Content = "Subscribe to Wind for 6 months: " + product.FormattedPrice;
+                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 month: " + product.FormattedPrice;
                             subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -203,7 +208,8 @@ namespace LibrelioApplication
                 {
                     if (Bought != null)
                     {
-                        var url = await DownloadManager.GetUrl("monthlysubscription", relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl("monthlysubscription", relativePath, app.ClientName, app.MagazineName);
                         if (url.Equals("NoReceipt"))
                         {
                             string receipt = "";
@@ -216,7 +222,7 @@ namespace LibrelioApplication
                             if (receipt != "")
                             {
                                 await DownloadManager.StoreReceiptAsync("monthlysubscription", receipt);
-                                url = DownloadManager.GetUrl("monthlysubscription", receipt, relativePath);
+                                url = DownloadManager.GetUrl("monthlysubscription", receipt, relativePath, app.ClientName, app.MagazineName);
                                 if (!url.Equals("NoReceipt"))
                                 {
                                     Bought(this, url);
@@ -268,7 +274,8 @@ namespace LibrelioApplication
                     if (receipt != "")
                     {
                         await DownloadManager.StoreReceiptAsync(product_id, receipt);
-                        var url = DownloadManager.GetUrl(product_id, receipt, relativePath);
+                        var app = Application.Current as App;
+                        var url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -282,7 +289,8 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var url = await DownloadManager.GetUrl(product_id, relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -299,7 +307,8 @@ namespace LibrelioApplication
                 {
                     if (Bought != null)
                     {
-                        var url = await DownloadManager.GetUrl(product_id, relativePath);
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
                         if (url.Equals("NoReceipt"))
                         {
                             string receipt = "";
@@ -312,7 +321,7 @@ namespace LibrelioApplication
                             if (receipt != "")
                             {
                                 await DownloadManager.StoreReceiptAsync(product_id, receipt);
-                                url = DownloadManager.GetUrl(product_id, receipt, relativePath);
+                                url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
                                 if (!url.Equals("NoReceipt"))
                                 {
                                     Bought(this, url);
@@ -346,7 +355,8 @@ namespace LibrelioApplication
 
             if (product != null)
             {
-                var url = await DownloadManager.GetUrl(product_id, relativePath);
+                var app = Application.Current as App;
+                var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
                 if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
                 {
                     string receipt = "";
@@ -457,7 +467,8 @@ namespace LibrelioApplication
 
                     if (Bought != null)
                     {
-                        Bought(this, DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath));
+                        var app = Application.Current as App;
+                        Bought(this, DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName));
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     }
                     else
@@ -515,7 +526,8 @@ namespace LibrelioApplication
 
                     if (Bought != null)
                     {
-                        Bought(this, DownloadManager.GetUrl("monthlysubscription", receipt, relativePath));
+                        var app = Application.Current as App;
+                        Bought(this, DownloadManager.GetUrl("monthlysubscription", receipt, relativePath, app.ClientName, app.MagazineName));
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     }
                     else
@@ -574,7 +586,8 @@ namespace LibrelioApplication
                     buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     if (Bought != null)
                     {
-                        Bought(this, DownloadManager.GetUrl(product_id, receipt, relativePath));
+                        var app = Application.Current as App;
+                        Bought(this, DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName));
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     }
                     else

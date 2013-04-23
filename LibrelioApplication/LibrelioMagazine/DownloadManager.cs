@@ -481,25 +481,25 @@ namespace LibrelioApplication
             }
         }
 
-        public static async Task<string> GetUrl(string productId, string relUrl)
+        public static async Task<string> GetUrl(string productId, string relUrl, string clientName, string magName)
         {
             var receipt = await GetReceiptAsync(productId);
             if (receipt == "NoReceipt") return receipt;
 
             receipt = Uri.EscapeDataString(receipt);
             var url = "http://download.librelio.com/downloads/win8_verify.php";
-            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;
+            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + clientName + "/" + magName + "/" + relUrl;
 
             return url;
         }
 
-        public static string GetUrl(string productId, string receipt, string relUrl)
+        public static string GetUrl(string productId, string receipt, string relUrl, string clientName, string magName)
         {
             if (productId.Contains("subscritpion") && DownloadManager.ReceiptExpired(receipt)) return "NoReceipt";
 
             receipt = Uri.EscapeDataString(receipt);
             var url = "http://download.librelio.com/downloads/win8_verify.php";
-            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/" + relUrl;  
+            url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + clientName + "/" + magName + "/" + relUrl;  
 
             return url;
         }
