@@ -4,7 +4,6 @@
 
   <string name="app_name">Wind</string>
   <hex name="background_color">#00C5CD</hex>
-  <string name="url">http://librelio-europe.s3.amazonaws.com/niveales/wind/</string>
   <string name="yearly_subs_code">yearlysubscription</string>
   <string name="monthly_subs_code">monthlysuscription</string>
   <bool name="enable_test_magazine">false</bool>

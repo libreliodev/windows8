@@ -36,15 +36,11 @@ namespace LibrelioApplication.Data
     [Windows.Foundation.Metadata.WebHostHidden]
     public abstract class MagazineDataCommon : LibrelioApplication.Common.BindableBase
     {
-        private static Uri _baseUri = new Uri("ms-appx:///");
-
         public MagazineDataCommon(String uniqueId, String title, String subtitle)
         {
             this._uniqueId = uniqueId;
             this._title = title;
             this._subtitle = subtitle;
-            //this._description = description;
-            //this._imagePath = imagePath;
         }
 
         private string _uniqueId = string.Empty;
@@ -68,40 +64,6 @@ namespace LibrelioApplication.Data
             set { this.SetProperty(ref this._subtitle, value); }
         }
 
-        //private string _description = string.Empty;
-        //public string Description
-        //{
-        //    get { return this._description; }
-        //    set { this.SetProperty(ref this._description, value); }
-        //}
-
-        //private ImageSource _image = null;
-        //private String _imagePath = null;
-        //public ImageSource Image
-        //{
-        //    get
-        //    {
-        //        if (this._image == null && this._imagePath != null)
-        //        {
-        //            this._image = new BitmapImage(new Uri(MagazineDataCommon._baseUri, this._imagePath));
-        //        }
-        //        return this._image;
-        //    }
-
-        //    set
-        //    {
-        //        this._imagePath = null;
-        //        this.SetProperty(ref this._image, value);
-        //    }
-        //}
-
-        //public void SetImage(String path)
-        //{
-        //    this._image = null;
-        //    this._imagePath = path;
-        //    this.OnPropertyChanged("Image");
-        //}
-
         public override string ToString()
         {
             return this.Title;
@@ -110,14 +72,14 @@ namespace LibrelioApplication.Data
 
     public class MagazineModel : LibrelioApplication.Common.BindableBase
     {
-        private const String TAG = "MagazineModel";
-        private const String COMPLETE_FILE = ".complete";
-        private const String COMPLETE_SAMPLE_FILE = ".sample_complete";
-        private const String PAYED_FILE = ".payed";
+        //private const String TAG = "MagazineModel";
+        //private const String COMPLETE_FILE = ".complete";
+        //private const String COMPLETE_SAMPLE_FILE = ".sample_complete";
+        //private const String PAYED_FILE = ".payed";
 
-        private const String FILE_NAME_KEY = "FileName";
-        private const String TITLE_KEY = "Title";
-        private const String SUBTITLE_KEY = "Subtitle";
+        //private const String FILE_NAME_KEY = "FileName";
+        //private const String TITLE_KEY = "Title";
+        //private const String SUBTITLE_KEY = "Subtitle";
 
 
         public String Title { get; set; }
@@ -135,60 +97,60 @@ namespace LibrelioApplication.Data
         public bool isDowloaded { get; set; }
         public bool isSampleDowloaded = false;
         public String assetsDir { get; set; }
-        public String downloadDate { get; set; }
+        //public String downloadDate { get; set; }
 
-        public MagazineModel(Dictionary<string, dynamic> dict)
-        {
-            fileName = (string)dict[FILE_NAME_KEY];
-            Title = (string)dict[TITLE_KEY];
-            Subtitle = (string)dict[SUBTITLE_KEY];
-            valuesInit(fileName);
-        }
+        //public MagazineModel(Dictionary<string, dynamic> dict)
+        //{
+        //    fileName = (string)dict[FILE_NAME_KEY];
+        //    Title = (string)dict[TITLE_KEY];
+        //    Subtitle = (string)dict[SUBTITLE_KEY];
+        //    valuesInit(fileName);
+        //}
 
-        public MagazineModel(String title, String subtitle, String fileName)
-        {
-            this.fileName = fileName;
-            this.Title = title;
-            this.Subtitle = subtitle;
+        //public MagazineModel(String title, String subtitle, String fileName)
+        //{
+        //    this.fileName = fileName;
+        //    this.Title = title;
+        //    this.Subtitle = subtitle;
 
-            valuesInit(fileName);
-        }
+        //    valuesInit(fileName);
+        //}
 
-        async public void valuesInit(String fileName)
-        {
-            if ((fileName == "") || (fileName == null)) {
-                return ;
-            }
+        //async public void valuesInit(String fileName)
+        //{
+        //    if ((fileName == "") || (fileName == null)) {
+        //        return ;
+        //    }
 
-            isPaid = fileName.Contains("_.");
-            int startNameIndex = fileName.IndexOf("/") + 1;
-            string appDataPath = "";
-            StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            appDataPath = folder.Path + "/";
+        //    isPaid = fileName.Contains("_.");
+        //    int startNameIndex = fileName.IndexOf("/") + 1;
+        //    string appDataPath = "";
+        //    StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+        //    appDataPath = folder.Path + "/";
 
 
-            //String png = appDataPath + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
-            String png = fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
-            string baseURL = appDataPath + "pdf/";
-            pdfUrl = baseURL + fileName;
-            pdfPath = getMagazineDir() + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
-            if (isPaid)
-            {
-                pngUrl = pdfUrl.Replace("_.pdf", ".png");
-                pngPath = png.Replace("_.pdf", ".png");
-                sampleUrl = pdfUrl.Replace("_.", ".");
-                samplePath = pdfPath.Replace("_.", ".");
-                isSampleDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE);
-            }
-            else
-            {
-                pngUrl = pdfUrl.Replace(".pdf", ".png");
-                pngPath = png.Replace(".pdf", ".png");
-            }
-            isDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_FILE);
+        //    //String png = appDataPath + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+        //    String png = fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+        //    string baseURL = appDataPath + "pdf/";
+        //    pdfUrl = baseURL + fileName;
+        //    pdfPath = getMagazineDir() + fileName.Substring(startNameIndex, fileName.Length - startNameIndex);
+        //    if (isPaid)
+        //    {
+        //        pngUrl = pdfUrl.Replace("_.pdf", ".png");
+        //        pngPath = png.Replace("_.pdf", ".png");
+        //        sampleUrl = pdfUrl.Replace("_.", ".");
+        //        samplePath = pdfPath.Replace("_.", ".");
+        //        isSampleDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_SAMPLE_FILE);
+        //    }
+        //    else
+        //    {
+        //        pngUrl = pdfUrl.Replace(".pdf", ".png");
+        //        pngPath = png.Replace(".pdf", ".png");
+        //    }
+        //    isDowloaded = await Utils.Utils.fileExistAsync(folder, getMagazineDir() + COMPLETE_FILE);
 
-            assetsDir = getMagazineDir();
-        }
+        //    assetsDir = getMagazineDir();
+        //}
 
         public MagazineModel(LibrelioLocalUrl url, int index)
         {
@@ -202,10 +164,6 @@ namespace LibrelioApplication.Data
 
         public void valuesInit(LibrelioLocalUrl url)
         {
-            //if ((url.FolderPath == "") || (url.FolderPath == "ND")) {
-            //    return;
-            //}
-
             relativePath = url.RelativePath;
 
             isPaid = fileName.Contains("_.");
@@ -217,59 +175,61 @@ namespace LibrelioApplication.Data
             if (isPaid)
             {
                 pngUrl = pdfUrl.Replace("_.pdf", ".png");
-                pngPath = pdfPath.Replace("_.pdf", ".png");
+                pngPath = url.FullName.Replace("_.pdf", ".png");
+                sampleUrl = pdfUrl.Replace("_.", ".");
                 samplePath = pdfPath.Replace("_.", ".");
                 isSampleDowloaded = url.IsDownloaded;
             }
             else
             {
                 pngUrl = pdfUrl.Replace(".pdf", ".png");
-                pngPath = pdfPath.Replace(".pdf", ".png");
+                pngPath = url.FullName.Replace(".pdf", ".png");
             }
+            assetsDir = url.FolderPath;
             isDowloaded = url.IsDownloaded;
         }
 
-        public String getMagazineDir()
-        {
-            if( fileName == "" ) return "";
-            int finishNameIndex = fileName.IndexOf("/");
-            if (finishNameIndex <= 0) return "";
-            return getStoragePath() + fileName.Substring(0, finishNameIndex) + "/";
-        }
+        //public String getMagazineDir()
+        //{
+        //    if( fileName == "" ) return "";
+        //    int finishNameIndex = fileName.IndexOf("/");
+        //    if (finishNameIndex <= 0) return "";
+        //    return getStoragePath() + fileName.Substring(0, finishNameIndex) + "/";
+        //}
 
-        public String getStoragePath() {
-            return "";//TODODEBUG? Possible will be empty so as we used StorageFolder - not full path!
-        }
+        //public String getStoragePath() {
+        //    return "";//TODODEBUG? Possible will be empty so as we used StorageFolder - not full path!
+        //}
 
-        public MagazineModel(LibrelioUrl url)
-        {
-            this.fileName = url.FullName;
-            this.Title = url.Title;
-            this.Subtitle = url.Subtitle;
-            this.Index = url.Index;
+        //public MagazineModel(LibrelioUrl url)
+        //{
+        //    this.fileName = url.FullName;
+        //    this.Title = url.Title;
+        //    this.Subtitle = url.Subtitle;
+        //    this.Index = url.Index;
 
-            valuesInit(url);
-        }
+        //    valuesInit(url);
+        //}
 
-        public void valuesInit(LibrelioUrl url)
-        {
-            relativePath = url.RelativeUrl;
+        //public void valuesInit(LibrelioUrl url)
+        //{
+        //    relativePath = url.RelativeUrl;
 
-            isPaid = fileName.Contains("_.");
+        //    isPaid = fileName.Contains("_.");
 
-            pdfUrl = url.AbsoluteUrl;
-            if (isPaid)
-            {
-                pngUrl = pdfUrl.Replace("_.pdf", ".png");
-                //samplePath = pdfPath.Replace("_.", ".");
-                isSampleDowloaded = false;
-            }
-            else
-            {
-                pngUrl = pdfUrl.Replace(".pdf", ".png");
-            }
-            isDowloaded = false;
-        }
+        //    pdfUrl = url.AbsoluteUrl;
+        //    if (isPaid)
+        //    {
+        //        pngUrl = pdfUrl.Replace("_.pdf", ".png");
+        //        //samplePath = pdfPath.Replace("_.", ".");
+        //        isSampleDowloaded = false;
+        //    }
+        //    else
+        //    {
+        //        pngUrl = pdfUrl.Replace(".pdf", ".png");
+        //    }
+        //    isDowloaded = false;
+        //}
 
         /*
             public MagazineModel(Cursor cursor, Context context) {
@@ -371,6 +331,7 @@ namespace LibrelioApplication.Data
         private bool _isOpening = false;
         private string _downloadOrReadButton = "";
         private string _sampleOrDeleteButton = "";
+        private ImageSource _image = null;
         private int _rowSpan = 1;
         private int _colSpan = 1;
         private int _width = 130;
@@ -427,9 +388,10 @@ namespace LibrelioApplication.Data
             }
         }
 
-        //public String Title { get; set; }
-        //public String Subtitle { get; set; }
         public String Thumbnail { get; set; }
+        public String PngPath { get; set; }
+        public String PngUrl { get; set; }
+        public String PngFile { get; set; }
         public bool IsDownloaded 
         {
             get { return _isDownloaded; }
@@ -490,7 +452,15 @@ namespace LibrelioApplication.Data
         }
         public String FileName { get; set; }
         public String RelativePath { get; set; }
-        public ImageSource Image { get; set; }
+        public ImageSource Image 
+        {
+            get { return _image; }
+            set
+            {
+                _image = value;
+                OnPropertyChanged("Image");
+            }
+        }
         public String DownloadOrReadButton 
         {
             get { return _downloadOrReadButton;  }
@@ -512,22 +482,22 @@ namespace LibrelioApplication.Data
         public String Button1Tag { get; set; }
         public String Button2Tag { get; set; }
         public String MagazineTag { get; set; }
-        public MagazineViewModel(String uniqueId, String title, String subtitle, MagazineDataGroup group, string tumb, string b1, string b2)
-            : base(uniqueId, title, subtitle)
-        {
-            Title = title;
-            Subtitle = subtitle;
-            Thumbnail=tumb;
-            DownloadOrReadButton=b1;
-            SampleOrDeleteButton=b2;
-            Button1Tag = "t1";
-            Button2Tag = "t2";
-            MagazineTag = "m1";
+        //public MagazineViewModel(String uniqueId, String title, String subtitle, MagazineDataGroup group, string tumb, string b1, string b2)
+        //    : base(uniqueId, title, subtitle)
+        //{
+        //    Title = title;
+        //    Subtitle = subtitle;
+        //    Thumbnail=tumb;
+        //    DownloadOrReadButton=b1;
+        //    SampleOrDeleteButton=b2;
+        //    Button1Tag = "t1";
+        //    Button2Tag = "t2";
+        //    MagazineTag = "m1";
 
-            this._group = group;
-        }
+        //    this._group = group;
+        //}
 
-        public MagazineViewModel(String uniqueId, int colSpan, int rowSpan, String title, String subtitle, ImageSource img, MagazineDataGroup group, MagazineModel m)
+        public MagazineViewModel(String uniqueId, int colSpan, int rowSpan, String title, String subtitle, MagazineDataGroup group, MagazineModel m)
             : base(uniqueId, title, subtitle)
         {
             Title = m.Title;
@@ -536,7 +506,10 @@ namespace LibrelioApplication.Data
             IsPaid = m.isPaid;
             FileName = m.fileName;
             RelativePath = m.relativePath;
-            Thumbnail = m.pngUrl;
+            Thumbnail = String.Format("ms-appdata:///local/Covers/{0}", m.pngPath);
+            PngFile = m.pngPath;
+            PngUrl = m.pngUrl;
+            PngPath = m.assetsDir + m.pngPath;
             SecondButtonVisible = true;
             Index = m.Index;
             ColSpan = colSpan;
@@ -545,17 +518,20 @@ namespace LibrelioApplication.Data
             _height *= RowSpan;
             if (ColSpan > 1 && RowSpan > 1)
             {
+                Thumbnail = Thumbnail.Replace(".png", "_newsstand.png");
+                PngFile = PngFile.Replace(".png", "_newsstand.png");
+                PngUrl = PngUrl.Replace(".png", "_newsstand.png");
                 _width += 10 * ColSpan;
                 _height += 10 * RowSpan;
             }
-            if (img != null)
-            {
-                Image = img;
-            }
-            else 
-            {
-                Image = new BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", m.pngPath)));
-            }
+            //if (img != null)
+            //{
+            //    Image = img;
+            //}
+            //else 
+            //{
+            //    Image = new BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", m.pngPath)));
+            //}
             //Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
             var resourceLoader = new ResourceLoader();
             MagazineTag = m.fileName;
@@ -702,9 +678,7 @@ namespace LibrelioApplication.Data
 
         public static void RemoveGroups()
         {
-            if (_sampleDataSource == null) return;
-            if (_sampleDataSource.AllGroups == null) return;
-            _sampleDataSource.AllGroups.Clear();
+            _sampleDataSource = new MagazineDataSource();
         }
 
         public static void RemoveGroup(string uniqueId)
@@ -722,47 +696,9 @@ namespace LibrelioApplication.Data
             return null;
         }
 
-        public MagazineDataSource() {
-            //PList list = new PList("Assets/data/magazines.plist");
-            ////TODODEBUG try
-            //{
-            //    List<dynamic> arr = list[""];
-            //    var group = new MagazineDataGroup("My Magazines", "My Magazines", "");
-            //    for (int i = 0; i < arr.Count; i++)
-            //    {
-            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-            //        group.Items.Add(new MagazineViewModel("", "", "", group, m));
-            //    }
-            //    this.AllGroups.Add(group);
+        public MagazineDataSource() {  }
 
-            //    group = new MagazineDataGroup("All Magazines", "All Magazines", "");
-            //    for (int i = 0; i < arr.Count; i++)
-            //    {
-            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-            //        group.Items.Add(new MagazineViewModel("", "", "", group, m));
-            //    }
-            //    this.AllGroups.Add(group);
-
-            //}
-            //catch (Exception e)
-            //{
-            //    throw new Exception("Failed to load list");
-            //}
-        }
-
-        public static async Task<MagazineManager> LoadMagazinesAsync()
-        {
-            if (_sampleDataSource.AllGroups.Count > 0) return null;
-
-            var app = Application.Current as App;
-            var manager = new MagazineManager(app.BaseUrl, "Magazines");
-
-            await manager.LoadLocalMagazineList();
-
-            //if (manager.MagazineLocalUrl.Count == 0)
-            //{
-                //await manager.LoadPLISTAsync();
-            //}
+        public static void LoadMagazines(IList<LibrelioLocalUrl> magazines) {
 
             bool newGroup = false;
             MagazineDataGroup group = null;
@@ -782,24 +718,14 @@ namespace LibrelioApplication.Data
                 newGroup = false;
             }
 
-            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++)
-            {
+            for (int i = 0; i < magazines.Count; i++) {
 
-                if (manager.MagazineLocalUrl[i].IsDownloaded)
-                {
+                if (magazines[i].IsDownloaded) {
 
-                    var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
+                    var m = new MagazineModel(magazines[i], i);
                     if (GetItem(m.Title + m.Subtitle) != null) continue;
-                    BitmapImage image = null;
-                    try
-                    {
-                        var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
-                        image = new BitmapImage();
-                        await image.SetSourceAsync(await file.OpenReadAsync());
-                    }
-                    catch { }
-  
-                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
+
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, group, m));
                 }
             }
 
@@ -815,204 +741,291 @@ namespace LibrelioApplication.Data
                 group = GetGroup("All Magazines");
             }
 
-            if (newGroup)
-            {
+            if (newGroup) {
+
                 _sampleDataSource.AllGroups.Add(group);
                 newGroup = false;
             }
 
-            await manager.LoadPLISTAsync();
+            for (int i = 0; i < magazines.Count; i++) {
 
-            var count = manager.MagazineLocalUrl.Count;
-            if (count == 0)
-                count = manager.MagazineUrl.Count;
-            for (int i = 0; i < count; i++)
-            {
-                LibrelioLocalUrl localUrl = null;
-                MagazineModel m = null;
-                //if (manager.MagazineLocalUrl.Count == 0)
-                //{
-                    localUrl = manager.FindInMetadata(manager.MagazineUrl[i]);
-                    if (localUrl != null && localUrl.IsDownloaded)
-                        m = new MagazineModel(localUrl, manager.MagazineUrl[i].Index);
-                    else
-                        m = new MagazineModel(manager.MagazineUrl[i]);
-                //}
-                //else
-                //{
-                    //localUrl = manager.MagazineLocalUrl[i];
-                    //m = new MagazineModel(localUrl, i);
-                //}
-
+                var m = new MagazineModel(magazines[i], i);
                 if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
-                BitmapImage image = null;
-                try
-                {
-                    if (group.Items.Count == 0)
-                        image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
-                    else
-                        image = new BitmapImage(new Uri(m.pngUrl));
 
-                    //if (localUrl != null && localUrl.IsDownloaded)
-                    //{
+                if (group.Items.Count == 0) {
 
-                    //    var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
-                    //    image = new BitmapImage();
-                    //    await image.SetSourceAsync(await file.OpenReadAsync());
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m));
 
-                    //}
-                    //else
-                    //{
+                } else {
 
-                    //    image = new BitmapImage(new Uri(m.pngUrl));
-                    //}
-
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m));
                 }
-                catch { }
-                MagazineViewModel item = null;
-                if (group.Items.Count == 0)
-                    item = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, image, group, m);
-                else
-                    item = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, image, group, m);
-
-                if (localUrl != null && localUrl.IsDownloaded)
-                    item.SecondButtonVisible = false;
-                group.Items.Add(item);
             }
+        }
 
-            group.Items = new ObservableCollection<MagazineViewModel>(group.Items.OrderBy(item => item.Index));
+        //public static async Task<MagazineManager> LoadMagazinesAsync()
+        //{
+        //    if (_sampleDataSource.AllGroups.Count > 0) return null;
+
+        //    var app = Application.Current as App;
+        //    var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/" + app.ClientName + "/" + app.MagazineName + "/", "Magazines");
+
+        //    await manager.LoadLocalMagazineList();
+
+        //    //if (manager.MagazineLocalUrl.Count == 0)
+        //    //{
+        //        //await manager.LoadPLISTAsync();
+        //    //}
+
+        //    bool newGroup = false;
+        //    MagazineDataGroup group = null;
+        //    if (GetGroup("My Magazines") == null) {
+
+        //        group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+        //        newGroup = true;
+
+        //    } else {
+
+        //        group = GetGroup("My Magazines");
+        //    }
+
+        //    if (newGroup) {
+
+        //        _sampleDataSource.AllGroups.Add(group);
+        //        newGroup = false;
+        //    }
+
+        //    for (int i = 0; i < manager.MagazineLocalUrl.Count; i++)
+        //    {
+
+        //        if (manager.MagazineLocalUrl[i].IsDownloaded)
+        //        {
+
+        //            var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
+        //            if (GetItem(m.Title + m.Subtitle) != null) continue;
+        //            BitmapImage image = null;
+        //            try
+        //            {
+        //                var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+        //                image = new BitmapImage();
+        //                await image.SetSourceAsync(await file.OpenReadAsync());
+        //            }
+        //            catch { }
+  
+        //            group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, group, m));
+        //        }
+        //    }
+
+        //    newGroup = false;
+
+        //    if (GetGroup("All Magazines") == null) {
+
+        //        group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+        //        newGroup = true;
+
+        //    } else {
+
+        //        group = GetGroup("All Magazines");
+        //    }
+
+        //    if (newGroup)
+        //    {
+        //        _sampleDataSource.AllGroups.Add(group);
+        //        newGroup = false;
+        //    }
+
+        //    await manager.LoadPLISTAsync();
+
+        //    var count = manager.MagazineLocalUrl.Count;
+        //    if (count == 0)
+        //        count = manager.MagazineUrl.Count;
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        LibrelioLocalUrl localUrl = null;
+        //        MagazineModel m = null;
+        //        //if (manager.MagazineLocalUrl.Count == 0)
+        //        //{
+        //            localUrl = manager.FindInMetadata(manager.MagazineUrl[i]);
+        //            if (localUrl != null && localUrl.IsDownloaded)
+        //                m = new MagazineModel(localUrl, manager.MagazineUrl[i].Index);
+        //            else
+        //                m = new MagazineModel(manager.MagazineUrl[i]);
+        //        //}
+        //        //else
+        //        //{
+        //            //localUrl = manager.MagazineLocalUrl[i];
+        //            //m = new MagazineModel(localUrl, i);
+        //        //}
+
+        //        if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
+        //        BitmapImage image = null;
+        //        try
+        //        {
+        //            if (group.Items.Count == 0)
+        //                image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
+        //            else
+        //                image = new BitmapImage(new Uri(m.pngUrl));
+
+        //            //if (localUrl != null && localUrl.IsDownloaded)
+        //            //{
+
+        //            //    var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+        //            //    image = new BitmapImage();
+        //            //    await image.SetSourceAsync(await file.OpenReadAsync());
+
+        //            //}
+        //            //else
+        //            //{
+
+        //            //    image = new BitmapImage(new Uri(m.pngUrl));
+        //            //}
+
+        //        }
+        //        catch { }
+        //        MagazineViewModel item = null;
+        //        if (group.Items.Count == 0)
+        //            item = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, image, group, m);
+        //        else
+        //            item = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, image, group, m);
+
+        //        if (localUrl != null && localUrl.IsDownloaded)
+        //            item.SecondButtonVisible = false;
+        //        group.Items.Add(item);
+        //    }
+
+        //    group.Items = new ObservableCollection<MagazineViewModel>(group.Items.OrderBy(item => item.Index));
             
-            //if (GetGroup("All Magazines") != null) return null;
+        //    //if (GetGroup("All Magazines") != null) return null;
 
-            //PList list = new PList("Assets/data/magazines.plist");
-            ////TODODEBUG try
+        //    //PList list = new PList("Assets/data/magazines.plist");
+        //    ////TODODEBUG try
 
-            //    List<dynamic> arr = list[""];
-            //    group = new MagazineDataGroup("All Magazines", "All Magazines", "");
-            //    for (int i = 0; i < arr.Count; i++)
-            //    {
-            //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
-            //        group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
-            //    }
-            //    _sampleDataSource.AllGroups.Add(group);
+        //    //    List<dynamic> arr = list[""];
+        //    //    group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+        //    //    for (int i = 0; i < arr.Count; i++)
+        //    //    {
+        //    //        var m = new MagazineModel((Dictionary<string, dynamic>)arr[i]);
+        //    //        group.Items.Add(new MagazineViewModel("", "", "", null, group, m));
+        //    //    }
+        //    //    _sampleDataSource.AllGroups.Add(group);
 
-            return manager;
-        }
+        //    return manager;
+        //}
 
-        public static async Task<MagazineManager> LoadLocalMagazinesAsync()
-        {
-            if (_sampleDataSource.AllGroups.Count > 0) return null;
+        //public static async Task<MagazineManager> LoadLocalMagazinesAsync()
+        //{
+        //    if (_sampleDataSource.AllGroups.Count > 0) return null;
 
-            var app = Application.Current as App;
-            var manager = new MagazineManager(app.BaseUrl, "Magazines");
+        //    var app = Application.Current as App;
+        //    var manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/" + app.ClientName + "/" + app.MagazineName + "/", "Magazines");
 
-            await manager.LoadLocalMagazineList();
+        //    await manager.LoadLocalMagazineList();
 
-            bool newGroup = false;
-            MagazineDataGroup group = null;
-            if (GetGroup("My Magazines") == null) {
+        //    bool newGroup = false;
+        //    MagazineDataGroup group = null;
+        //    if (GetGroup("My Magazines") == null) {
 
-                group = new MagazineDataGroup("My Magazines", "My Magazines", "");
-                newGroup = true;
+        //        group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+        //        newGroup = true;
 
-            } else {
+        //    } else {
 
-                group = GetGroup("My Magazines");
-            }
+        //        group = GetGroup("My Magazines");
+        //    }
 
-            if (newGroup) {
+        //    if (newGroup) {
 
-                _sampleDataSource.AllGroups.Add(group);
-                newGroup = false;
-            }
+        //        _sampleDataSource.AllGroups.Add(group);
+        //        newGroup = false;
+        //    }
 
-            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++) {
+        //    for (int i = 0; i < manager.MagazineLocalUrl.Count; i++) {
 
-                if (manager.MagazineLocalUrl[i].IsDownloaded) {
+        //        if (manager.MagazineLocalUrl[i].IsDownloaded) {
 
-                    var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
-                    if (GetItem(m.Title + m.Subtitle) != null) continue;
-                    BitmapImage image = null;
-                    try
-                    {
-                        var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
-                        image = new BitmapImage();
-                        await image.SetSourceAsync(await file.OpenReadAsync());
-                    }
-                    catch { }
-                    int index = 0;
-                    for (int p = 0; p < group.Items.Count; p++)
-                    {
-                        index = p + 1;
-                        if (group.Items[p].Index > m.Index)
-                            break;
-                    }
+        //            var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
+        //            if (GetItem(m.Title + m.Subtitle) != null) continue;
+        //            BitmapImage image = null;
+        //            try
+        //            {
+        //                var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+        //                image = new BitmapImage();
+        //                await image.SetSourceAsync(await file.OpenReadAsync());
+        //            }
+        //            catch { }
+        //            int index = 0;
+        //            for (int p = 0; p < group.Items.Count; p++)
+        //            {
+        //                index = p + 1;
+        //                if (group.Items[p].Index > m.Index)
+        //                    break;
+        //            }
 
-                    group.Items.Insert(index, new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
-                }
-            }
+        //            group.Items.Insert(index, new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, image, group, m));
+        //        }
+        //    }
 
-            newGroup = false;
+        //    newGroup = false;
 
-            if (GetGroup("All Magazines") == null) {
+        //    if (GetGroup("All Magazines") == null) {
 
-                group = new MagazineDataGroup("All Magazines", "All Magazines", "");
-                newGroup = true;
+        //        group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+        //        newGroup = true;
 
-            } else {
+        //    } else {
 
-                group = GetGroup("All Magazines");
-            }
+        //        group = GetGroup("All Magazines");
+        //    }
 
-            if (newGroup)
-            {
-                _sampleDataSource.AllGroups.Add(group);
-                newGroup = false;
-            }
+        //    if (newGroup)
+        //    {
+        //        _sampleDataSource.AllGroups.Add(group);
+        //        newGroup = false;
+        //    }
 
-            for (int i = 0; i < manager.MagazineLocalUrl.Count; i++) {
+        //    for (int i = 0; i < manager.MagazineLocalUrl.Count; i++) {
 
-                    var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
-                    if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
-                    BitmapImage image = null;
-                    try
-                    {
-                        //if (m.isDowloaded) {
+        //            var m = new MagazineModel(manager.MagazineLocalUrl[i], i);
+        //            if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
+        //            BitmapImage image = null;
+        //            try
+        //            {
+        //                //if (m.isDowloaded) {
 
-                        //    var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
-                        //    image = new BitmapImage();
-                        //    await image.SetSourceAsync(await file.OpenReadAsync());
+        //                //    var file = await StorageFile.GetFileFromPathAsync(m.pngPath);
+        //                //    image = new BitmapImage();
+        //                //    await image.SetSourceAsync(await file.OpenReadAsync());
 
-                        //} else {
+        //                //} else {
 
-                        if (group.Items.Count == 0)
-                            image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
-                        else
-                            image = new BitmapImage(new Uri(m.pngUrl));
-                        //}
+        //                if (group.Items.Count == 0)
+        //                    image = new BitmapImage(new Uri(m.pngUrl.Replace(".png", "_newsstand.png")));
+        //                else
+        //                    image = new BitmapImage(new Uri(m.pngUrl));
+        //                //}
 
-                    }
-                    catch { }
-                    int index = 0;
-                    for (int p = 0; p < group.Items.Count; p++)
-                    {
-                        index = p + 1;
-                        if (group.Items[p].Index > m.Index)
-                            break;
-                    }
-                    MagazineViewModel item = null;
-                    if (group.Items.Count == 0)
-                        item = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, image, group, m);
-                    else
-                        item = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, image, group, m);
+        //            }
+        //            catch { }
+        //            int index = 0;
+        //            for (int p = 0; p < group.Items.Count; p++)
+        //            {
+        //                index = p + 1;
+        //                if (group.Items[p].Index > m.Index)
+        //                    break;
+        //            }
+        //            MagazineViewModel item = null;
+        //            if (group.Items.Count == 0)
+        //                item = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, image, group, m);
+        //            else
+        //                item = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, image, group, m);
 
-                    if (m.isDowloaded)
-                        item.SecondButtonVisible = false;
-                    group.Items.Insert(index, item);
-            }
+        //            if (m.isDowloaded)
+        //                item.SecondButtonVisible = false;
+        //            group.Items.Insert(index, item);
+        //    }
 
-            return manager;
-        }
+        //    return manager;
+        //}
 
         //public MagazineDataSource()
         //{

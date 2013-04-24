@@ -58,6 +58,22 @@ namespace LibrelioApplication.Utils
 
         }
 
+        async public static Task LoadDefaultData()
+        {
+            StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+
+            StorageFolder init = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("CustomizationAssets");
+            init = await init.GetFolderAsync("Covers");
+
+            if (init == null) return;
+
+            IReadOnlyList<StorageFile> storageFiles = await init.GetFilesAsync();
+            foreach (var storageFile in storageFiles)
+            {
+                await storageFile.CopyAsync(folder, storageFile.Name, NameCollisionOption.ReplaceExisting);
+            }
+        }
+
         async public static Task<bool> prepareTestData()
         {
             Debug.WriteLine("prepareTestData");

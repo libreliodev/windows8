@@ -19,7 +19,7 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}">
+    <Grid Style="{StaticResource LayoutRootStyle}" SizeChanged="Grid_SizeChanged_1">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>

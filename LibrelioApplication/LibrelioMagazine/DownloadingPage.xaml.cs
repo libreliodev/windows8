@@ -26,6 +26,7 @@ using MuPDFWinRT;
 using Windows.ApplicationModel.Store;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -41,7 +42,7 @@ namespace LibrelioApplication
 
     public class DownloadMagazine
     {
-        public MagazineManager manager { get; set; }
+        //public MagazineManager manager { get; set; }
         public LibrelioUrl url { get; set; }
         public string redirectUrl { get; set; }
     }
@@ -56,7 +57,7 @@ namespace LibrelioApplication
         IList<string> links = new List<string>();
         StorageFolder folder = null;
 
-        MagazineManager manager = null;
+        //MagazineManager manager = null;
 
         bool needtoGoBack = false;
 
@@ -87,7 +88,6 @@ namespace LibrelioApplication
             {
                 statusText.Text = "Download in progress";
 
-                manager = item.manager;
                 var url = item.url;
 
                 magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
@@ -95,11 +95,11 @@ namespace LibrelioApplication
 
                 try
                 {
-                    var folder = await manager.AddMagazineFolderStructure(url);
+                    var folder = await app.Manager.AddMagazineFolderStructure(url);
                     Windows.UI.Xaml.Media.Imaging.BitmapSource bitmap = null;
                     try
                     {
-                        bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                        bitmap = await app.Manager.DownloadThumbnailAsync(url, folder);
                     }
                     catch { }
                     if (bitmap == null) return;
@@ -110,8 +110,8 @@ namespace LibrelioApplication
 
                     var progressIndicator = new Progress<int>((value) =>
                     {
-                        if (statusText.Text != manager.StatusText)
-                            statusText.Text = manager.StatusText;
+                        if (statusText.Text != app.Manager.StatusText)
+                            statusText.Text = app.Manager.StatusText;
                         progressBar.Value = value;
                     });
                     cts = new CancellationTokenSource();
@@ -119,17 +119,17 @@ namespace LibrelioApplication
                     IRandomAccessStream stream = null;
                     if (item.redirectUrl == null) {
 
-                        stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                        stream = await app.Manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
 
                     } else {
 
-                        stream = await manager.DownloadMagazineAsync(url, item.redirectUrl, folder, progressIndicator, cts.Token);
+                        stream = await app.Manager.DownloadMagazineAsync(url, item.redirectUrl, folder, progressIndicator, cts.Token);
                     }
                     statusText.Text = "Done.";
-                    await manager.MarkAsDownloaded(url, folder);
+                    await app.Manager.MarkAsDownloaded(url, folder);
                     await Task.Delay(1000);
 
-                    var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, url.FullName);
+                    var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, url.FullName);
                     this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = stream, folderUrl = mag.FolderPath });
                 }
                 catch (Exception ex)
@@ -438,15 +438,16 @@ namespace LibrelioApplication
 
             statusText.Text = "Download in progress";
 
-            foreach (var url in manager.MagazineUrl)
+            var app = Application.Current as App;
+            foreach (var url in app.Manager.MagazineUrl)
             {
                 if (url.FullName == item.FullName)
                 {
                     magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                    var folder = await manager.AddMagazineFolderStructure(url);
-                    var bitmap = await manager.DownloadThumbnailAsync(url, folder);
+                    var folder = await app.Manager.AddMagazineFolderStructure(url);
+                    var bitmap = await app.Manager.DownloadThumbnailAsync(url, folder);
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 
@@ -454,20 +455,20 @@ namespace LibrelioApplication
 
                     var progressIndicator = new Progress<int>((value) =>
                     {
-                        if (statusText.Text != manager.StatusText)
-                            statusText.Text = manager.StatusText;
+                        if (statusText.Text != app.Manager.StatusText)
+                            statusText.Text = app.Manager.StatusText;
                         progressBar.Value = value;
                     });
                     cts = new CancellationTokenSource();
 
                     try
                     {
-                        var stream = await manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                        var stream = await app.Manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
                         statusText.Text = "Done.";
-                        await manager.MarkAsDownloaded(url, folder);
+                        await app.Manager.MarkAsDownloaded(url, folder);
                         await Task.Delay(1000);
 
-                        var mag = DownloadManager.GetLocalUrl(manager.MagazineLocalUrl, item.FullName);
+                        var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, item.FullName);
                         this.Frame.Navigate(typeof(PdfViewPage), new MagazineData() { stream = stream, folderUrl = mag.FolderPath });
                     }
                     catch (Exception ex)
@@ -502,13 +503,14 @@ namespace LibrelioApplication
             magList.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
-                var app = Application.Current as App;
-                manager = new MagazineManager(app.BaseUrl, "Magazines");
+                //manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/" + app.ClientName + "/" + app.MagazineName + "/", "Magazines");
 
-                await manager.LoadPLISTAsync();
+                var app = Application.Current as App;
+                if (app.Manager.MagazineUrl.Count == 0)
+                    await app.Manager.LoadPLISTAsync();
 
                 var mag = new List<Item>();
-                foreach (var url in manager.MagazineUrl)
+                foreach (var url in app.Manager.MagazineUrl)
                 {
                     mag.Add(new Item { Title = url.Title, Subtitle = url.Subtitle, FullName = url.FullName });
                 }
@@ -555,6 +557,16 @@ namespace LibrelioApplication
             if (cts != null) cts.Cancel();
             if (this.Frame.CanGoBack)
                 this.Frame.GoBack();
+        }
+
+        private void Grid_SizeChanged_1(object sender, SizeChangedEventArgs e)
+        {
+            if (ApplicationView.Value == ApplicationViewState.Snapped)
+            {
+                if (cts != null) cts.Cancel();
+                if (this.Frame.CanGoBack)
+                    this.Frame.GoBack();
+            }
         }
     }
 }

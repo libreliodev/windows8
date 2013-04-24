@@ -2187,6 +2187,13 @@ namespace LibrelioApplication
 
         private void pageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if (ApplicationView.Value == ApplicationViewState.Snapped)
+            {
+                if (this.Frame.CanGoBack)
+                    this.Frame.GoBack();
+                return;
+            }
+
             if (pages.Count > 0)
             {
                 if (pages[0].Width != Window.Current.Bounds.Width ||
