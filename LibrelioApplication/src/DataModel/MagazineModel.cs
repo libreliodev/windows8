@@ -178,7 +178,7 @@ namespace LibrelioApplication.Data
                 pngPath = url.FullName.Replace("_.pdf", ".png");
                 sampleUrl = pdfUrl.Replace("_.", ".");
                 samplePath = pdfPath.Replace("_.", ".");
-                isSampleDowloaded = url.IsDownloaded;
+                isSampleDowloaded = url.IsSampleDownloaded;
             }
             else
             {
@@ -392,6 +392,7 @@ namespace LibrelioApplication.Data
         public String PngPath { get; set; }
         public String PngUrl { get; set; }
         public String PngFile { get; set; }
+        public bool IsSampleDownloaded { get; set; }
         public bool IsDownloaded 
         {
             get { return _isDownloaded; }
@@ -503,6 +504,7 @@ namespace LibrelioApplication.Data
             Title = m.Title;
             Subtitle = m.Subtitle;
             IsDownloaded = m.isDowloaded;
+            IsSampleDownloaded = m.isSampleDowloaded;
             IsPaid = m.isPaid;
             FileName = m.fileName;
             RelativePath = m.relativePath;
@@ -557,6 +559,95 @@ namespace LibrelioApplication.Data
             this._group = group;
         }
 
+        public bool Update(int colSpan, int rowSpan, MagazineModel m)
+        {
+            bool needUpdateLayout = false;
+
+            if (Title != m.Title)
+                Title = m.Title;
+            if (Subtitle != m.Subtitle)
+                Subtitle = m.Subtitle;
+            if (IsDownloaded != m.isDowloaded)
+            {
+                IsDownloaded = m.isDowloaded;
+                var resourceLoader = new ResourceLoader();
+                if (m.isDowloaded)
+                {
+                    DownloadOrReadButton = resourceLoader.GetString("read");
+                    SampleOrDeleteButton = resourceLoader.GetString("delete");
+                    Button1Tag = TAG_READ;
+                    Button2Tag = TAG_DEL;
+                }
+                else
+                {
+                    DownloadOrReadButton = resourceLoader.GetString("download");
+                    SampleOrDeleteButton = resourceLoader.GetString("sample");
+                    if (!m.isDowloaded && !m.isPaid)
+                    {
+                        SecondButtonVisible = false;
+                    }
+                    else
+                    {
+                        SecondButtonVisible = true;
+                    }
+                    Button1Tag = TAG_DOWNLOAD;
+                    Button2Tag = TAG_SAMPLE;
+                }
+            }
+            if (IsSampleDownloaded == m.isSampleDowloaded)
+                IsSampleDownloaded = m.isSampleDowloaded;
+            if (IsPaid != m.isPaid)
+                IsPaid = m.isPaid;
+            if (FileName != m.fileName)
+                FileName = m.fileName;
+            if (RelativePath != m.relativePath)
+                RelativePath = m.relativePath;
+            if (Thumbnail != String.Format("ms-appdata:///local/Covers/{0}", m.pngPath))
+                Thumbnail = String.Format("ms-appdata:///local/Covers/{0}", m.pngPath);
+            if (PngFile != m.pngPath)
+                PngFile = m.pngPath;
+            if (PngUrl != m.pngUrl)
+                PngUrl = m.pngUrl;
+            if (PngPath != m.assetsDir + m.pngPath)
+                PngPath = m.assetsDir + m.pngPath;
+
+            ColSpan = colSpan;
+            RowSpan = rowSpan;
+            var w= 130;
+            var h = 265;
+            w *= ColSpan;
+            h *= RowSpan;
+            if (ColSpan > 1 && RowSpan > 1)
+            {
+                Thumbnail = Thumbnail.Replace(".png", "_newsstand.png");
+                PngFile = PngFile.Replace(".png", "_newsstand.png");
+                PngUrl = PngUrl.Replace(".png", "_newsstand.png");
+                w += 10 * ColSpan;
+                h += 10 * RowSpan;
+            }
+            if (w != Width || h != Height)
+            {
+                needUpdateLayout = true;
+                Width = w;
+                Height = h;
+            }
+            //if (img != null)
+            //{
+            //    Image = img;
+            //}
+            //else 
+            //{
+            //    Image = new BitmapImage(new Uri(String.Format("ms-appdata:///local/{0}", m.pngPath)));
+            //}
+            //Thumbnail = String.Format("ms-appdata:///local/{0}", m.pngPath);
+            if (MagazineTag != m.fileName)
+            {
+                var resourceLoader = new ResourceLoader();
+                MagazineTag = m.fileName;
+            }
+
+            return needUpdateLayout;
+        }
     }
 
     /// <summary>
@@ -698,7 +789,9 @@ namespace LibrelioApplication.Data
 
         public MagazineDataSource() {  }
 
-        public static void LoadMagazines(IList<LibrelioLocalUrl> magazines) {
+        public static IReadOnlyList<MagazineViewModel> LoadMagazines(IList<LibrelioLocalUrl> magazines) {
+
+           var list = new List<MagazineViewModel>();
 
             bool newGroup = false;
             MagazineDataGroup group = null;
@@ -723,7 +816,13 @@ namespace LibrelioApplication.Data
                 if (magazines[i].IsDownloaded) {
 
                     var m = new MagazineModel(magazines[i], i);
-                    if (GetItem(m.Title + m.Subtitle) != null) continue;
+                    var item = GetItem(m.Title + m.Subtitle);
+                    if (item != null)
+                    {
+                        var b = item.Update(1, 1, m);
+                        if (b) list.Add(item);
+                        continue;
+                    }
 
                     group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, group, m));
                 }
@@ -750,17 +849,40 @@ namespace LibrelioApplication.Data
             for (int i = 0; i < magazines.Count; i++) {
 
                 var m = new MagazineModel(magazines[i], i);
-                if (GetItem(m.Title + m.Subtitle + "1") != null) continue;
+                var item = GetItem(m.Title + m.Subtitle + "1");
+                if (item != null)
+                {
+                    if (item.Index == 0)
+                    {
+                        var b = item.Update(2, 2, m);
+                        if (b) list.Add(item);
+                    }
+                    else
+                    {
+                        var b = item.Update(1, 1, m);
+                        if (b) list.Add(item);
+                    }
+
+                    continue;
+                }
 
                 if (group.Items.Count == 0) {
 
-                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m));
+                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m);
+                    if (it.IsDownloaded)
+                        it.SecondButtonVisible = false;
+                    group.Items.Add(it);
 
                 } else {
 
-                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m));
+                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m);
+                    if (it.IsDownloaded)
+                        it.SecondButtonVisible = false;
+                    group.Items.Add(it);
                 }
             }
+
+            return list;
         }
 
         //public static async Task<MagazineManager> LoadMagazinesAsync()

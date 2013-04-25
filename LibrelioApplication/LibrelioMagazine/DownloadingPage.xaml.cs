@@ -44,6 +44,7 @@ namespace LibrelioApplication
     {
         //public MagazineManager manager { get; set; }
         public LibrelioUrl url { get; set; }
+        public bool IsSampleDownloaded { get; set; }
         public string redirectUrl { get; set; }
     }
 
@@ -119,14 +120,14 @@ namespace LibrelioApplication
                     IRandomAccessStream stream = null;
                     if (item.redirectUrl == null) {
 
-                        stream = await app.Manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                        stream = await app.Manager.DownloadMagazineAsync(url, folder, item.IsSampleDownloaded, progressIndicator, cts.Token);
 
                     } else {
 
-                        stream = await app.Manager.DownloadMagazineAsync(url, item.redirectUrl, folder, progressIndicator, cts.Token);
+                        stream = await app.Manager.DownloadMagazineAsync(url, item.redirectUrl, folder, item.IsSampleDownloaded, progressIndicator, cts.Token);
                     }
                     statusText.Text = "Done.";
-                    await app.Manager.MarkAsDownloaded(url, folder);
+                    await app.Manager.MarkAsDownloaded(url, folder, item.IsSampleDownloaded);
                     await Task.Delay(1000);
 
                     var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, url.FullName);
@@ -463,9 +464,9 @@ namespace LibrelioApplication
 
                     try
                     {
-                        var stream = await app.Manager.DownloadMagazineAsync(url, folder, progressIndicator, cts.Token);
+                        var stream = await app.Manager.DownloadMagazineAsync(url, folder, false, progressIndicator, cts.Token);
                         statusText.Text = "Done.";
-                        await app.Manager.MarkAsDownloaded(url, folder);
+                        await app.Manager.MarkAsDownloaded(url, folder, false);
                         await Task.Delay(1000);
 
                         var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, item.FullName);

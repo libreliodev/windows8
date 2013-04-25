@@ -14,6 +14,7 @@
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>LibrelioMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>CB46E1136A2983B08AEB1ABDEEE9BC9B245FBDE0</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -187,6 +188,8 @@
     <Content Include="Assets\firstpge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\icon1.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\test\p9video.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -198,9 +201,34 @@
     <Content Include="Assets\WideLogo.scale-180.png" />
     <Content Include="Assets\WideLogo.scale-80.png" />
     <Content Include="CustomizationAssets\application_.xml" />
-    <Content Include="CustomizationAssets\icon.png" />
-    <Content Include="CustomizationAssets\SmallLogo.png" />
+    <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
+    <Content Include="CustomizationAssets\Covers\wind_355.png" />
+    <Content Include="CustomizationAssets\Covers\wind_356.png" />
+    <Content Include="CustomizationAssets\Covers\wind_357.png" />
+    <Content Include="CustomizationAssets\Covers\wind_358.png" />
+    <Content Include="CustomizationAssets\Covers\wind_362.png" />
+    <Content Include="CustomizationAssets\Covers\wind_363.png" />
+    <Content Include="CustomizationAssets\Covers\wind_364.png" />
+    <Content Include="CustomizationAssets\Covers\wind_365.png" />
+    <Content Include="CustomizationAssets\Covers\wind_366.png" />
+    <Content Include="CustomizationAssets\Covers\wind_367.png" />
+    <Content Include="CustomizationAssets\Covers\wind_368.png" />
+    <Content Include="CustomizationAssets\Covers\wind_369.png" />
+    <Content Include="CustomizationAssets\Covers\wind_370.png" />
+    <Content Include="CustomizationAssets\Covers\wind_371.png" />
+    <Content Include="CustomizationAssets\Covers\wind_372.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
+    <Content Include="CustomizationAssets\icon.scale-100.png" />
+    <Content Include="CustomizationAssets\Magazines.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CustomizationAssets\SmallLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\SmallLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\SmallLogo.scale-180.png" />
+    <Content Include="CustomizationAssets\SmallLogo.scale-80.png" />
     <Content Include="CustomizationAssets\startup_background.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-100.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-140.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-180.png" />
@@ -357,7 +385,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="LibrelioMagazine_TemporaryKey.pfx" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

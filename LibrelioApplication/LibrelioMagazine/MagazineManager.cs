@@ -80,8 +80,33 @@ namespace LibrelioApplication
 
             try
             {
-                var xml = await XmlDocument.LoadFromUriAsync(new Uri(this._pList.AbsoluteUrl), settings);
-                await ReadPList(xml);
+                XmlDocument xml = new XmlDocument();
+
+
+                bool noXml = false;
+                try
+                {
+                    var resonse = await new HttpClient().GetAsync(this._pList.AbsoluteUrl);
+                    resonse.EnsureSuccessStatusCode();
+                    var str = await resonse.Content.ReadAsStringAsync();
+                    xml.LoadXml(str, settings);
+                    //xml = await XmlDocument.LoadFromUriAsync(new Uri(this._pList.AbsoluteUrl), settings);
+                }
+                catch
+                {
+                    noXml = true;
+                }
+                if (!noXml)
+                {
+                    await ReadPList(xml);
+                }
+                else
+                {
+                    var fileHandle =
+                        await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\Magazines.xml");
+                    xml = await XmlDocument.LoadFromFileAsync(fileHandle, settings);
+                    await ReadPList(xml);
+                }
             }
             catch
             {
@@ -168,16 +193,16 @@ namespace LibrelioApplication
             return bitmap;
         }
 
-        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             StatusText = "Download in progress";
 
-            var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+            var stream = await DownloadPDFAsync(magUrl, folder, isd, progress, cancelToken);
 
             await GetUrlsFromPDF(stream);
 
             StatusText = "Downloading 2/" + (links.Count+1);
-            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
+            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder, isd);
 
             if (url != null)
             {
@@ -211,19 +236,19 @@ namespace LibrelioApplication
             return stream;
         }
 
-        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, string redirectUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, string redirectUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             StatusText = "Download in progress";
 
             var tmpUrl = magUrl.AbsoluteUrl;
             magUrl.AbsoluteUrl = redirectUrl;
-            var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+            var stream = await DownloadPDFAsync(magUrl, folder, isd, progress, cancelToken);
             magUrl.AbsoluteUrl = tmpUrl;
 
             await GetUrlsFromPDF(stream);
 
             StatusText = "Downloading 2/" + (links.Count + 1);
-            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
+            var url = DownloadManager.ConvertToLocalUrl(magUrl, folder, isd);
 
             if (url != null)
             {
@@ -263,11 +288,14 @@ namespace LibrelioApplication
             return DownloadManager.FindInMetadata(url, localXml);
         }
 
-        public async Task<IRandomAccessStream> DownloadPDFAsync(LibrelioUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        public async Task<IRandomAccessStream> DownloadPDFAsync(LibrelioUrl magUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             HttpClient client = new HttpClient();
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, magUrl.AbsoluteUrl);
+            var url = magUrl.AbsoluteUrl;
+            if (isd) url = url.Replace("_.", ".");
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 
             int read = 0;
             int offset = 0;
@@ -309,7 +337,9 @@ namespace LibrelioApplication
 
             //var folder = await AddMagazineFolderStructure(magUrl);
             //var folder = await StorageFolder.GetFolderFromPathAsync(folderUrl);
-            var file = await folder.CreateFileAsync(magUrl.FullName, CreationCollisionOption.ReplaceExisting);
+            var name = magUrl.FullName;
+            if (isd) name = name.Replace("_.", ".");
+            var file = await folder.CreateFileAsync(name, CreationCollisionOption.ReplaceExisting);
 
             using (var protectedStream = await DownloadManager.ProtectPDFStream(stream))
             using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
@@ -441,12 +471,12 @@ namespace LibrelioApplication
             return null;
         }
 
-        public async Task MarkAsDownloaded(LibrelioUrl magUrl, StorageFolder currentFolder)
+        public async Task MarkAsDownloaded(LibrelioUrl magUrl, StorageFolder currentFolder, bool isd)
         {
             if (currentFolder != _folder)
             {
                 var magLocal = new LibrelioLocalUrl(magUrl.Index, magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\",
-                                                    magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl);
+                                                    magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl, isd);
 
                 if (!UpdataLocalUrl(magLocal))
                     _magazinesLocalUrl.Add(magLocal);
@@ -531,6 +561,7 @@ namespace LibrelioApplication
                 }
                 mags[0].SelectNodes("url")[0].InnerText = magLocal.Url;
                 mags[0].SelectNodes("relPath")[0].InnerText = magLocal.RelativePath;
+                mags[0].SelectNodes("sampledownloaded")[0].InnerText = magLocal.IsSampleDownloaded ? "true" : "false";
             }
             else
             {
@@ -569,6 +600,10 @@ namespace LibrelioApplication
                 var relPath = localXml.CreateElement("relPath");
                 relPath.InnerText = magLocal.RelativePath;
                 mag.AppendChild(relPath);
+
+                var isd = localXml.CreateElement("sampledownloaded");
+                isd.InnerText = magLocal.IsSampleDownloaded ? "true" : "false";
+                mag.AppendChild(isd);
 
                 localXml.GetElementsByTagName("root")[0].AppendChild(mag);
             }
@@ -741,16 +776,18 @@ namespace LibrelioApplication
                         72 // - dpi
                       );
 
+            links.Clear();
+
             var linkVistor = new LinkInfoVisitor();
             linkVistor.OnURILink += linkVistor_OnURILink;
 
             for (int i = 0; i < document.PageCount; i++)
             {
-                var links = document.GetLinks(i);
+                var ls = document.GetLinks(i);
 
-                for (int j = 0; j < links.Count; j++)
+                for (int j = 0; j < ls.Count; j++)
                 {
-                    links[j].AcceptVisitor(linkVistor);
+                    ls[j].AcceptVisitor(linkVistor);
 
                 }
             }
@@ -775,7 +812,13 @@ namespace LibrelioApplication
                     {
                         var s = str.Substring(0, pos1);
                         var ss = s.Substring(pos + 1);
-                        int x = Convert.ToInt32(ss);
+                        int x = -1;
+                        try
+                        {
+                            x = Convert.ToInt32(ss);
+                        }
+                        catch { }
+
                         if (x > 1 && x < 50)
                         {
                             for (int i = 1; i < x; i++)

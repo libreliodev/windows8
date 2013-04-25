@@ -61,6 +61,7 @@ namespace LibrelioApplication.Utils
         async public static Task LoadDefaultData()
         {
             StorageFolder folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            folder = await folder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
 
             StorageFolder init = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("CustomizationAssets");
             init = await init.GetFolderAsync("Covers");
