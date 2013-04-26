@@ -315,6 +315,90 @@ x:Name="pageRoot"
 
         </Grid>
 
+        <Grid x:Name="snappedView" Grid.RowSpan="2" VerticalAlignment="Center" Visibility="Collapsed">
+
+            <StackPanel x:Name="noMagazineSnapped">
+
+                <TextBlock Text="The last number" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" FontSize="14" Margin="2,10" />
+
+                <ListView
+                    x:Name="itemListView"
+                    AutomationProperties.AutomationId="ItemsListView"
+                    AutomationProperties.Name="Items"
+                    TabIndex="1"
+                    Margin="0,-10,0,0"
+                    Padding="10,0,0,60"
+                    SelectionMode="None"
+                    IsSwipeEnabled="false"
+                    IsItemClickEnabled="False"
+                    ScrollViewer.HorizontalScrollMode="Disabled"
+                    ScrollViewer.VerticalScrollMode="Disabled">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <Grid Tag="{Binding MagazineTag}" Margin="5">
+                                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0">
+                                    <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!--<Button Style="{StaticResource TextPrimaryButtonStyle}" Content="See all numbers" FontSize="13" Foreground="#FFAAAAAA" Margin="2,15" HorizontalAlignment="Center" Click="Button_Click_3" />-->
+
+            </StackPanel>
+
+            <TextBlock x:Name="titleSnapped" Text="My Magazines" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="17" Margin="15,125,10,10" Foreground="#FFBCBCBC" Visibility="Collapsed"/>
+
+            <GridView
+                    x:Name="snappedGridView"
+                    AutomationProperties.AutomationId="SnappedGridView"
+                    AutomationProperties.Name="Items"
+                    TabIndex="1"
+                    Margin="0,149,0,0"
+                    Padding="10,0,10,60"
+                    SelectionMode="None"
+                    IsSwipeEnabled="false"
+                    IsItemClickEnabled="False"
+                    Visibility="Collapsed"
+                    ScrollViewer.HorizontalScrollMode="Disabled"
+                    ScrollViewer.VerticalScrollMode="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                <GridView.ItemTemplate>
+                    <DataTemplate >
+                        <Grid Tag="{Binding MagazineTag}" Width="130" Margin="5">
+                            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0">
+                                <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </Border>
+                            <Rectangle Margin="0" HorizontalAlignment="Left" Width="7">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <CompositeTransform CenterY="0.5" CenterX="0.5" Rotation="270"/>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="Black" Offset="0.061"/>
+                                        <GradientStop Color="#00000000" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                       Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapGrid Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
+
+        </Grid>
 
         <VisualStateManager.VisualStateGroups>
 
@@ -341,6 +425,10 @@ x:Name="pageRoot"
                 -->
                 <VisualState x:Name="Snapped">
                     <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Output" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
@@ -348,11 +436,8 @@ x:Name="pageRoot"
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedPageHeaderTextStyle}"/>
                         </ObjectAnimationUsingKeyFrames>
 
-                        <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemListView" Storyboard.TargetProperty="Visibility">
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="snappedView" Storyboard.TargetProperty="Visibility">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
-                        </ObjectAnimationUsingKeyFrames>-->
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemGridView" Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
                         </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>

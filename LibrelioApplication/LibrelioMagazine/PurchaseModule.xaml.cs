@@ -23,6 +23,7 @@ using LibrelioApplication.Data;
 namespace LibrelioApplication
 {
     public delegate void BoughtEventHandler(object sender, string url);
+    public delegate void MagazineEventHandler(object sender, Data.MagazineViewModel item);
 
     public sealed partial class PurchaseModule : UserControl
     {
@@ -32,14 +33,48 @@ namespace LibrelioApplication
         private Data.MagazineViewModel _item = null;
 
         public event BoughtEventHandler Bought;
+        public event MagazineEventHandler GetSample;
+        public event MagazineEventHandler Open;
+        public event MagazineEventHandler Delete;
 
         public PurchaseModule()
         {
             this.InitializeComponent();
         }
 
-        public async Task Init(Data.MagazineViewModel mag)
+        public async Task Init(Data.MagazineViewModel mag, bool local = false)
         {
+            thumbnail.Source = mag.Image;
+            title.Text = mag.Title;
+            subtitle.Text = mag.Subtitle;
+
+            if (local)
+            {
+                _item = mag;
+
+                noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                getSample.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                open.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                delete.Content = "Delete";
+                delete.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                if (_item.IsSampleDownloaded)
+                    subtitle.Text += " SAMPLE";
+
+                this.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                return;
+            }
+
+            if (mag.IsSampleDownloaded)
+                getSample.Content = "Open sample";
+            else
+                getSample.Content = "Download sample";
+
             _item = mag;
             product_id = mag.FileName.Replace(".pdf", "");
             relativePath = mag.RelativePath;
@@ -48,18 +83,188 @@ namespace LibrelioApplication
             var appListing = await CurrentAppSimulator.LoadListingInformationAsync();
             var productListings = appListing.ProductListings;
             ProductListing product = null;
-            try {
-                product = productListings["yearlysubscritpion"];
-
-            } catch { }
-
-            statusContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            
+            //statusContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            getSample.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            open.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            delete.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
             this.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            try
+            {
+                product = productListings[product_id];
+
+            }
+            catch { }
+
+            if (product != null)
+            {
+                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
+                {
+                    string receipt = "";
+                    try
+                    {
+                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
+
+                    }
+                    catch { }
+                    if (receipt != "")
+                    {
+                        await DownloadManager.StoreReceiptAsync(product_id, receipt);
+                        var app = Application.Current as App;
+                        var url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
+                        if (!url.Equals("NoReceipt"))
+                        {
+                            Bought(this, url);
+                            return;
+                        }
+                        else
+                        {
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            buyMag.Content = "Buy this number for: " + product.FormattedPrice;
+                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        }
+                    }
+                    else
+                    {
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
+                        if (!url.Equals("NoReceipt"))
+                        {
+                            Bought(this, url);
+                            return;
+                        }
+                        else
+                        {
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            buyMag.Content = "Buy this number for: " + product.FormattedPrice;
+                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        }
+                    }
+                }
+                else
+                {
+                    if (Bought != null)
+                    {
+                        var app = Application.Current as App;
+                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
+                        if (url.Equals("NoReceipt"))
+                        {
+                            string receipt = "";
+                            try
+                            {
+                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+
+                            }
+                            catch { }
+                            if (receipt != "")
+                            {
+                                await DownloadManager.StoreReceiptAsync(product_id, receipt);
+                                url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
+                                if (!url.Equals("NoReceipt"))
+                                {
+                                    Bought(this, url);
+                                    return;
+                                }
+                                else
+                                {
+                                    var messageDialog = new MessageDialog("No Receipt");
+                                    var task = messageDialog.ShowAsync().AsTask();
+                                }
+                            }
+                            else
+                            {
+                                var messageDialog = new MessageDialog("No Receipt");
+                                var task = messageDialog.ShowAsync().AsTask();
+                            }
+                        }
+                        else
+                        {
+                            Bought(this, url);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
+                }
+            }
+
+            if (product != null)
+            {
+                var app = Application.Current as App;
+                var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
+                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
+                {
+                    string receipt = "";
+                    try
+                    {
+                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
+
+                    }
+                    catch { }
+                    if (receipt != "")
+                    {
+                        Bought(this, url);
+                    }
+                    else
+                    {
+                        noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        buyMag.Content = "Buy this number for: " + product.FormattedPrice;
+                        buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    if (Bought != null)
+                    {
+                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        if (url.Equals("NoReceipt"))
+                        {
+                            string receipt = "";
+                            try
+                            {
+                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+
+                            }
+                            catch { }
+                            if (receipt != null)
+                            {
+                                Bought(this, url);
+                            }
+                            else
+                            {
+                                var messageDialog = new MessageDialog("No Receipt");
+                                var task = messageDialog.ShowAsync().AsTask();
+                            }
+                        }
+                        else
+                        {
+                            Bought(this, url);
+                        }
+                    }
+                    else
+                    {
+                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var task = messageDialog.ShowAsync().AsTask();
+                    }
+                }
+            }
+
+            try {
+
+                product = productListings["yearlysubscritpion"];
+
+            } catch { }
 
             if (product != null)
             {
@@ -83,7 +288,8 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 year: " + product.FormattedPrice;
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            subscribeBtn.Content = "Subscribe for 1 year: " + product.FormattedPrice;
                             subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -98,7 +304,8 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 year: " + product.FormattedPrice;
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            subscribeBtn.Content = "Subscribe for 1 year: " + product.FormattedPrice;
                             subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -184,7 +391,8 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 month: " + product.FormattedPrice;
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            subscribeBtn1.Content = "Subscribe for 1 month: " + product.FormattedPrice;
                             subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -199,7 +407,8 @@ namespace LibrelioApplication
                         }
                         else
                         {
-                            subscribeBtn.Content = "Subscribe to " + Application.Current.Resources["AppName"] + " for 1 month: " + product.FormattedPrice;
+                            noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            subscribeBtn1.Content = "Subscribe for 1 month: " + product.FormattedPrice;
                             subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -254,168 +463,24 @@ namespace LibrelioApplication
                 }
             }
 
-            try {
-                product = productListings[product_id];
-
-            } catch { }
-
-            if (product != null)
+            if (buyMag.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
             {
-                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
+                if (subscribeBtn.Visibility == Windows.UI.Xaml.Visibility.Visible)
                 {
-                    string receipt = "";
-                    try
-                    {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
-
-                    }
-                    catch { }
-                    if (receipt != "")
-                    {
-                        await DownloadManager.StoreReceiptAsync(product_id, receipt);
-                        var app = Application.Current as App;
-                        var url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
-                        if (!url.Equals("NoReceipt"))
-                        {
-                            Bought(this, url);
-                            return;
-                        }
-                        else
-                        {
-                            buyMag.Content = "Buy " + mag.Title + " for: " + product.FormattedPrice;
-                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        }
-                    }
-                    else
-                    {
-                        var app = Application.Current as App;
-                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
-                        if (!url.Equals("NoReceipt"))
-                        {
-                            Bought(this, url);
-                            return;
-                        }
-                        else
-                        {
-                            buyMag.Content = "Buy " + mag.Title + " for: " + product.FormattedPrice;
-                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                        }
-                    }
+                    subscribeBtn.Margin = new Thickness(0, 22, 0, 10);
+                }
+                else if (subscribeBtn1.Visibility == Windows.UI.Xaml.Visibility.Visible)
+                {
+                    subscribeBtn1.Margin = new Thickness(0, 22, 0, 10);
                 }
                 else
                 {
-                    if (Bought != null)
-                    {
-                        var app = Application.Current as App;
-                        var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
-                        if (url.Equals("NoReceipt"))
-                        {
-                            string receipt = "";
-                            try
-                            {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-
-                            }
-                            catch { }
-                            if (receipt != "")
-                            {
-                                await DownloadManager.StoreReceiptAsync(product_id, receipt);
-                                url = DownloadManager.GetUrl(product_id, receipt, relativePath, app.ClientName, app.MagazineName);
-                                if (!url.Equals("NoReceipt"))
-                                {
-                                    Bought(this, url);
-                                    return;
-                                }
-                                else
-                                {
-                                    var messageDialog = new MessageDialog("No Receipt");
-                                    var task = messageDialog.ShowAsync().AsTask();
-                                }
-                            }
-                            else
-                            {
-                                var messageDialog = new MessageDialog("No Receipt");
-                                var task = messageDialog.ShowAsync().AsTask();
-                            }
-                        }
-                        else
-                        {
-                            Bought(this, url);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        var messageDialog = new MessageDialog("Purchase successfull");
-                        var task = messageDialog.ShowAsync().AsTask();
-                    }
+                    noOptions.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 }
             }
 
-            if (product != null)
-            {
-                var app = Application.Current as App;
-                var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
-                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
-                {
-                    string receipt = "";
-                    try
-                    {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
-
-                    }
-                    catch { }
-                    if (receipt != "")
-                    {
-                        Bought(this, url);
-                    }
-                    else
-                    {
-                        buyMag.Content = "Buy " + mag.Title + " for: " + product.FormattedPrice;
-                        buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    }
-                }
-                else
-                {
-                    if (Bought != null)
-                    {
-                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        if (url.Equals("NoReceipt"))
-                        {
-                            string receipt = "";
-                            try
-                            {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-
-                            }
-                            catch { }
-                            if (receipt != null)
-                            {
-                                Bought(this, url);
-                            }
-                            else
-                            {
-                                var messageDialog = new MessageDialog("No Receipt");
-                                var task = messageDialog.ShowAsync().AsTask();
-                            }
-                        }
-                        else
-                        {
-                            Bought(this, url);
-                        }
-                    }
-                    else
-                    {
-                        var messageDialog = new MessageDialog("Purchase successfull");
-                        var task = messageDialog.ShowAsync().AsTask();
-                    }
-                }
-            }
-
-            statusContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //statusContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
         public Data.MagazineViewModel GetCurrentItem()
@@ -426,10 +491,10 @@ namespace LibrelioApplication
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            subscribeBtn.Content = "Subscribe";
-            subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            buyMag.Content = "";
-            buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //subscribeBtn.Content = "Subscribe";
+            //subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //buyMag.Content = "";
+            //buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
         private async void subscribeBtn_Click(object sender, RoutedEventArgs e)
@@ -609,6 +674,26 @@ namespace LibrelioApplication
                 var messageDialog = new MessageDialog("You already purchased this app");
                 var task = messageDialog.ShowAsync().AsTask();
             }
+        }
+
+        private void getSample_Click(object sender, RoutedEventArgs e)
+        {
+            GetSample(this, _item);
+            this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        }
+
+        private void open_Click(object sender, RoutedEventArgs e)
+        {
+            Open(this, _item);
+            this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        }
+
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+            open.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            delete.Margin = new Thickness(0, 25, 0, 0);
+            delete.Content = "Deleting ...";
+            Delete(this, _item);
         }
     }
 }

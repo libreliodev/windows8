@@ -334,8 +334,8 @@ namespace LibrelioApplication.Data
         private ImageSource _image = null;
         private int _rowSpan = 1;
         private int _colSpan = 1;
-        private int _width = 130;
-        private int _height = 265;
+        private int _width = 180;
+        private int _height = 238;
         public const string TAG_READ  = "READ";
         public const string TAG_DEL  = "DEL";
         public const string TAG_SAMPLE  = "SAMPLE";
@@ -428,8 +428,17 @@ namespace LibrelioApplication.Data
                 OnPropertyChanged("DownloadOrReadButton");
                 OnPropertyChanged("SampleOrDeleteButton");
                 OnPropertyChanged("IsDownloaded");
+                OnPropertyChanged("IsFree");
             }
         }
+        public bool IsFree
+        {
+            get
+            {
+                return !IsPaid && !IsDownloaded;
+            }
+        }
+
         public int Index { get; set; }
         public bool IsPaid { get; set; }
         public bool SecondButtonVisible { get; set; }
@@ -439,16 +448,17 @@ namespace LibrelioApplication.Data
             set
             {
                 _isOpening = value;
-                var resourceLoader = new ResourceLoader();
-                if (_isOpening)
-                {
-                    DownloadOrReadButton = resourceLoader.GetString("opening");
-                }
-                else
-                {
-                    DownloadOrReadButton = resourceLoader.GetString("read");
-                }
-                OnPropertyChanged("DownloadOrReadButton");
+                OnPropertyChanged("IsOpening");
+                //var resourceLoader = new ResourceLoader();
+                //if (_isOpening)
+                //{
+                //    DownloadOrReadButton = resourceLoader.GetString("opening");
+                //}
+                //else
+                //{
+                //    DownloadOrReadButton = resourceLoader.GetString("read");
+                //}
+                //OnPropertyChanged("DownloadOrReadButton");
             }
         }
         public String FileName { get; set; }
@@ -523,8 +533,8 @@ namespace LibrelioApplication.Data
                 Thumbnail = Thumbnail.Replace(".png", "_newsstand.png");
                 PngFile = PngFile.Replace(".png", "_newsstand.png");
                 PngUrl = PngUrl.Replace(".png", "_newsstand.png");
-                _width += 10 * ColSpan;
-                _height += 10 * RowSpan;
+                _width += 10;// *ColSpan;
+                _height += 10;// *RowSpan;
             }
             //if (img != null)
             //{
@@ -613,8 +623,8 @@ namespace LibrelioApplication.Data
 
             ColSpan = colSpan;
             RowSpan = rowSpan;
-            var w= 130;
-            var h = 265;
+            var w= 180;
+            var h = 238;
             w *= ColSpan;
             h *= RowSpan;
             if (ColSpan > 1 && RowSpan > 1)
@@ -622,8 +632,8 @@ namespace LibrelioApplication.Data
                 Thumbnail = Thumbnail.Replace(".png", "_newsstand.png");
                 PngFile = PngFile.Replace(".png", "_newsstand.png");
                 PngUrl = PngUrl.Replace(".png", "_newsstand.png");
-                w += 10 * ColSpan;
-                h += 10 * RowSpan;
+                w += 10;// * ColSpan;
+                h += 10;// * RowSpan;
             }
             if (w != Width || h != Height)
             {

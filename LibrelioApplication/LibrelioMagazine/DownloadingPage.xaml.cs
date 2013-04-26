@@ -91,7 +91,8 @@ namespace LibrelioApplication
 
                 var url = item.url;
 
-                magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                LoadSnappedSource();
+                //magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
                 try
@@ -156,14 +157,35 @@ namespace LibrelioApplication
             }
             else
             {
-                string s = navigationParameter as string;
-                if (s == "test")
+                //string s = navigationParameter as string;
+                //if (s == "test")
+                //{
+                //    testView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                //}
+                //else
+                //{
+                //    needtoGoBack = true;
+                //}
+            }
+        }
+
+        private void LoadSnappedSource()
+        {
+            var app = Application.Current as App;
+            if (app.NoMagazines)
+            {
+                itemListView.ItemsSource = app.snappedCollection;
+            }
+            else
+            {
+                snappedView.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+                noMagazineSnapped.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                titleSnapped.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                snappedGridView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                if (app.snappedCollection.Count != 0)
                 {
-                    testView.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                }
-                else
-                {
-                    needtoGoBack = true;
+                    snappedGridView.ItemsSource = app.snappedCollection;
                 }
             }
         }
@@ -444,7 +466,7 @@ namespace LibrelioApplication
             {
                 if (url.FullName == item.FullName)
                 {
-                    magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    //magList.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     downloadView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
                     var folder = await app.Manager.AddMagazineFolderStructure(url);
@@ -500,8 +522,8 @@ namespace LibrelioApplication
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            testView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            magList.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //testView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            //magList.Visibility = Windows.UI.Xaml.Visibility.Visible;
             try
             {
                 //manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/" + app.ClientName + "/" + app.MagazineName + "/", "Magazines");
@@ -522,36 +544,36 @@ namespace LibrelioApplication
             }
         }
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            //var url = urlBox.Text;
-            var url = "http://download.librelio.com/downloads/win8_verify.php";
-            testOutput.Text = "Wait";
+        //private async void Button_Click_2(object sender, RoutedEventArgs e)
+        //{
+        //    //var url = urlBox.Text;
+        //    var url = "http://download.librelio.com/downloads/win8_verify.php";
+        //    testOutput.Text = "Wait";
 
-            string str = "";
-            var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
-            using (var stream = await file.OpenAsync(FileAccessMode.Read))
-            {
-                var dataReader = new DataReader(stream.GetInputStreamAt(0));
+        //    string str = "";
+        //    var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+        //    using (var stream = await file.OpenAsync(FileAccessMode.Read))
+        //    {
+        //        var dataReader = new DataReader(stream.GetInputStreamAt(0));
 
-                dataReader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-                var size = await dataReader.LoadAsync((uint)stream.Size);
-                var receipt = dataReader.ReadString(size);
+        //        dataReader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+        //        var size = await dataReader.LoadAsync((uint)stream.Size);
+        //        var receipt = dataReader.ReadString(size);
 
-                receipt = Uri.EscapeDataString(receipt);
-                var productId = "wind_358_";
-                url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/wind_358/wind_358_.pdf";
-                try
-                {
-                    str = await new HttpClient().GetAsync(url).Result.Content.ReadAsStringAsync();
-                    testOutput.Text = str;
-                }
-                catch
-                {
-                    testOutput.Text = "error";
-                }
-            }
-        }
+        //        receipt = Uri.EscapeDataString(receipt);
+        //        var productId = "wind_358_";
+        //        url += "?receipt=" + receipt + "&product_id=" + productId + "&urlstring=" + "niveales/wind/wind_358/wind_358_.pdf";
+        //        try
+        //        {
+        //            str = await new HttpClient().GetAsync(url).Result.Content.ReadAsStringAsync();
+        //            testOutput.Text = str;
+        //        }
+        //        catch
+        //        {
+        //            testOutput.Text = "error";
+        //        }
+        //    }
+        //}
 
         private void NavBack(object sender, RoutedEventArgs e)
         {
@@ -562,12 +584,12 @@ namespace LibrelioApplication
 
         private void Grid_SizeChanged_1(object sender, SizeChangedEventArgs e)
         {
-            if (ApplicationView.Value == ApplicationViewState.Snapped)
-            {
-                if (cts != null) cts.Cancel();
-                if (this.Frame.CanGoBack)
-                    this.Frame.GoBack();
-            }
+            //if (ApplicationView.Value == ApplicationViewState.Snapped)
+            //{
+            //    if (cts != null) cts.Cancel();
+            //    if (this.Frame.CanGoBack)
+            //        this.Frame.GoBack();
+            //}
         }
     }
 }

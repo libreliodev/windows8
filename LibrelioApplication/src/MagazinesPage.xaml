@@ -54,13 +54,15 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}" Loaded="Grid_Loaded_1" >
+    <Grid x:Name="root"  Style="{StaticResource LayoutRootStyle}" Loaded="Grid_Loaded_1">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        
+        <Grid.Background>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="/CustomizationAssets/gridbackground.png" Stretch="UniformToFill"/>
+        </Grid.Background>   
 
         <!-- Horizontal scrolling grid used in most view states -->
         <!--ItemTemplate="{StaticResource Standard250x400ItemTemplate}"-->
@@ -70,30 +72,55 @@
             AutomationProperties.Name="Items"
             TabIndex="1"
             Grid.RowSpan="2"
-            Padding="116,123,116,30"
+            Padding="116,90,30,30"
             ItemsSource="{Binding Source={StaticResource groupedItemsViewSource}}"
-            
+            ScrollViewer.HorizontalScrollBarVisibility="Hidden"
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged">
+            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" VerticalAlignment="Center">
             <common:VariableGridView.ItemTemplate>
                     <DataTemplate >
                     <!--<Grid HorizontalAlignment="Left" Width="130" Height="265" Tag="{Binding MagazineTag}" Margin="5" >-->
-                    <Grid HorizontalAlignment="Left" Width="{Binding Width}" Height="{Binding Height}" Tag="{Binding MagazineTag}" Margin="5">
-                        <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0,50,0,70">
-                                <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="{Binding Width}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
+                    <Grid HorizontalAlignment="Left" Tag="{Binding MagazineTag}" Margin="2">
+                        <Rectangle Fill="#88000000" Margin="2,2,-2,-2" />
+                        
+                        <Border Background="#AAFFFFFF" Margin="0">
+                            <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" Width="{Binding Width}" Height="{Binding Height}" />
+                        </Border>
+                        <!--<StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" Visibility="Collapsed">
                                 <TextBlock Text="{Binding Title}" Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource TitleTextStyle}" Margin="0" TextAlignment="Center" LineHeight="18"/>
                                 <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap" Margin="0,0,0,10" TextAlignment="Center" LineHeight="18"/>
                             </StackPanel>
-                            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" >
+                            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}" Visibility="Collapsed">
                             <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="35" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding DownloadOrReadButton}"  Tag="{Binding Button1Tag}" Name="DownloadOrReadButton" Click="Button_Click_1" FontSize="12" BorderThickness="1"/>
                             <Button Foreground="{StaticResource ListViewItemOverlayForegroundThemeBrush}" Height="35" Margin="0,0,0,0" HorizontalAlignment="Stretch" Content="{Binding SampleOrDeleteButton}" Tag="{Binding Button2Tag}" Name="SampleOrDeleteButton" Click="Button_Click_2" BorderThickness="1"
                                     Visibility="{Binding SecondButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                            </StackPanel>
+                            </StackPanel>-->
+                        <Rectangle Margin="0" HorizontalAlignment="Left" Width="10">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <LinearGradientBrush.RelativeTransform>
+                                        <CompositeTransform CenterY="0.5" CenterX="0.5" Rotation="270"/>
+                                    </LinearGradientBrush.RelativeTransform>
+                                    <GradientStop Color="Black" Offset="0.061"/>
+                                    <GradientStop Color="#00000000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+
+                        <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                               Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Image Source="/CustomizationAssets/cornerfree1.png" Stretch="Fill" Width="45" Height="45" Margin="0,0,0,-2" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                               Visibility="{Binding IsFree, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Image Source="/CustomizationAssets/cornerfree2.png" Stretch="Fill" Width="45" Height="46" Margin="0,-5,-5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                               Visibility="{Binding IsFree, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <Grid Background="#99FFFFFF" Visibility="{Binding IsOpening, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" Height="30" Foreground="Black" IsActive="{Binding IsOpening}"/>
                         </Grid>
+                        
+                    </Grid>
                     </DataTemplate>
 
             </common:VariableGridView.ItemTemplate>
@@ -118,7 +145,7 @@
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.Panel>
                         <ItemsPanelTemplate>
-                            <VariableSizedWrapGrid Orientation="Vertical" ItemWidth="150" ItemHeight="285" Margin="0,0,80,0" />
+                            <VariableSizedWrapGrid Orientation="Vertical" ItemWidth="194" ItemHeight="250" Margin="0,0,80,0" MaximumRowsOrColumns="2"/>
                         </ItemsPanelTemplate>
                     </GroupStyle.Panel>
                 </GroupStyle>
@@ -228,6 +255,19 @@
                             <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Margin="0">
                                 <Image Source="{Binding Image}" Stretch="Fill" AutomationProperties.Name="{Binding Title}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>
+                            <Rectangle Margin="0" HorizontalAlignment="Left" Width="7">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <CompositeTransform CenterY="0.5" CenterX="0.5" Rotation="270"/>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="Black" Offset="0.061"/>
+                                        <GradientStop Color="#00000000" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                       Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
                     </DataTemplate>
                 </GridView.ItemTemplate>
@@ -276,6 +316,10 @@
                 -->
                 <VisualState x:Name="Snapped">
                     <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ApplicationPageBackgroundThemeBrush}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="backButton" Storyboard.TargetProperty="Style">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnappedBackButtonStyle}"/>
                         </ObjectAnimationUsingKeyFrames>

@@ -660,7 +660,7 @@ namespace LibrelioApplication
         {
             get
             {
-                return FolderPath != "ND" && !IsSampleDownloaded;
+                return FolderPath != "ND";// && !IsSampleDownloaded;
             }
         }
     }

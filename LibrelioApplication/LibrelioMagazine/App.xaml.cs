@@ -22,6 +22,7 @@ using System.Xml.Linq;
 using Windows.Networking.BackgroundTransfer;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -38,6 +39,8 @@ namespace LibrelioApplication
         public bool needToDownload = false;
         public string ClientName = "";
         public string MagazineName = "";
+        public bool NoMagazines = false;
+        public ObservableCollection<Data.MagazineViewModel> snappedCollection = null;
 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code

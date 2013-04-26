@@ -201,6 +201,9 @@
     <Content Include="Assets\WideLogo.scale-180.png" />
     <Content Include="Assets\WideLogo.scale-80.png" />
     <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\cornerdownloaded.png" />
+    <Content Include="CustomizationAssets\cornerfree1.png" />
+    <Content Include="CustomizationAssets\cornerfree2.png" />
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
     <Content Include="CustomizationAssets\Covers\wind_355.png" />
     <Content Include="CustomizationAssets\Covers\wind_356.png" />
@@ -219,6 +222,7 @@
     <Content Include="CustomizationAssets\Covers\wind_372.png" />
     <Content Include="CustomizationAssets\Covers\wind_373.png" />
     <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
+    <Content Include="CustomizationAssets\gridbackground.png" />
     <Content Include="CustomizationAssets\icon.scale-100.png" />
     <Content Include="CustomizationAssets\Magazines.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

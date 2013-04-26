@@ -512,6 +512,8 @@ namespace LibrelioApplication
         // Load pdf pages once the container is loaded
         private async void pagesListView_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadSnappedSource();
+
             var buffer = await GetPDFFileData();
             if (buffer == null) return;
 
@@ -535,6 +537,27 @@ namespace LibrelioApplication
             {
                 await LoadThumbsAsync();
             });
+        }
+
+        private void LoadSnappedSource()
+        {
+            var app = Application.Current as App;
+            if (app.NoMagazines)
+            {
+                itemListView.ItemsSource = app.snappedCollection;
+            }
+            else
+            {
+                snappedView.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
+                noMagazineSnapped.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                titleSnapped.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                snappedGridView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                if (app.snappedCollection.Count != 0)
+                {
+                    snappedGridView.ItemsSource = app.snappedCollection;
+                }
+            }
         }
 
         void embdedFrame_Navigated(object sender, NavigationEventArgs e)
@@ -2187,12 +2210,12 @@ namespace LibrelioApplication
 
         private void pageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ApplicationView.Value == ApplicationViewState.Snapped)
-            {
-                if (this.Frame.CanGoBack)
-                    this.Frame.GoBack();
-                return;
-            }
+            //if (ApplicationView.Value == ApplicationViewState.Snapped)
+            //{
+            //    if (this.Frame.CanGoBack)
+            //        this.Frame.GoBack();
+            //    return;
+            //}
 
             if (pages.Count > 0)
             {
