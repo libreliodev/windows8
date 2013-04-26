@@ -204,6 +204,9 @@
     <Content Include="CustomizationAssets\cornerdownloaded.png" />
     <Content Include="CustomizationAssets\cornerfree1.png" />
     <Content Include="CustomizationAssets\cornerfree2.png" />
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
     <Content Include="CustomizationAssets\Covers\wind_355.png" />
     <Content Include="CustomizationAssets\Covers\wind_356.png" />
