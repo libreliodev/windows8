@@ -231,6 +231,11 @@
     <Content Include="CustomizationAssets\SmallLogo.scale-140.png" />
     <Content Include="CustomizationAssets\SmallLogo.scale-180.png" />
     <Content Include="CustomizationAssets\SmallLogo.scale-80.png" />
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="CustomizationAssets\icon.png" />
+    <Content Include="CustomizationAssets\SmallLogo.png" />
     <Content Include="CustomizationAssets\startup_background.png" />
     <Content Include="CustomizationAssets\startup_background.scale-100.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
