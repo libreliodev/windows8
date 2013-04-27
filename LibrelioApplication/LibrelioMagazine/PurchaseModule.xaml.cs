@@ -204,67 +204,7 @@ namespace LibrelioApplication
                 }
             }
 
-            if (product != null)
-            {
-                var app = Application.Current as App;
-                var url = await DownloadManager.GetUrl(product_id, relativePath, app.ClientName, app.MagazineName);
-                if (!licenseInformation.ProductLicenses[product.ProductId].IsActive)
-                {
-                    string receipt = "";
-                    try
-                    {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-                        receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
-
-                    }
-                    catch { }
-                    if (receipt != "")
-                    {
-                        Bought(this, url);
-                    }
-                    else
-                    {
-                        noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        buyMag.Text = "Buy this number for: " + product.FormattedPrice;
-                        buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    }
-                }
-                else
-                {
-                    if (Bought != null)
-                    {
-                        this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        if (url.Equals("NoReceipt"))
-                        {
-                            string receipt = "";
-                            try
-                            {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
-
-                            }
-                            catch { }
-                            if (receipt != null)
-                            {
-                                Bought(this, url);
-                            }
-                            else
-                            {
-                                var messageDialog = new MessageDialog("No Receipt");
-                                var task = messageDialog.ShowAsync().AsTask();
-                            }
-                        }
-                        else
-                        {
-                            Bought(this, url);
-                        }
-                    }
-                    else
-                    {
-                        var messageDialog = new MessageDialog("Purchase successfull");
-                        var task = messageDialog.ShowAsync().AsTask();
-                    }
-                }
-            }
+            product = null;
 
             try {
 
@@ -367,6 +307,8 @@ namespace LibrelioApplication
                     }
                 }
             }
+
+            product = null;
 
             try {
                 product = productListings["monthlysubscription"];

@@ -212,6 +212,7 @@ namespace LibrelioApplication
             StatusText = "Download in progress";
 
             var stream = await DownloadPDFAsync(magUrl, folder, isd, progress, cancelToken);
+            if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
@@ -233,6 +234,7 @@ namespace LibrelioApplication
             StatusText = "Download in progress";
 
             var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
+            if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
@@ -258,6 +260,7 @@ namespace LibrelioApplication
             magUrl.AbsoluteUrl = redirectUrl;
             var stream = await DownloadPDFAsync(magUrl, folder, isd, progress, cancelToken);
             magUrl.AbsoluteUrl = tmpUrl;
+            if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
@@ -282,6 +285,7 @@ namespace LibrelioApplication
             magUrl.Url = redirectUrl;
             var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
             magUrl.Url = tmpUrl;
+            if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
@@ -372,6 +376,9 @@ namespace LibrelioApplication
             await HandleDownloadAsync(download, true, progress, cancelToken);
 
             progress.Report(100);
+
+            if (cancelToken.IsCancellationRequested)
+                return null;
 
             var stream = await download.ResultFile.OpenAsync(FileAccessMode.ReadWrite);
             var returnStream = new InMemoryRandomAccessStream();

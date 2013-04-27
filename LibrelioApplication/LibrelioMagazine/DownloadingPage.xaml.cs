@@ -127,6 +127,7 @@ namespace LibrelioApplication
 
                         stream = await app.Manager.DownloadMagazineAsync(url, item.redirectUrl, folder, item.IsSampleDownloaded, progressIndicator, cts.Token);
                     }
+                    if (stream == null) return;
                     statusText.Text = "Done.";
                     await app.Manager.MarkAsDownloaded(url, folder, item.IsSampleDownloaded);
                     await Task.Delay(1000);
@@ -487,6 +488,7 @@ namespace LibrelioApplication
                     try
                     {
                         var stream = await app.Manager.DownloadMagazineAsync(url, folder, false, progressIndicator, cts.Token);
+                        if (stream == null) return;
                         statusText.Text = "Done.";
                         await app.Manager.MarkAsDownloaded(url, folder, false);
                         await Task.Delay(1000);
