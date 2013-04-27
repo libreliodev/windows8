@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_010/horizons_010.pdf</string>
+		<key>IssueDate</key>
+		<string>Janv - Fév 2013</string>
+		<key>Title</key>
+		<string>Horizons Monde 10</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_009/horizons_009.pdf</string>
+		<key>IssueDate</key>
+		<string>01-10-2012</string>
+		<key>Title</key>
+		<string>Horizons Monde 9</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_008/horizons_008.pdf</string>
+		<key>IssueDate</key>
+		<string>01-08-2012</string>
+		<key>Title</key>
+		<string>Horizons Monde 8</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_007/horizons_007.pdf</string>
+		<key>IssueDate</key>
+		<string>01-05-2012</string>
+		<key>Title</key>
+		<string>Horizons Monde 7</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_006/horizons_006.pdf</string>
+		<key>IssueDate</key>
+		<string>01-04-2012</string>
+		<key>Title</key>
+		<string>Horizons Monde 6</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_005/horizons_005.pdf</string>
+		<key>Title</key>
+		<string>Horizons Monde 5</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_004/horizons_004.pdf</string>
+		<key>Title</key>
+		<string>Horizons Monde 4</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_003/horizons_003.pdf</string>
+		<key>Title</key>
+		<string>Horizons Monde 3</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_002/horizons_002.pdf</string>
+		<key>Title</key>
+		<string>Horizons Monde 2</string>
+	</dict>
+	<dict>
+		<key>Author</key>
+		<string></string>
+		<key>FileName</key>
+		<string>horizons_001/horizons_001.pdf</string>
+		<key>Title</key>
+		<string>Horizons Monde 1</string>
+	</dict>
+</array>
+</plist>
