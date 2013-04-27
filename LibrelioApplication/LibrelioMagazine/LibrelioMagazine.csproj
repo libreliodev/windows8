@@ -185,6 +185,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="Assets\buy.png" />
+    <Content Include="Assets\buyinvert.png" />
     <Content Include="Assets\firstpge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -201,6 +203,7 @@
     <Content Include="Assets\WideLogo.scale-180.png" />
     <Content Include="Assets\WideLogo.scale-80.png" />
     <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\cornerdownloaded.png" />
     <Content Include="CustomizationAssets\cornerfree1.png" />
     <Content Include="CustomizationAssets\cornerfree2.png" />
@@ -222,26 +225,11 @@
     <Content Include="CustomizationAssets\Covers\wind_372.png" />
     <Content Include="CustomizationAssets\Covers\wind_373.png" />
     <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
-    <Content Include="CustomizationAssets\gridbackground.png" />
     <Content Include="CustomizationAssets\icon.scale-100.png" />
-    <Content Include="CustomizationAssets\Magazines.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CustomizationAssets\SmallLogo.scale-100.png" />
-    <Content Include="CustomizationAssets\SmallLogo.scale-140.png" />
-    <Content Include="CustomizationAssets\SmallLogo.scale-180.png" />
-    <Content Include="CustomizationAssets\SmallLogo.scale-80.png" />
-    <Content Include="CustomizationAssets\application_.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="CustomizationAssets\icon.png" />
-    <Content Include="CustomizationAssets\SmallLogo.png" />
-    <Content Include="CustomizationAssets\startup_background.png" />
+    <Content Include="CustomizationAssets\logo.scale-100.png" />
     <Content Include="CustomizationAssets\startup_background.scale-100.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
-    <Content Include="CustomizationAssets\WideLogo.scale-140.png" />
-    <Content Include="CustomizationAssets\WideLogo.scale-180.png" />
-    <Content Include="CustomizationAssets\WideLogo.scale-80.png" />
     <Page Include="DownloadingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -379,7 +367,6 @@
       <Link>Assets\MediumGray.png</Link>
     </Content>
     <Content Include="Assets\icon.png" />
-    <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\startup_background.png" />
     <Content Include="Assets\StoreLogo.png" />
   </ItemGroup>
@@ -395,6 +382,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CustomizationAssets\Magazines.plist">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="LibrelioMagazine_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

@@ -61,7 +61,7 @@
         </Grid.RowDefinitions>
 
         <Grid.Background>
-            <ImageBrush x:Name="backgroundGrid" ImageSource="/CustomizationAssets/gridbackground.png" Stretch="UniformToFill"/>
+            <ImageBrush x:Name="backgroundGrid" ImageSource="/CustomizationAssets/background.png" Stretch="UniformToFill"/>
         </Grid.Background>   
 
         <!-- Horizontal scrolling grid used in most view states -->

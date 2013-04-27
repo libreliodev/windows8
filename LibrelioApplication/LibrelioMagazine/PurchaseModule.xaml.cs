@@ -53,14 +53,14 @@ namespace LibrelioApplication
                 _item = mag;
 
                 noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                getSample.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-                open.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                delete.Content = "Delete";
-                delete.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                openContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                delete.Text = "Delete";
+                deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
                 if (_item.IsSampleDownloaded)
                     subtitle.Text += " SAMPLE";
@@ -71,9 +71,15 @@ namespace LibrelioApplication
             }
 
             if (mag.IsSampleDownloaded)
-                getSample.Content = "Open sample";
+            {
+                getSample.Text = "Open sample";
+                getSampleButton.Content = "\xe16f";
+            }
             else
-                getSample.Content = "Download sample";
+            {
+                getSample.Text = "Download sample";
+                getSampleButton.Content = "\xe118";
+            }
 
             _item = mag;
             product_id = mag.FileName.Replace(".pdf", "");
@@ -86,12 +92,12 @@ namespace LibrelioApplication
             
             //statusContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
             //buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            getSample.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            open.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            delete.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
             this.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
@@ -127,8 +133,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            buyMag.Content = "Buy this number for: " + product.FormattedPrice;
-                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            buyMag.Text = "Buy this number for: " + product.FormattedPrice;
+                            buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                     else
@@ -143,8 +149,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            buyMag.Content = "Buy this number for: " + product.FormattedPrice;
-                            buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            buyMag.Text = "Buy this number for: " + product.FormattedPrice;
+                            buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                 }
@@ -219,8 +225,8 @@ namespace LibrelioApplication
                     else
                     {
                         noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                        buyMag.Content = "Buy this number for: " + product.FormattedPrice;
-                        buyMag.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        buyMag.Text = "Buy this number for: " + product.FormattedPrice;
+                        buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                     }
                 }
                 else
@@ -289,8 +295,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn.Content = "Subscribe for 1 year: " + product.FormattedPrice;
-                            subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            subscribeBtn.Text = "Subscribe for 1 year: " + product.FormattedPrice;
+                            subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                     else 
@@ -305,8 +311,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn.Content = "Subscribe for 1 year: " + product.FormattedPrice;
-                            subscribeBtn.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            subscribeBtn.Text = "Subscribe for 1 year: " + product.FormattedPrice;
+                            subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                 }
@@ -392,8 +398,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn1.Content = "Subscribe for 1 month: " + product.FormattedPrice;
-                            subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            subscribeBtn1.Text = "Subscribe for 1 month: " + product.FormattedPrice;
+                            subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                     else
@@ -408,8 +414,8 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn1.Content = "Subscribe for 1 month: " + product.FormattedPrice;
-                            subscribeBtn1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                            subscribeBtn1.Text = "Subscribe for 1 month: " + product.FormattedPrice;
+                            subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
                 }
@@ -463,15 +469,15 @@ namespace LibrelioApplication
                 }
             }
 
-            if (buyMag.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
+            if (buyMagContainer.Visibility == Windows.UI.Xaml.Visibility.Collapsed)
             {
-                if (subscribeBtn.Visibility == Windows.UI.Xaml.Visibility.Visible)
+                if (subscribeBtnContainer.Visibility == Windows.UI.Xaml.Visibility.Visible)
                 {
-                    subscribeBtn.Margin = new Thickness(0, 22, 0, 10);
+                    //subscribeBtnContainer.Margin = new Thickness(0, 22, 0, 10);
                 }
-                else if (subscribeBtn1.Visibility == Windows.UI.Xaml.Visibility.Visible)
+                else if (subscribeBtn1Container.Visibility == Windows.UI.Xaml.Visibility.Visible)
                 {
-                    subscribeBtn1.Margin = new Thickness(0, 22, 0, 10);
+                    //subscribeBtn1.Margin = new Thickness(0, 22, 0, 10);
                 }
                 else
                 {
@@ -648,7 +654,7 @@ namespace LibrelioApplication
                     if (DownloadManager.ReceiptExpired(receipt)) return;
                     // =================================================
 
-                    buyMag.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     if (Bought != null)
                     {
                         var app = Application.Current as App;
@@ -690,9 +696,9 @@ namespace LibrelioApplication
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-            open.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            delete.Margin = new Thickness(0, 25, 0, 0);
-            delete.Content = "Deleting ...";
+            openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            deleteContainer.Margin = new Thickness(0, 25, 0, 0);
+            delete.Text = "Deleting ...";
             Delete(this, _item);
         }
     }

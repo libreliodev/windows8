@@ -4,7 +4,7 @@
   <Properties>
     <DisplayName>LibrelioMagazine</DisplayName>
     <PublisherDisplayName>voyager</PublisherDisplayName>
-    <Logo>Assets\icon1.png</Logo>
+    <Logo>CustomizationAssets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
     <OSMinVersion>6.2.1</OSMinVersion>
@@ -15,13 +15,13 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
-      <VisualElements DisplayName="ms-resource:app_name" Logo="CustomizationAssets\icon.png" SmallLogo="CustomizationAssets\SmallLogo.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="red">
-        <DefaultTile ShowName="logoOnly" WideLogo="CustomizationAssets\WideLogo.png" />
+      <VisualElements DisplayName="ms-resource:app_name" Logo="CustomizationAssets\logo.png" SmallLogo="CustomizationAssets\icon.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="#ff0000">
+        <DefaultTile ShowName="noLogos" WideLogo="CustomizationAssets\WideLogo.png" />
         <SplashScreen Image="CustomizationAssets\startup_background.png" />
       </VisualElements>
       <Extensions>
         <Extension Category="windows.fileTypeAssociation">
-          <FileTypeAssociation Name="test">
+          <FileTypeAssociation Name="ext">
             <SupportedFileTypes>
               <FileType>.metadata</FileType>
               <FileType>.pdf</FileType>
@@ -30,6 +30,7 @@
               <FileType>.png</FileType>
               <FileType>.mp4</FileType>
               <FileType>.pmd</FileType>
+              <FileType>.plist</FileType>
             </SupportedFileTypes>
           </FileTypeAssociation>
         </Extension>
