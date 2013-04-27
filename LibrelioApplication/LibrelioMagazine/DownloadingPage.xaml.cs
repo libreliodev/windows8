@@ -27,6 +27,7 @@ using Windows.ApplicationModel.Store;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
+using Windows.ApplicationModel.Resources;
 
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -79,6 +80,7 @@ namespace LibrelioApplication
         protected override async void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             var app = Application.Current as App;
+            var loader = new ResourceLoader();
             if (app.needToDownload == false) { needtoGoBack = true; return; }
 
             app.needToDownload = false;
@@ -87,7 +89,7 @@ namespace LibrelioApplication
 
             if (item != null)
             {
-                statusText.Text = "Download in progress";
+                statusText.Text = loader.GetString("download_progress");
 
                 var url = item.url;
 
@@ -106,9 +108,9 @@ namespace LibrelioApplication
                     catch { }
                     if (bitmap == null)
                     {
-                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var messageDialog = new MessageDialog(loader.GetString("download_failed"));
                         var commands = new List<UICommand>();
-                        var close = new UICommand("Close");
+                        var close = new UICommand(loader.GetString("close"));
                         close.Invoked = closeCommandHandler; 
                         messageDialog.Commands.Clear();
                         messageDialog.Commands.Add(close);
@@ -138,7 +140,7 @@ namespace LibrelioApplication
                         stream = await app.Manager.DownloadMagazineAsync(url, item.redirectUrl, folder, item.IsSampleDownloaded, progressIndicator, cts.Token);
                     }
                     if (stream == null) return;
-                    statusText.Text = "Done.";
+                    statusText.Text = loader.GetString("done");
                     await app.Manager.MarkAsDownloaded(url, folder, item.IsSampleDownloaded);
                     await Task.Delay(1000);
 
@@ -150,9 +152,9 @@ namespace LibrelioApplication
                     statusText.Text = "Error";
                     if (ex.Message == "Response status code does not indicate success: 403 (Forbidden).")
                     {
-                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var messageDialog = new MessageDialog(loader.GetString("download_failed"));
                         var commands = new List<UICommand>();
-                        var close = new UICommand("Close");
+                        var close = new UICommand(loader.GetString("close"));
                         close.Invoked = closeCommandHandler;
                         messageDialog.Commands.Clear();
                         messageDialog.Commands.Add(close);
@@ -161,9 +163,9 @@ namespace LibrelioApplication
                     }
                     else if (ex.Message == "The operation was canceled.")
                     {
-                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var messageDialog = new MessageDialog(loader.GetString("download_failed"));
                         var commands = new List<UICommand>();
-                        var close = new UICommand("Close");
+                        var close = new UICommand(loader.GetString("close"));
                         close.Invoked = closeCommandHandler;
                         messageDialog.Commands.Clear();
                         messageDialog.Commands.Add(close);
@@ -174,7 +176,7 @@ namespace LibrelioApplication
                     {
                         var messageDialog = new MessageDialog("Unexpected error");
                         var commands = new List<UICommand>();
-                        var close = new UICommand("Close");
+                        var close = new UICommand(loader.GetString("close"));
                         close.Invoked = closeCommandHandler;
                         messageDialog.Commands.Clear();
                         messageDialog.Commands.Add(close);
@@ -495,7 +497,8 @@ namespace LibrelioApplication
         {
             Item item = (Item)e.ClickedItem;
 
-            statusText.Text = "Download in progress";
+            var loader = new ResourceLoader();
+            statusText.Text = loader.GetString("download_progress");
 
             var app = Application.Current as App;
             foreach (var url in app.Manager.MagazineUrl)
@@ -524,7 +527,7 @@ namespace LibrelioApplication
                     {
                         var stream = await app.Manager.DownloadMagazineAsync(url, folder, false, progressIndicator, cts.Token);
                         if (stream == null) return;
-                        statusText.Text = "Done.";
+                        statusText.Text = loader.GetString("done");
                         await app.Manager.MarkAsDownloaded(url, folder, false);
                         await Task.Delay(1000);
 
@@ -536,17 +539,34 @@ namespace LibrelioApplication
                         statusText.Text = "Error";
                         if (ex.Message == "Response status code does not indicate success: 403 (Forbidden).")
                         {
-                            var messageDialog = new MessageDialog("This is a paid app. You need to purchase it first");
+                            var messageDialog = new MessageDialog(loader.GetString("download_failed"));
+                            var commands = new List<UICommand>();
+                            var close = new UICommand(loader.GetString("close"));
+                            close.Invoked = closeCommandHandler;
+                            messageDialog.Commands.Clear();
+                            messageDialog.Commands.Add(close);
                             var task = messageDialog.ShowAsync().AsTask();
                             return;
                         }
                         else if (ex.Message == "The operation was canceled.")
                         {
-                            int x = 0;
+                            var messageDialog = new MessageDialog(loader.GetString("download_failed"));
+                            var commands = new List<UICommand>();
+                            var close = new UICommand(loader.GetString("close"));
+                            close.Invoked = closeCommandHandler;
+                            messageDialog.Commands.Clear();
+                            messageDialog.Commands.Add(close);
+                            var task = messageDialog.ShowAsync().AsTask();
+                            return;
                         }
                         else
                         {
                             var messageDialog = new MessageDialog("Unexpected error");
+                            var commands = new List<UICommand>();
+                            var close = new UICommand(loader.GetString("close"));
+                            close.Invoked = closeCommandHandler;
+                            messageDialog.Commands.Clear();
+                            messageDialog.Commands.Add(close);
                             var task = messageDialog.ShowAsync().AsTask();
                             return;
                         }

@@ -16,6 +16,7 @@ using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml;
 using Windows.Graphics.Imaging;
 using MuPDFWinRT;
+using Windows.ApplicationModel.Resources;
 
 
 namespace LibrelioApplication
@@ -209,14 +210,15 @@ namespace LibrelioApplication
 
         public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
-            StatusText = "Download in progress";
+            var loader = new ResourceLoader();
+            StatusText = loader.GetString("download_progress");
 
             var stream = await DownloadPDFAsync(magUrl, folder, isd, progress, cancelToken);
             if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
-            StatusText = "Downloading 2/" + (links.Count+1);
+            StatusText = loader.GetString("downloading") + " 2/" + (links.Count + 1);
             var url = DownloadManager.ConvertToLocalUrl(magUrl, folder, isd);
 
             if (url != null)
@@ -224,21 +226,22 @@ namespace LibrelioApplication
                 await DownloadPDFAssetsAsync(url, links, progress, cancelToken);
             }
 
-            StatusText = "Done";
+            StatusText = loader.GetString("done");
 
             return stream;
         }
 
         public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioLocalUrl magUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
-            StatusText = "Download in progress";
+            var loader = new ResourceLoader();
+            StatusText = loader.GetString("download_progress");
 
             var stream = await DownloadPDFAsync(magUrl, folder, progress, cancelToken);
             if (stream == null || cancelToken.IsCancellationRequested) return null;
 
             await GetUrlsFromPDF(stream);
 
-            StatusText = "Downloading 2/" + (links.Count + 1);
+            StatusText = loader.GetString("downloading") + " 2/" + (links.Count + 1);
             magUrl.FolderPath = folder.Path + "\\";
             //var url = DownloadManager.ConvertToLocalUrl(magUrl, folder);
 
@@ -247,14 +250,15 @@ namespace LibrelioApplication
                 await DownloadPDFAssetsAsync(magUrl, links, progress, cancelToken);
             }
 
-            StatusText = "Done";
+            StatusText = loader.GetString("done");
 
             return stream;
         }
 
         public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioUrl magUrl, string redirectUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
-            StatusText = "Download in progress";
+            var loader = new ResourceLoader();
+            StatusText = loader.GetString("download_progress");
 
             var tmpUrl = magUrl.AbsoluteUrl;
             magUrl.AbsoluteUrl = redirectUrl;
@@ -264,7 +268,7 @@ namespace LibrelioApplication
 
             await GetUrlsFromPDF(stream);
 
-            StatusText = "Downloading 2/" + (links.Count + 1);
+            StatusText = loader.GetString("downloading") + " 2/" + (links.Count + 1);
             var url = DownloadManager.ConvertToLocalUrl(magUrl, folder, isd);
 
             if (url != null)
@@ -272,14 +276,15 @@ namespace LibrelioApplication
                 await DownloadPDFAssetsAsync(url, links, progress, cancelToken);
             }
 
-            StatusText = "Done";
+            StatusText = loader.GetString("done");
 
             return stream;
         }
 
         public async Task<IRandomAccessStream> DownloadMagazineAsync(LibrelioLocalUrl magUrl, string redirectUrl, StorageFolder folder, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
-            StatusText = "Download in progress";
+            var loader = new ResourceLoader();
+            StatusText = loader.GetString("download_progress");
 
             var tmpUrl = magUrl.Url;
             magUrl.Url = redirectUrl;
@@ -289,14 +294,14 @@ namespace LibrelioApplication
 
             await GetUrlsFromPDF(stream);
 
-            StatusText = "Downloading 2/" + (links.Count + 1);
+            StatusText = loader.GetString("downloading") + " 2/" + (links.Count + 1);
 
             if (magUrl != null)
             {
                 await DownloadPDFAssetsAsync(magUrl, links, progress, cancelToken);
             }
 
-            StatusText = "Done";
+            StatusText = loader.GetString("done");
 
             return stream;
         }
@@ -915,7 +920,8 @@ namespace LibrelioApplication
 
             for (int i = 0; i < list.Count; i++)
             {
-                StatusText = "Downloading " + (i+2) + "/" + (list.Count+1);
+                var loader = new ResourceLoader();
+                StatusText = loader.GetString("downloading") + " " + (i + 2) + "/" + (list.Count + 1);
                 var url = list[i];
                 cancelToken.ThrowIfCancellationRequested();
 

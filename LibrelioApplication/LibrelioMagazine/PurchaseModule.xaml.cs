@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Popups;
 using LibrelioApplication.Data;
+using Windows.ApplicationModel.Resources;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -47,19 +48,22 @@ namespace LibrelioApplication
             thumbnail.Source = mag.Image;
             title.Text = mag.Title;
             subtitle.Text = mag.Subtitle;
+            var loader = new ResourceLoader();
 
             if (local)
             {
                 _item = mag;
 
                 noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                noOptions.Text = loader.GetString("no_options");
                 subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
+                open.Text = loader.GetString("read");
                 openContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                delete.Text = "Delete";
+                delete.Text = loader.GetString("delete");
                 deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
                 if (_item.IsSampleDownloaded)
@@ -72,12 +76,12 @@ namespace LibrelioApplication
 
             if (mag.IsSampleDownloaded)
             {
-                getSample.Text = "Open sample";
+                getSample.Text = loader.GetString("open_sample");
                 getSampleButton.Content = "\xe16f";
             }
             else
             {
-                getSample.Text = "Download sample";
+                getSample.Text = loader.GetString("download_sample");
                 getSampleButton.Content = "\xe118";
             }
 
@@ -133,7 +137,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            buyMag.Text = "Buy this number for: " + product.FormattedPrice;
+                            buyMag.Text = loader.GetString("buy_number") + " " + product.FormattedPrice;
                             buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -149,7 +153,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            buyMag.Text = "Buy this number for: " + product.FormattedPrice;
+                            buyMag.Text = loader.GetString("buy_number") + " " + product.FormattedPrice;
                             buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -198,7 +202,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString("purchase_successfull"));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -235,7 +239,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn.Text = "Subscribe for 1 year: " + product.FormattedPrice;
+                            subscribeBtn.Text = loader.GetString("subscribe_one_year") + " " + product.FormattedPrice;
                             subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -251,7 +255,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn.Text = "Subscribe for 1 year: " + product.FormattedPrice;
+                            subscribeBtn.Text = loader.GetString("subscribe_one_year") + " " + product.FormattedPrice;
                             subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -302,7 +306,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString("purchase_successfull"));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -340,7 +344,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn1.Text = "Subscribe for 1 month: " + product.FormattedPrice;
+                            subscribeBtn1.Text = loader.GetString("subscribe_one_month") + " " + product.FormattedPrice;
                             subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -356,7 +360,7 @@ namespace LibrelioApplication
                         else
                         {
                             noOptions.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                            subscribeBtn1.Text = "Subscribe for 1 month: " + product.FormattedPrice;
+                            subscribeBtn1.Text = loader.GetString("subscribe_one_month") + " " + product.FormattedPrice;
                             subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Visible;
                         }
                     }
@@ -405,7 +409,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString("purchase_successfull"));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -449,6 +453,8 @@ namespace LibrelioApplication
         {
             if (licenseInformation == null) return;
 
+            var loader = new ResourceLoader();
+
             if (!licenseInformation.ProductLicenses["yearlysubscription"].IsActive)
             {
                 try
@@ -486,7 +492,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString(loader.GetString("purchase_successfull")));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -500,7 +506,7 @@ namespace LibrelioApplication
             }
             else
             {
-                var messageDialog = new MessageDialog("You are already subscribed");
+                var messageDialog = new MessageDialog(loader.GetString("already_subscribed"));
                 var task = messageDialog.ShowAsync().AsTask();
             }
         }
@@ -508,6 +514,7 @@ namespace LibrelioApplication
         private async void subscribeBtn1_Click(object sender, RoutedEventArgs e)
         {
             if (licenseInformation == null) return;
+            var loader = new ResourceLoader();
 
             if (!licenseInformation.ProductLicenses["monthlysubscription"].IsActive)
             {
@@ -545,7 +552,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString("purchase_successfull"));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -559,7 +566,7 @@ namespace LibrelioApplication
             }
             else
             {
-                var messageDialog = new MessageDialog("You are already subscribed");
+                var messageDialog = new MessageDialog(loader.GetString("already_subscribed"));
                 var task = messageDialog.ShowAsync().AsTask();
             }
         }
@@ -567,6 +574,7 @@ namespace LibrelioApplication
         private async void buyMag_Click(object sender, RoutedEventArgs e)
         {
             if (licenseInformation == null) return;
+            var loader = new ResourceLoader();
 
             if (!licenseInformation.ProductLicenses[product_id].IsActive)
             {
@@ -605,7 +613,7 @@ namespace LibrelioApplication
                     }
                     else
                     {
-                        var messageDialog = new MessageDialog("Purchase successfull");
+                        var messageDialog = new MessageDialog(loader.GetString("purchase_successfull"));
                         var task = messageDialog.ShowAsync().AsTask();
                     }
                 }
@@ -619,7 +627,7 @@ namespace LibrelioApplication
             }
             else
             {
-                var messageDialog = new MessageDialog("You already purchased this app");
+                var messageDialog = new MessageDialog(loader.GetString("already_subscribed"));
                 var task = messageDialog.ShowAsync().AsTask();
             }
         }
@@ -638,9 +646,10 @@ namespace LibrelioApplication
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
+            var loader = new ResourceLoader();
             openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             deleteContainer.Margin = new Thickness(0, 25, 0, 0);
-            delete.Text = "Deleting ...";
+            delete.Text = loader.GetString("deleting");
             Delete(this, _item);
         }
 

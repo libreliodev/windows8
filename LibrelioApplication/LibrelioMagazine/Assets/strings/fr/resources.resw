@@ -259,7 +259,7 @@
     <value>Purchassse</value>
   </data>
   <data name="delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>Supprimer</value>
   </data>
   <data name="subscribe_year" xml:space="preserve">
     <value>Subscribe year</value>
@@ -401,5 +401,50 @@
   </data>
   <data name="preparing" xml:space="preserve">
     <value>Préparation</value>
+  </data>
+  <data name="all_magazines" xml:space="preserve">
+    <value>Tous les magazines</value>
+  </data>
+  <data name="my_magazines" xml:space="preserve">
+    <value>Mes Magazines</value>
+  </data>
+  <data name="already_subscribed" xml:space="preserve">
+    <value>Vous êtes déjà abonné</value>
+  </data>
+  <data name="buy_number" xml:space="preserve">
+    <value>Acheter ce numéro pour:</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="download_failed" xml:space="preserve">
+    <value>Télécharger échoué, s'il vous plaît vérifier votre connexion Internet</value>
+  </data>
+  <data name="download_progress" xml:space="preserve">
+    <value>Télécharger en cours</value>
+  </data>
+  <data name="download_sample" xml:space="preserve">
+    <value>Téléchargez l'extrait</value>
+  </data>
+  <data name="img_not_downloaded" xml:space="preserve">
+    <value>Image non téléchargé</value>
+  </data>
+  <data name="no_options" xml:space="preserve">
+    <value>Aucune option d'achat pour ce magazine sont disponibles en ce moment</value>
+  </data>
+  <data name="open_sample" xml:space="preserve">
+    <value>Ouvrez l'extrait</value>
+  </data>
+  <data name="purchase_successfull" xml:space="preserve">
+    <value>Achat réussie</value>
+  </data>
+  <data name="slide_show_inf" xml:space="preserve">
+    <value>Double Tap / clic droit pour fermer</value>
+  </data>
+  <data name="subscribe_one_month" xml:space="preserve">
+    <value>Abonnez-vous pour un mois:</value>
+  </data>
+  <data name="subscribe_one_year" xml:space="preserve">
+    <value>Abonnez-vous pour un an:</value>
   </data>
 </root>

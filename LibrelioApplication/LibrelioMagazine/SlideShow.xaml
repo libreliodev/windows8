@@ -108,7 +108,7 @@
                         <Image Source="{Binding Image}" Stretch="{Binding ImgStretch}" Width="{Binding Width}" Height="{Binding Height}" Visibility="{Binding Hidden, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0"/>
 
                         <Grid Width="{Binding Width}" Height="{Binding Height}" Margin="0" Visibility="{Binding NotDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}" Background="White">
-                            <TextBlock Text="Image not downloaded" FontSize ="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI" Foreground="Black" />
+                            <TextBlock Text="{Binding NotDownloadedText}" FontSize ="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI" Foreground="Black" />
                         </Grid>
                     </Grid>
 
@@ -121,7 +121,7 @@
         </GridView>
 
         <Grid x:Name="info" Background="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
-            <TextBlock Text="Double tap / right click to close" FontSize="10" />
+            <TextBlock x:Name="textInfo" Text="" FontSize="10" />
         </Grid>
         
     </Grid>

@@ -110,7 +110,8 @@ namespace LibrelioApplication
             var resourceLoader = new ResourceLoader();
             var app = Application.Current as App;
 
-            if (item.Group == MagazineDataSource.GetGroup("All Magazines"))
+            var loader = new ResourceLoader();
+            if (item.Group == MagazineDataSource.GetGroup(loader.GetString("all_magazines")))
             {
                 if (item.IsPaid)
                 {
@@ -142,7 +143,7 @@ namespace LibrelioApplication
                     }
                 }
             }
-            else if (item.Group == MagazineDataSource.GetGroup("My Magazines"))
+            else if (item.Group == MagazineDataSource.GetGroup(loader.GetString("my_magazines")))
             {
                 try
                 {
@@ -327,7 +328,8 @@ namespace LibrelioApplication
         {
             var app = Application.Current as App;
 
-            var group = MagazineDataSource.GetGroup("All Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             group.Items.Remove(item);
             DownloadMagazine param = null;
             if (app.Manager.MagazineUrl.Count > 0)
@@ -395,7 +397,8 @@ namespace LibrelioApplication
             mag = DownloadManager.DeleteLocalUrl(mag);
             await app.Manager.AddUpdateMetadataEntry(mag);
             var title = item.FileName;
-            var group = MagazineDataSource.GetGroup("My Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("my_magazines"));
             group.Items.Remove(item);
             if (app.snappedCollection != null)
             {
@@ -405,7 +408,7 @@ namespace LibrelioApplication
             }
             if (group.Items.Count == 0)
             {
-                group = MagazineDataSource.GetGroup("All Magazines");
+                group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
                 if (group.Items.Count != 0)
                 {
                     snappedView.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
@@ -417,7 +420,7 @@ namespace LibrelioApplication
                     itemListView.ItemsSource = source;
                 }
             }
-            group = MagazineDataSource.GetGroup("All Magazines");
+            group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             item = group.Items.Where((magazine) => magazine.FileName.Equals(title)).First();
             if (item != null)
             {
@@ -478,8 +481,8 @@ namespace LibrelioApplication
                 await app.Manager.LoadLocalMagazineList();
             }
 
-
-            var group = MagazineDataSource.GetGroup("All Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             group.Items.Remove(item);
             DownloadMagazine param = null;
             if (app.Manager.MagazineUrl.Count > 0)
@@ -549,7 +552,8 @@ namespace LibrelioApplication
                         UpdateCovers();
 
                         await Task.Delay(50);
-                        itemGridView.ScrollIntoView(MagazineDataSource.GetGroup("All Magazines"), ScrollIntoViewAlignment.Leading);
+                        var loader = new ResourceLoader();
+                        itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
                         await Task.Delay(50);
                         var scrollViewer = findFirstInVisualTree<ScrollViewer>(itemGridView);
                         if (scrollViewer != null)
@@ -586,7 +590,8 @@ namespace LibrelioApplication
                         if (!updatedView)
                         {
                             await Task.Delay(50);
-                            itemGridView.ScrollIntoView(MagazineDataSource.GetGroup("All Magazines"), ScrollIntoViewAlignment.Leading);
+                            var loader = new ResourceLoader();
+                            itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
                             await Task.Delay(50);
                             var scrollViewer = findFirstInVisualTree<ScrollViewer>(itemGridView);
                             if (scrollViewer != null)
@@ -663,12 +668,13 @@ namespace LibrelioApplication
             //        return;
             //    }
             //}
-
-            var group = MagazineDataSource.GetGroup("My Magazines");
+            var loader1 = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader1.GetString("my_magazines"));
             if (group.Items.Count == 0)
             {
                 app.NoMagazines = true;
-                group = MagazineDataSource.GetGroup("All Magazines");
+                var loader = new ResourceLoader();
+                group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
                 if (group.Items.Count != 0)
                 {
                     app.snappedCollection = new ObservableCollection<MagazineViewModel>();
@@ -719,7 +725,8 @@ namespace LibrelioApplication
 
             BackgroundDownloader downloader = new BackgroundDownloader();
 
-            var group = MagazineDataSource.GetGroup("All Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             if (group == null) return;
             if (group.Items.Count != 0)
             {
@@ -785,7 +792,8 @@ namespace LibrelioApplication
 
         private void UpdateCovers()
         {
-            var group = MagazineDataSource.GetGroup("All Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             if (group == null) return;
             if (group.Items.Count != 0)
             {
@@ -798,7 +806,8 @@ namespace LibrelioApplication
 
         private async Task UpdateLocalCovers()
         {
-            var group = MagazineDataSource.GetGroup("My Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("my_magazines"));
             if (group == null) return;
             if (group.Items.Count != 0)
             {
@@ -818,7 +827,8 @@ namespace LibrelioApplication
 
         private void ClearCovers()
         {
-            var group = MagazineDataSource.GetGroup("My Magazines");
+            var loader = new ResourceLoader();
+            var group = MagazineDataSource.GetGroup(loader.GetString("my_magazines"));
             if (group == null) return;
             if (group.Items.Count != 0)
             {
@@ -828,7 +838,7 @@ namespace LibrelioApplication
                 }
             }
 
-            group = MagazineDataSource.GetGroup("All Magazines");
+            group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             if (group.Items.Count != 0)
             {
                 for (int i = 0; i < group.Items.Count; i++)
@@ -842,7 +852,8 @@ namespace LibrelioApplication
         {
             try
             {
-                var group = MagazineDataSource.GetGroup("All Magazines");
+                var loader = new ResourceLoader();
+                var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
                 if (group.Items.Count == 0) return;
 
                 var item = group.Items[0];
@@ -891,10 +902,25 @@ namespace LibrelioApplication
                 switch (tag) {
                     case "Refresh":
                         {
-                            MagazineDataSource.RemoveGroups();
                             var app = Application.Current as App;
                             await app.Manager.LoadPLISTAsync();
-                            MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+                            await LoadDefaultData();
+
+                            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+                            if (list.Count > 0)
+                            {
+                                foreach (var item in list)
+                                {
+                                    GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
+                                    VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
+                                    VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
+                                    VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
+                                    vswGrid.InvalidateMeasure();
+                                }
+                            }
+
+                            UpdateCovers();
+                            UpdateTile();
                             break;
                         }
                     //case "Slideshow":

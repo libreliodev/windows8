@@ -805,14 +805,15 @@ namespace LibrelioApplication.Data
 
             bool newGroup = false;
             MagazineDataGroup group = null;
-            if (GetGroup("My Magazines") == null) {
+            var loader = new ResourceLoader();
+            if (GetGroup(loader.GetString("my_magazines")) == null) {
 
-                group = new MagazineDataGroup("My Magazines", "My Magazines", "");
+                group = new MagazineDataGroup(loader.GetString("my_magazines"), loader.GetString("my_magazines"), "");
                 newGroup = true;
 
             } else {
 
-                group = GetGroup("My Magazines");
+                group = GetGroup(loader.GetString("my_magazines"));
             }
 
             if (newGroup) {
@@ -840,14 +841,14 @@ namespace LibrelioApplication.Data
 
             newGroup = false;
 
-            if (GetGroup("All Magazines") == null) {
+            if (GetGroup(loader.GetString("all_magazines")) == null) {
 
-                group = new MagazineDataGroup("All Magazines", "All Magazines", "");
+                group = new MagazineDataGroup(loader.GetString("all_magazines"), loader.GetString("all_magazines"), "");
                 newGroup = true;
 
             } else {
 
-                group = GetGroup("All Magazines");
+                group = GetGroup(loader.GetString("all_magazines"));
             }
 
             if (newGroup) {

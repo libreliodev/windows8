@@ -17,6 +17,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.ApplicationModel.Resources;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -59,6 +60,15 @@ namespace LibrelioApplication
             {
                 _notDownloaded = value;
                 OnPropertyChanged("NotDownloaded");
+            }
+        }
+
+        public string NotDownloadedText
+        {
+            get
+            {
+                var loader = new ResourceLoader();
+                return loader.GetString("img_not_downloaded");
             }
         }
 
@@ -121,6 +131,8 @@ namespace LibrelioApplication
 
         public async Task SetRect(Rect rect, string folderUrl, string url, float offset)
         {
+            var loader = new ResourceLoader();
+            textInfo.Text = loader.GetString("slide_show_inf");
             if (!DownloadManager.IsFullScreenAsset(url))
             {
                 this.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;

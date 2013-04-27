@@ -405,4 +405,49 @@
   <data name="preparing" xml:space="preserve">
     <value>Preparing</value>
   </data>
+  <data name="all_magazines" xml:space="preserve">
+    <value>All Magazines</value>
+  </data>
+  <data name="my_magazines" xml:space="preserve">
+    <value>My Magazines</value>
+  </data>
+  <data name="already_subscribed" xml:space="preserve">
+    <value>You are already subscribed</value>
+  </data>
+  <data name="buy_number" xml:space="preserve">
+    <value>Buy this number for:</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="download_failed" xml:space="preserve">
+    <value>Download failed, please check your internet connection</value>
+  </data>
+  <data name="download_progress" xml:space="preserve">
+    <value>Download in progress</value>
+  </data>
+  <data name="download_sample" xml:space="preserve">
+    <value>Download sample</value>
+  </data>
+  <data name="img_not_downloaded" xml:space="preserve">
+    <value>Image not downloaded</value>
+  </data>
+  <data name="no_options" xml:space="preserve">
+    <value>No purchase options for this magazine are available at this time</value>
+  </data>
+  <data name="open_sample" xml:space="preserve">
+    <value>Open sample</value>
+  </data>
+  <data name="purchase_successfull" xml:space="preserve">
+    <value>Purchase successfull</value>
+  </data>
+  <data name="slide_show_inf" xml:space="preserve">
+    <value>Double tap / right click to close</value>
+  </data>
+  <data name="subscribe_one_month" xml:space="preserve">
+    <value>Subscribe for one month:</value>
+  </data>
+  <data name="subscribe_one_year" xml:space="preserve">
+    <value>Subscribe for one year:</value>
+  </data>
 </root>
