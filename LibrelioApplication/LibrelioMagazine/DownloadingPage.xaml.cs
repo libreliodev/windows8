@@ -217,6 +217,8 @@ namespace LibrelioApplication
                 titleSnapped.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 snappedGridView.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
+                if (app.snappedCollection == null) return;
+
                 if (app.snappedCollection.Count != 0)
                 {
                     snappedGridView.ItemsSource = app.snappedCollection;

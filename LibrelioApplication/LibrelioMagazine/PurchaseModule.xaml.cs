@@ -208,7 +208,7 @@ namespace LibrelioApplication
 
             try {
 
-                product = productListings["yearlysubscritpion"];
+                product = productListings["yearlysubscription"];
 
             } catch { }
 
@@ -224,9 +224,9 @@ namespace LibrelioApplication
                     } catch { }
                     if (receipt != "")
                     {
-                        await DownloadManager.StoreReceiptAsync("yearlysubscritpion", receipt);
+                        await DownloadManager.StoreReceiptAsync("yearlysubscription", receipt);
                         var app = Application.Current as App;
-                        var url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName);
+                        var url = DownloadManager.GetUrl("yearlysubscription", receipt, relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -242,7 +242,7 @@ namespace LibrelioApplication
                     else 
                     {
                         var app = Application.Current as App;
-                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath, app.ClientName, app.MagazineName);
+                        var url = await DownloadManager.GetUrl("yearlysubscription", relativePath, app.ClientName, app.MagazineName);
                         if (!url.Equals("NoReceipt"))
                         {
                             Bought(this, url);
@@ -265,7 +265,7 @@ namespace LibrelioApplication
                     if (Bought != null)
                     {
                         var app = Application.Current as App;
-                        var url = await DownloadManager.GetUrl("yearlysubscritpion", relativePath, app.ClientName, app.MagazineName);
+                        var url = await DownloadManager.GetUrl("yearlysubscription", relativePath, app.ClientName, app.MagazineName);
                         if (url.Equals("NoReceipt"))
                         {
                             string receipt = "";
@@ -275,8 +275,8 @@ namespace LibrelioApplication
                             }  catch { }
                             if (receipt != "")
                             {
-                                await DownloadManager.StoreReceiptAsync("yearlysubscritpion", receipt);
-                                url = DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName);
+                                await DownloadManager.StoreReceiptAsync("yearlysubscription", receipt);
+                                url = DownloadManager.GetUrl("yearlysubscription", receipt, relativePath, app.ClientName, app.MagazineName);
                                 if (!url.Equals("NoReceipt"))
                                 {
                                     Bought(this, url);
@@ -449,17 +449,17 @@ namespace LibrelioApplication
         {
             if (licenseInformation == null) return;
 
-            if (!licenseInformation.ProductLicenses["yearlysubscritpion"].IsActive)
+            if (!licenseInformation.ProductLicenses["yearlysubscription"].IsActive)
             {
                 try
                 {
                     // The customer doesn't own this feature, so 
                     // show the purchase dialog.
 
-                    var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync("yearlysubscritpion", true);
+                    var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync("yearlysubscription", true);
                     //var b = DownloadManager.ReceiptExpired(receipt);
-                    if (!licenseInformation.ProductLicenses["yearlysubscritpion"].IsActive || receipt == "") return;
-                    await DownloadManager.StoreReceiptAsync("yearlysubscritpion", receipt);
+                    if (!licenseInformation.ProductLicenses["yearlysubscription"].IsActive || receipt == "") return;
+                    await DownloadManager.StoreReceiptAsync("yearlysubscription", receipt);
                     // the in-app purchase was successful
 
                     // TEST ONLY
@@ -468,7 +468,7 @@ namespace LibrelioApplication
                     var xml = new XmlDocument();
                     xml = await XmlDocument.LoadFromFileAsync(f);
                     var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
-                    item.SetAttribute("ProductId", "yearlysubscritpion");
+                    item.SetAttribute("ProductId", "yearlysubscription");
                     var date = new DateTimeOffset(DateTime.Now);
                     date = date.AddMinutes(3);
                     var str = date.ToString("u");
@@ -481,7 +481,7 @@ namespace LibrelioApplication
                     if (Bought != null)
                     {
                         var app = Application.Current as App;
-                        Bought(this, DownloadManager.GetUrl("yearlysubscritpion", receipt, relativePath, app.ClientName, app.MagazineName));
+                        Bought(this, DownloadManager.GetUrl("yearlysubscription", receipt, relativePath, app.ClientName, app.MagazineName));
                         this.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     }
                     else
