@@ -187,6 +187,9 @@
     </AppxManifest>
     <Content Include="Assets\buy.png" />
     <Content Include="Assets\buyinvert.png" />
+    <Content Include="Assets\cornerdownloaded.png" />
+    <Content Include="Assets\cornerfree1.png" />
+    <Content Include="Assets\cornerfree2.png" />
     <Content Include="Assets\firstpge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -204,9 +207,6 @@
     <Content Include="Assets\WideLogo.scale-80.png" />
     <Content Include="CustomizationAssets\application_.xml" />
     <Content Include="CustomizationAssets\background.png" />
-    <Content Include="CustomizationAssets\cornerdownloaded.png" />
-    <Content Include="CustomizationAssets\cornerfree1.png" />
-    <Content Include="CustomizationAssets\cornerfree2.png" />
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
     <Content Include="CustomizationAssets\Covers\wind_355.png" />
     <Content Include="CustomizationAssets\Covers\wind_356.png" />
@@ -377,12 +377,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\test\receipt.pmd">
+    <Content Include="CustomizationAssets\Magazines.plist">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CustomizationAssets\Magazines.plist">
+    <Content Include="Assets\test\receipt.pmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="LibrelioMagazine_TemporaryKey.pfx" />

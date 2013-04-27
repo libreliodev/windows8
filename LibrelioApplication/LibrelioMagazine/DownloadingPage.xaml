@@ -162,7 +162,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                            <Image Source="/Assets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
                                        Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
                     </DataTemplate>

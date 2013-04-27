@@ -82,7 +82,7 @@ namespace LibrelioApplication
             }
 
             _item = mag;
-            product_id = mag.FileName.Replace(".pdf", "");
+            product_id = mag.FileName.Replace("_.pdf", "");
             relativePath = mag.RelativePath;
             licenseInformation = CurrentAppSimulator.LicenseInformation;
 
@@ -642,6 +642,11 @@ namespace LibrelioApplication
             deleteContainer.Margin = new Thickness(0, 25, 0, 0);
             delete.Text = "Deleting ...";
             Delete(this, _item);
+        }
+
+        private void Grid_PointerReleased_1(object sender, PointerRoutedEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

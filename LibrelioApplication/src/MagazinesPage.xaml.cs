@@ -1030,5 +1030,14 @@ namespace LibrelioApplication
             }
         }
 
+        private void root_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (purchaseModule.Visibility == Windows.UI.Xaml.Visibility.Visible)
+            {
+                purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                e.Handled = true;
+            }
+        }
+
     }
 }

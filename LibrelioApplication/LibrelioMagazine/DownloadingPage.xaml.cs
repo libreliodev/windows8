@@ -104,7 +104,17 @@ namespace LibrelioApplication
                         bitmap = await app.Manager.DownloadThumbnailAsync(url, folder);
                     }
                     catch { }
-                    if (bitmap == null) return;
+                    if (bitmap == null)
+                    {
+                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var commands = new List<UICommand>();
+                        var close = new UICommand("Close");
+                        close.Invoked = closeCommandHandler; 
+                        messageDialog.Commands.Clear();
+                        messageDialog.Commands.Add(close);
+                        var task = messageDialog.ShowAsync().AsTask();
+                        return;
+                    }
                     pdfThumbnail.Width = bitmap.PixelWidth * pdfThumbnail.Height / bitmap.PixelHeight;
                     pdfThumbnail.Source = bitmap;
 
@@ -140,17 +150,34 @@ namespace LibrelioApplication
                     statusText.Text = "Error";
                     if (ex.Message == "Response status code does not indicate success: 403 (Forbidden).")
                     {
-                        var messageDialog = new MessageDialog("This is a paid app. You need to purchase it first");
+                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var commands = new List<UICommand>();
+                        var close = new UICommand("Close");
+                        close.Invoked = closeCommandHandler;
+                        messageDialog.Commands.Clear();
+                        messageDialog.Commands.Add(close);
                         var task = messageDialog.ShowAsync().AsTask();
                         return;
                     }
                     else if (ex.Message == "The operation was canceled.")
                     {
-                        int x = 0;
+                        var messageDialog = new MessageDialog("Download failed, please check your internet connection");
+                        var commands = new List<UICommand>();
+                        var close = new UICommand("Close");
+                        close.Invoked = closeCommandHandler;
+                        messageDialog.Commands.Clear();
+                        messageDialog.Commands.Add(close);
+                        var task = messageDialog.ShowAsync().AsTask();
+                        return;
                     }
                     else
                     {
                         var messageDialog = new MessageDialog("Unexpected error");
+                        var commands = new List<UICommand>();
+                        var close = new UICommand("Close");
+                        close.Invoked = closeCommandHandler;
+                        messageDialog.Commands.Clear();
+                        messageDialog.Commands.Add(close);
                         var task = messageDialog.ShowAsync().AsTask();
                         return;
                     }
@@ -168,6 +195,12 @@ namespace LibrelioApplication
                 //    needtoGoBack = true;
                 //}
             }
+        }
+
+        private void closeCommandHandler(IUICommand command)
+        {
+            if (this.Frame.CanGoBack)
+                this.Frame.GoBack();
         }
 
         private void LoadSnappedSource()

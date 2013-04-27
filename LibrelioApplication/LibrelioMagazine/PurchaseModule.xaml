@@ -159,7 +159,7 @@
 
     </UserControl.Resources>
 
-    <Grid Margin="0" Width="520" Height="310">
+    <Grid Margin="0" Width="520" Height="310" PointerReleased="Grid_PointerReleased_1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
@@ -252,7 +252,7 @@
             </StackPanel>
         </StackPanel>
 
-        <Button Grid.Column="1" Style="{StaticResource TextButtonStyle1}" Content="Cancel" FontSize="16" Foreground="#FF000000" Margin="0,15" HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="Button_Click_1" />
+        <!--<Button Grid.Column="1" Style="{StaticResource TextButtonStyle1}" Content="Cancel" FontSize="16" Foreground="#FF000000" Margin="0,15" HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="Button_Click_1" />-->
 
         <!--<Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Foreground="Black" Text="What would you like to buy?" FontSize="12" />

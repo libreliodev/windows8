@@ -54,7 +54,7 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid x:Name="root"  Style="{StaticResource LayoutRootStyle}" Loaded="Grid_Loaded_1">
+    <Grid x:Name="root"  Style="{StaticResource LayoutRootStyle}" Loaded="Grid_Loaded_1" PointerReleased="root_PointerReleased">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
@@ -109,11 +109,11 @@
                             </Rectangle.Fill>
                         </Rectangle>
 
-                        <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        <Image Source="/Assets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
                                Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <Image Source="/CustomizationAssets/cornerfree1.png" Stretch="Fill" Width="45" Height="45" Margin="0,0,0,-2" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                        <Image Source="/Assets/cornerfree1.png" Stretch="Fill" Width="45" Height="45" Margin="0,0,0,-2" HorizontalAlignment="Left" VerticalAlignment="Bottom"
                                Visibility="{Binding IsFree, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <Image Source="/CustomizationAssets/cornerfree2.png" Stretch="Fill" Width="45" Height="46" Margin="0,-5,-5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        <Image Source="/Assets/cornerfree2.png" Stretch="Fill" Width="45" Height="46" Margin="0,-5,-5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
                                Visibility="{Binding IsFree, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                         <Grid Background="#99FFFFFF" Visibility="{Binding IsOpening, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -266,7 +266,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <Image Source="/CustomizationAssets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
+                            <Image Source="/Assets/cornerdownloaded.png" Stretch="Fill" Width="50" Height="65" HorizontalAlignment="Right" VerticalAlignment="Top"
                                        Visibility="{Binding IsDownloaded, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </Grid>
                     </DataTemplate>
