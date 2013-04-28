@@ -188,6 +188,12 @@
     <Content Include="Assets\cornerfree1.png" />
     <Content Include="Assets\cornerfree2.png" />
     <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\background.png" />
+    <Content Include="CustomizationAssets\icon.scale-100.png" />
+    <Content Include="CustomizationAssets\logo.scale-100.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-100.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
     <Page Include="..\src\DownloadingPage.xaml">
       <Link>LinkedSource\DownloadingPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -268,6 +274,7 @@
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
+    <None Include="CustomizationAssets\Magazines.plist" />
     <PRIResource Include="Assets\strings\en\resources.resw" />
   </ItemGroup>
   <ItemGroup>
