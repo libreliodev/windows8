@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86D8EC50-ACC7-424D-B60A-E0C98D0A36E5}</ProjectGuid>
+    <ProjectGuid>{471127DA-0396-44A2-85D6-E571B8BA0E74}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LibrelioMagazine</RootNamespace>
@@ -188,6 +188,26 @@
     <Content Include="Assets\cornerfree1.png" />
     <Content Include="Assets\cornerfree2.png" />
     <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\background.png" />
+    <Content Include="CustomizationAssets\backgroundLarge.png" />
+    <Content Include="CustomizationAssets\backgroundMin.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_001.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_002.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_003.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_004.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_005.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_006.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_007.png" />
+    <Content Include="CustomizationAssets\Covers\Horizons_008.png" />
+    <Content Include="CustomizationAssets\Covers\horizons_009.png" />
+    <Content Include="CustomizationAssets\Covers\horizons_009_newsstand.png" />
+    <Content Include="CustomizationAssets\Covers\horizons_010.png" />
+    <Content Include="CustomizationAssets\Covers\horizons_010_newsstand.png" />
+    <Content Include="CustomizationAssets\icon.scale-100.png" />
+    <Content Include="CustomizationAssets\logo.scale-100.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-100.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
     <Page Include="..\src\DownloadingPage.xaml">
       <Link>LinkedSource\DownloadingPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -268,11 +288,10 @@
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
+    <None Include="CustomizationAssets\Magazines.plist" />
     <PRIResource Include="Assets\strings\en\resources.resw" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomizationAssets\Covers\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

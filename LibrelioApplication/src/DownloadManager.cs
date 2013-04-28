@@ -140,9 +140,9 @@ namespace LibrelioApplication
             return new LibrelioLocalUrl(url.Index, url.Title, url.Subtitle, "ND", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
         }
 
-        public static LibrelioLocalUrl ConvertToLocalUrl(LibrelioUrl url, StorageFolder folder)
+        public static LibrelioLocalUrl ConvertToLocalUrl(LibrelioUrl url, StorageFolder folder, bool isd)
         {
-            return new LibrelioLocalUrl(url.Index, url.Title, url.Subtitle, folder.Path + "\\", url.FullName, url.AbsoluteUrl, url.RelativeUrl);
+            return new LibrelioLocalUrl(url.Index, url.Title, url.Subtitle, folder.Path + "\\", url.FullName, url.AbsoluteUrl, url.RelativeUrl, isd);
         }
 
         public static LibrelioLocalUrl FindInMetadata(LibrelioUrl url, XmlDocument xml)
@@ -171,8 +171,9 @@ namespace LibrelioApplication
                 }
                 var u = nodes[0].SelectNodes("url")[0].InnerText;
                 var rel = nodes[0].SelectNodes("relPath")[0].InnerText;
+                var isd = nodes[0].SelectNodes("sampledownloaded")[0].InnerText;
 
-                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
+                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel, isd.Equals("true"));
             }
             else
             {
@@ -201,8 +202,9 @@ namespace LibrelioApplication
                 metadata = metadata.Substring(pos + 1);
                 var u = mag.SelectNodes("url")[0].InnerText;
                 var rel = mag.SelectNodes("relPath")[0].InnerText;
+                var isd = mag.SelectNodes("sampledownloaded")[0].InnerText;
 
-                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel);
+                return new LibrelioLocalUrl(index, title, subtitle, path, GetFullNameFromUrl(rel), u, rel, isd.Equals("true"));
             }
             else
             {
@@ -375,10 +377,11 @@ namespace LibrelioApplication
 
             } catch { }
             if (folder == null) return null;
+            var path = !url.IsSampleDownloaded ? url.FullName : url.FullName.Replace("_.", ".");
             StorageFile file = null;
             try {
 
-                file = await folder.GetFileAsync(url.FullName);
+                file = await folder.GetFileAsync(path);
 
             } catch { }
             if (file == null) return null;
@@ -392,6 +395,7 @@ namespace LibrelioApplication
         {
             url.MetadataName = "";
             url.FolderPath = "ND";
+            url.IsSampleDownloaded = false;
 
             return url;
         }
@@ -623,7 +627,7 @@ namespace LibrelioApplication
 
     public sealed class LibrelioLocalUrl
     {
-        public LibrelioLocalUrl(int index, string title, string subtitle, string path, string fullName, string url, string relativePath)
+        public LibrelioLocalUrl(int index, string title, string subtitle, string path, string fullName, string url, string relativePath, bool isd = false)
         {
             FolderPath = path;
 
@@ -639,6 +643,7 @@ namespace LibrelioApplication
                 MetadataName = "";
             Url = url;
             RelativePath = relativePath;
+            IsSampleDownloaded = isd;
         }
 
         public int Index { get; set; }
@@ -649,12 +654,13 @@ namespace LibrelioApplication
         public string MetadataName { get; set; }
         public string Url { get; set; }
         public string RelativePath { get; set; }
+        public bool IsSampleDownloaded { get; set; }
 
         public bool IsDownloaded
         {
             get
             {
-                return FolderPath != "ND";
+                return FolderPath != "ND";// && !IsSampleDownloaded;
             }
         }
     }
