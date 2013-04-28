@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=Dorin" Version="1.0.0.11" />
+  <Identity Name="niveales.wind" Publisher="CN=Dorin" Version="1.0.0.11" />
   <Properties>
-    <DisplayName>LibrelioMagazine</DisplayName>
-    <PublisherDisplayName>voyager</PublisherDisplayName>
+    <DisplayName>Wind Magazine</DisplayName>
+    <PublisherDisplayName>Nivéales</PublisherDisplayName>
     <Logo>CustomizationAssets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>

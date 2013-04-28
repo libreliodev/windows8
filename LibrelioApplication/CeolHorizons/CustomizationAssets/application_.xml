@@ -3,7 +3,7 @@
   
 
   <string name="app_name">Horizons</string>
-  <hex name="background_color">#ff0000</hex>
+  <hex name="background_color">#3d8ab6</hex>
   <string name="yearly_subs_code">yearlysubscription</string>
   <string name="monthly_subs_code">monthlysuscription</string>
   <bool name="enable_test_magazine">false</bool>
