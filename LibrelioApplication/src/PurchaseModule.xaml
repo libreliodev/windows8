@@ -190,7 +190,7 @@
 
         </Grid>
         
-        <StackPanel Grid.Column="1" Margin="0,20" HorizontalAlignment="Left">
+        <StackPanel Grid.Column="1" Margin="-10,20" HorizontalAlignment="Left">
             <TextBlock x:Name="title" FontSize="25" Foreground="#CC000000"/>
             <TextBlock x:Name="subtitle" FontSize="15" Foreground="#AF000000" />
             
@@ -205,7 +205,7 @@
                 </Button>
                 <TextBlock x:Name="getSample" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
-            <TextBlock x:Name="noOptions" Text="" TextWrapping="Wrap" FontSize="13" Foreground="Black" Margin="0,5,0,0" Visibility="Collapsed" />
+            <TextBlock x:Name="noOptions" Text="" TextWrapping="Wrap" FontSize="13" Foreground="Black" Margin="0,5,10,0" Visibility="Collapsed" />
             <!--<Button x:Name="buyMag" Style="{StaticResource TextButtonStyle1}" Content="" FontSize="13" Foreground="#FF000000" Margin="0,20,0,10" Click="buyMag_Click" VerticalAlignment="Center" Visibility="Collapsed" />-->
             <StackPanel x:Name="buyMagContainer" Orientation="Horizontal" Margin="0,2.5,0,2.5" HorizontalAlignment="Left">
                 <Button x:Name="buyMagButton" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="buyMag_Click">

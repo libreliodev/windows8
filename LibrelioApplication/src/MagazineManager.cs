@@ -71,8 +71,10 @@ namespace LibrelioApplication
             _pList = new LibrelioUrl(0, path, name + ".plist");
         }
 
-        public async Task LoadPLISTAsync()
+        public async Task<bool> LoadPLISTAsync()
         {
+            bool isUpdated = false;
+
             _folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_name, CreationCollisionOption.OpenIfExists);
             await LoadLocalMetadata();
 
@@ -111,19 +113,22 @@ namespace LibrelioApplication
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message.Contains("304") || ex.Message.Contains("Not Modified")) return;
+                    if (ex.Message.Contains("304") || ex.Message.Contains("Not Modified")) return false;
                     noXml = true;
                 }
 
                 if (!noXml)
                 {
                     await ReadPList(xml);
+                    isUpdated = true;
                 }
             }
             catch
             {
                 throw new Exception("Unable to download plist");
             }
+
+            return isUpdated;
         }
 
         public async Task LoadLocalMagazineList()
@@ -684,6 +689,8 @@ namespace LibrelioApplication
 
         private async Task ReadPList(XmlDocument plist)
         {
+            _magazinesUrl.Clear();
+
             var items = plist.SelectNodes("/plist/array/dict");
             for (int i = 0; i < items.Count; i++)
             {
@@ -756,15 +763,22 @@ namespace LibrelioApplication
                 LibrelioLocalUrl local = null;
                 local = DownloadManager.FindInMetadata(url, localXml);
 
+                if (local != null)
+                    local.Index = url.Index;
+
                 if (local == null)
                 {
                     local = DownloadManager.ConvertToLocalUrl(url);
                     if (!UpdataLocalUrl(local))
-                        _magazinesLocalUrl.Add(local);
+                        _magazinesLocalUrl.Insert(local.Index, local);
+                }
+                else
+                {
+                    UpdataLocalUrl(local);
                 }
 
-                if (!DownloadManager.IsDownloaded(local))
-                    await AddUpdateMetadataEntry(local);
+                //if (!DownloadManager.IsDownloaded(local))
+                await AddUpdateMetadataEntry(local);
             }
         }
 

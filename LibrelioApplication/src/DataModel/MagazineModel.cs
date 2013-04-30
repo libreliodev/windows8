@@ -613,7 +613,10 @@ namespace LibrelioApplication.Data
             if (RelativePath != m.relativePath)
                 RelativePath = m.relativePath;
             if (Thumbnail != String.Format("ms-appdata:///local/Covers/{0}", m.pngPath))
+            {
+                needUpdateLayout = true;
                 Thumbnail = String.Format("ms-appdata:///local/Covers/{0}", m.pngPath);
+            }
             if (PngFile != m.pngPath)
                 PngFile = m.pngPath;
             if (PngUrl != m.pngUrl)
@@ -859,11 +862,11 @@ namespace LibrelioApplication.Data
 
             for (int i = 0; i < magazines.Count; i++) {
 
-                var m = new MagazineModel(magazines[i], i);
+                var m = new MagazineModel(magazines[i], magazines[i].Index);
                 var item = GetItem(m.Title + m.Subtitle + "1");
                 if (item != null)
                 {
-                    if (item.Index == 0)
+                    if (m.Index == 0)
                     {
                         var b = item.Update(2, 2, m);
                         if (b) list.Add(item);
@@ -877,19 +880,29 @@ namespace LibrelioApplication.Data
                     continue;
                 }
 
-                if (group.Items.Count == 0) {
+                if (m.Index == 0) {
 
                     var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
-                    group.Items.Insert(it.Index, it);
+                    if (it.Index < group.Items.Count)
+                        group.Items.Insert(it.Index, it);
+                    else
+                        group.Items.Add(it);
+
+                    list.Add(it);
 
                 } else {
 
                     var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
-                    group.Items.Insert(it.Index, it);
+                    if (it.Index < group.Items.Count)
+                        group.Items.Insert(it.Index, it);
+                    else
+                        group.Items.Add(it);
+
+                    list.Add(it);
                 }
             }
 

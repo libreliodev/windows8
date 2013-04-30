@@ -537,14 +537,14 @@ namespace LibrelioApplication
                 value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
             }
             var lastChecked = DateTimeOffset.Parse(value);
-            var minutesPassed = (DateTime.UtcNow - lastChecked).Minutes;
+            var minutesPassed = (DateTime.UtcNow - lastChecked).TotalMinutes;
             if (minutesPassed > 30)
             {
                 minutesPassed = 30;
                 ApplicationData.Current.LocalSettings.Values["last_checked"] = DateTime.UtcNow.ToString("R");
             }
 
-            var tsk = StartLoopRefresh(minutesPassed);
+            var tsk = StartLoopRefresh((int)minutesPassed);
 
             //bool updatedView = false;
 
@@ -749,6 +749,8 @@ namespace LibrelioApplication
                 {
                     foreach (var item in list)
                     {
+                        await UpdateCover(item);
+
                         GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
                         VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
                         VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
@@ -780,7 +782,7 @@ namespace LibrelioApplication
             isRefreshing = true;
 
             var app = Application.Current as App;
-            await app.Manager.LoadPLISTAsync();
+            var isUpdated = await app.Manager.LoadPLISTAsync();
 
             var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
             if (list.Count > 0)
@@ -795,12 +797,17 @@ namespace LibrelioApplication
                 }
             }
 
-            await DownloadCovers();
+            await DownloadCovers(isUpdated);
+
+            foreach (var item in list)
+            {
+                await UpdateCover(item);
+            }
 
             isRefreshing = false;
         }
 
-        private async Task DownloadCovers()
+        private async Task DownloadCovers(bool isUpdated)
         {
             var folder = ApplicationData.Current.LocalFolder;
             folder = await folder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
@@ -863,25 +870,14 @@ namespace LibrelioApplication
                             {
                                 if (!error)
                                 {
-                                    try
-                                    {
-                                        var bitmap = new BitmapImage();
-                                        var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri(item.Thumbnail));
-                                        var stream = await file1.OpenAsync(FileAccessMode.Read);
-
-                                        await bitmap.SetSourceAsync(stream);
-                                        item.Image = bitmap;
-
-                                        stream.Dispose();
-                                    }
-                                    catch { }
+                                    await UpdateCover(item);
                                 }
                             });
                         });
                         tasks[i++] = task;
                 }
                 await Task.WhenAll(tasks);
-                if (!error)
+                if (!error && isUpdated)
                     ApplicationData.Current.LocalSettings.Values["last_update"] = DateTime.UtcNow.ToString("R");
             }
         }
@@ -916,20 +912,47 @@ namespace LibrelioApplication
             {
                 for (int i = 0; i < group.Items.Count; i++)
                 {
-                    try
-                    {
-                        var bitmap = new BitmapImage();
-                        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(group.Items[i].Thumbnail));
-                        var stream = await file.OpenAsync(FileAccessMode.Read);
-
-                        await bitmap.SetSourceAsync(stream);
-                        group.Items[i].Image = bitmap;
-
-                        stream.Dispose();
-                    }
-                    catch { }
+                    await UpdateCover(group.Items[i]);
                     //group.Items[i].Image = new BitmapImage(new Uri(group.Items[i].Thumbnail));
                 }
+            }
+        }
+
+        private async Task UpdateCover(MagazineViewModel item)
+        {
+            bool tryNoNewstand = false;
+            try
+            {
+                var bitmap = new BitmapImage();
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(item.Thumbnail));
+                var stream = await file.OpenAsync(FileAccessMode.Read);
+
+                await bitmap.SetSourceAsync(stream);
+                item.Image = bitmap;
+
+                stream.Dispose();
+            }
+            catch
+            {
+                tryNoNewstand = true;
+            }
+
+            if (tryNoNewstand && item.Thumbnail.Contains("_newsstand.png"))
+            {
+                var url = item.Thumbnail.Replace("_newsstand.png", ".png");
+
+                try
+                {
+                    var bitmap = new BitmapImage();
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(url));
+                    var stream = await file.OpenAsync(FileAccessMode.Read);
+
+                    await bitmap.SetSourceAsync(stream);
+                    item.Image = bitmap;
+
+                    stream.Dispose();
+                }
+                catch { }
             }
         }
 
