@@ -28,6 +28,7 @@ using System.Collections.ObjectModel;
 using Windows.Networking.BackgroundTransfer;
 using System.Threading;
 using Windows.Storage.Search;
+using System.Net.Http;
 
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
@@ -43,6 +44,9 @@ namespace LibrelioApplication
         //private MagazineManager manager = null;
 
         private bool isOpening = false;
+        private bool isRefreshing = false;
+
+        private CancellationTokenSource cts = null;
 
         public ItemsPage()
         {
@@ -241,63 +245,63 @@ namespace LibrelioApplication
 
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (isOpening) return;
-            var button = sender as Button;
-            var item = ((MagazineViewModel)button.DataContext);
-            var resourceLoader = new ResourceLoader();
-            if (item.DownloadOrReadButton == resourceLoader.GetString("read"))
-            {
-                await OpenMagazine(item, false);
-            }
-            else if (item.DownloadOrReadButton == resourceLoader.GetString("download"))
-            {
-                if (item.IsPaid)
-                {
-                    item.DownloadOrReadButton = resourceLoader.GetString("preparing");
-                    try
-                    {
-                        await purchaseModule.Init(item);
-                    }
-                    catch
-                    {
-                        purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    }
-                    item.DownloadOrReadButton = resourceLoader.GetString("download");
-                }
-                else
-                {
-                    DownloadMagazine(item, false);
-                }
-            }
-        }
+        //private async void Button_Click_1(object sender, RoutedEventArgs e)
+        //{
+        //    if (isOpening) return;
+        //    var button = sender as Button;
+        //    var item = ((MagazineViewModel)button.DataContext);
+        //    var resourceLoader = new ResourceLoader();
+        //    if (item.DownloadOrReadButton == resourceLoader.GetString("read"))
+        //    {
+        //        await OpenMagazine(item, false);
+        //    }
+        //    else if (item.DownloadOrReadButton == resourceLoader.GetString("download"))
+        //    {
+        //        if (item.IsPaid)
+        //        {
+        //            item.DownloadOrReadButton = resourceLoader.GetString("preparing");
+        //            try
+        //            {
+        //                await purchaseModule.Init(item);
+        //            }
+        //            catch
+        //            {
+        //                purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        //            }
+        //            item.DownloadOrReadButton = resourceLoader.GetString("download");
+        //        }
+        //        else
+        //        {
+        //            DownloadMagazine(item, false);
+        //        }
+        //    }
+        //}
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            if (isOpening) return;
-            var button = sender as Button;
-            var item = ((MagazineViewModel)button.DataContext);
-            var resourceLoader = new ResourceLoader();
-            if (item.SampleOrDeleteButton == resourceLoader.GetString("delete"))
-            {
-                await DeleteMagazine(item);
-            }
-            else if (item.SampleOrDeleteButton == resourceLoader.GetString("sample"))
-            {
-                if (item.IsPaid)
-                {
-                    if (item.IsSampleDownloaded)
-                    {
-                        await OpenMagazine(item, true);
-                    }
-                    else
-                    {
-                        DownloadMagazine(item, true);
-                    }
-                }
-            }
-        }
+        //private async void Button_Click_2(object sender, RoutedEventArgs e)
+        //{
+        //    if (isOpening) return;
+        //    var button = sender as Button;
+        //    var item = ((MagazineViewModel)button.DataContext);
+        //    var resourceLoader = new ResourceLoader();
+        //    if (item.SampleOrDeleteButton == resourceLoader.GetString("delete"))
+        //    {
+        //        await DeleteMagazine(item);
+        //    }
+        //    else if (item.SampleOrDeleteButton == resourceLoader.GetString("sample"))
+        //    {
+        //        if (item.IsPaid)
+        //        {
+        //            if (item.IsSampleDownloaded)
+        //            {
+        //                await OpenMagazine(item, true);
+        //            }
+        //            else
+        //            {
+        //                DownloadMagazine(item, true);
+        //            }
+        //        }
+        //    }
+        //}
 
         private async Task OpenMagazine(MagazineViewModel item, bool sample)
         {
@@ -522,90 +526,77 @@ namespace LibrelioApplication
 
         private async void Grid_Loaded_1(object sender, RoutedEventArgs e)
         {
-            var app = Application.Current as App;
-            bool updatedView = false;
+            cts = new CancellationTokenSource();
+            //var app = Application.Current as App;
+            await LoadUI();
+            var value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
+            if (value == null)
+            {
+                var date = new DateTime(2012, 4, 15);
+                ApplicationData.Current.LocalSettings.Values["last_checked"] = date.ToUniversalTime().ToString("R");
+                value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
+            }
+            var lastChecked = DateTimeOffset.Parse(value);
+            var minutesPassed = (DateTime.UtcNow - lastChecked).Minutes;
+            if (minutesPassed > 30)
+            {
+                minutesPassed = 30;
+                ApplicationData.Current.LocalSettings.Values["last_checked"] = DateTime.UtcNow.ToString("R");
+            }
+
+            var tsk = StartLoopRefresh(minutesPassed);
+
+            //bool updatedView = false;
 
             //if (!app.loadedPList)
             //{
-                try
-                {
-                    if (app.Manager.MagazineLocalUrl.Count == 0)
-                    {
-                        await app.Manager.LoadLocalMagazineList();
-                        await LoadDefaultData();
-                    }
-
-                    if (app.Manager.MagazineLocalUrl.Count > 0)
-                    {
-                        var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
-                        if (list.Count > 0)
-                        {
-                            foreach (var item in list)
-                            {
-                                GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
-                                VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
-                                VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
-                                VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
-                                vswGrid.InvalidateMeasure();
-                            }
-                        }
-                        UpdateCovers();
-
-                        await Task.Delay(50);
-                        var loader = new ResourceLoader();
-                        itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
-                        await Task.Delay(50);
-                        var scrollViewer = findFirstInVisualTree<ScrollViewer>(itemGridView);
-                        if (scrollViewer != null)
-                        {
-                            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 120);
-                            updatedView = true;
-                        }
-                        
-                        UpdateCovers();
-                        UpdateTile();
-                        await UpdateLocalCovers();
-                    }
-
-                    if (!app.loadedPList)
-                    {
-                    //if (app.Manager.MagazineUrl.Count == 0)
+                //try
+                //{
+                    //if (app.Manager.MagazineLocalUrl.Count == 0)
                     //{
-                        await app.Manager.LoadPLISTAsync();
-                        await LoadDefaultData();
+                        //await app.Manager.LoadLocalMagazineList();
+                        //await LoadDefaultData();
+                    //}
+            
+                    //if (app.Manager.MagazineLocalUrl.Count > 0)
+                    //{
+                        //var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+                        //if (list.Count > 0)
+                        //{
+                        //    foreach (var item in list)
+                        //    {
+                        //        GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
+                        //        VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
+                        //        VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
+                        //        VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
+                        //        vswGrid.InvalidateMeasure();
+                        //    }
+                        //}
+                        //UpdateCovers();
 
-                        var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
-                        if (list.Count > 0)
-                        {
-                            foreach (var item in list)
-                            {
-                                GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
-                                VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
-                                VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
-                                VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
-                                vswGrid.InvalidateMeasure();
-                            }
-                        }
+                        //await Task.Delay(50);
+                        //var loader = new ResourceLoader();
+                        //itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
+                        //await Task.Delay(50);
+                        //var scrollViewer = findFirstInVisualTree<ScrollViewer>(itemGridView);
+                        //if (scrollViewer != null)
+                        //{
+                        //    scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 120);
+                        //    updatedView = true;
+                        //}
+                        
+                        //UpdateCovers();
+                        //UpdateTile();
+                        //await UpdateLocalCovers();
+                    //}
 
-                        if (!updatedView)
-                        {
-                            await Task.Delay(50);
-                            var loader = new ResourceLoader();
-                            itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
-                            await Task.Delay(50);
-                            var scrollViewer = findFirstInVisualTree<ScrollViewer>(itemGridView);
-                            if (scrollViewer != null)
-                            {
-                                scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 120);
-                            }
-                        }
+                    //if (!app.loadedPList)
+                    //{
+                    //if (app.Manager.MagazineUrl.Count == 0)
+                        //await UpdateUIOnline();
 
-                        UpdateCovers();
-                        UpdateTile();
-                        await UpdateLocalCovers();
-
-                        app.loadedPList = true;
-                    }
+                        //app.loadedPList = true;
+                    //}
 
                     
 
@@ -620,11 +611,11 @@ namespace LibrelioApplication
                     //await LoadDefaultData();
                     //var task = DownloadCovers();
                     //var task2 = UpdateTile();
-                }
-                catch
-                {
-                    return;
-                }
+               // }
+                //catch
+                //{
+                    //return;
+                //}
                 //app.loadedPList = true;
             //}
             //else
@@ -668,6 +659,7 @@ namespace LibrelioApplication
             //        return;
             //    }
             //}
+            var app = Application.Current as App;
             var loader1 = new ResourceLoader();
             var group = MagazineDataSource.GetGroup(loader1.GetString("my_magazines"));
             if (group.Items.Count == 0)
@@ -715,57 +707,182 @@ namespace LibrelioApplication
             //var task2 = UpdateTile();
         }
 
+        private async Task StartLoopRefresh(int minutesPassed)
+        {
+            await Task.Delay((30 - minutesPassed) * 60 * 1000, cts.Token);
+            if (cts.Token.IsCancellationRequested) return;
+            await UpdateUIOnline();
+
+            while (true)
+            {
+                await Task.Delay(30 * 60 * 1000, cts.Token);
+                if (cts.Token.IsCancellationRequested) return;
+                await UpdateUIOnline();
+            }
+        }
+
+        private async Task LoadUI()
+        {
+            var app = Application.Current as App;
+            if (app.Manager.MagazineLocalUrl.Count == 0)
+            {
+                await app.Manager.LoadLocalMagazineList();
+
+                if (app.Manager.MagazineLocalUrl.Count > 0)
+                {
+                    await LoadUIInternal();
+                }
+            }
+            else
+            {
+                await LoadUIInternal();
+            }
+        }
+
+        private async Task LoadUIInternal()
+        {
+            try
+            {
+                var app = Application.Current as App;
+                var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+                if (list.Count > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
+                        VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
+                        VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
+                        VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
+                        vswGrid.InvalidateMeasure();
+                    }
+                }
+
+                await UpdateCovers();
+                await Task.Delay(50);
+                var loader = new ResourceLoader();
+                itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
+                await Task.Delay(50);
+                var scrollViewer1 = findFirstInVisualTree<ScrollViewer>(itemGridView);
+                if (scrollViewer1 != null)
+                {
+                    scrollViewer1.ScrollToHorizontalOffset(scrollViewer1.HorizontalOffset - 120);
+                }
+                var task = UpdateLocalCovers();
+                var task1 = UpdateTile();
+            }
+            catch { }
+        }
+
+        private async Task UpdateUIOnline()
+        {
+            if (isRefreshing) return;
+
+            isRefreshing = true;
+
+            var app = Application.Current as App;
+            await app.Manager.LoadPLISTAsync();
+
+            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+            if (list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
+                    VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
+                    VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
+                    VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
+                    vswGrid.InvalidateMeasure();
+                }
+            }
+
+            await DownloadCovers();
+
+            isRefreshing = false;
+        }
+
         private async Task DownloadCovers()
         {
-            await UpdateLocalCovers();
-
             var folder = ApplicationData.Current.LocalFolder;
             folder = await folder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
             if (folder == null) return;
 
             BackgroundDownloader downloader = new BackgroundDownloader();
+            //ApplicationData.Current.LocalSettings.Values.Remove("last_update");
+            var value = ApplicationData.Current.LocalSettings.Values["last_update"] as string;
+            if (value == null)
+            {
+                var date = new DateTime(2012, 4, 15);
+                ApplicationData.Current.LocalSettings.Values["last_update"] = date.ToUniversalTime().ToString("R");
+                value = ApplicationData.Current.LocalSettings.Values["last_update"] as string;
+            }
+            downloader.SetRequestHeader("If-Modified-Since", value);
 
             var loader = new ResourceLoader();
             var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
             if (group == null) return;
             if (group.Items.Count != 0)
             {
+                var tasks = new Task[group.Items.Count + 1];
+                int i = 0;
+                bool error = false;
                 foreach (var item in group.Items)
                 {
-                    DownloadOperation download = null;
-                    StorageFile file = null;
+                        DownloadOperation download = null;
+                        StorageFile file = null;
 
-                    if (item.PngFile.Contains("_newsstand.png"))
-                    {
-                        var url = item.PngFile.Replace("_newsstand.png", ".png");
-
-                        file = await folder.CreateFileAsync(url, CreationCollisionOption.ReplaceExisting);
-                        download = downloader.CreateDownload(new Uri(item.PngUrl.Replace("_newsstand.png", ".png")), file);
-
-                        var task1 = Task.Run(async () =>
+                        if (item.PngFile.Contains("_newsstand.png"))
                         {
-                            await HandleDownloadAsync(download, true);
+                            var url = item.PngFile.Replace("_newsstand.png", ".png");
 
-                            var tsk = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                            file = await folder.CreateFileAsync(url, CreationCollisionOption.OpenIfExists);
+                            download = downloader.CreateDownload(new Uri(item.PngUrl.Replace("_newsstand.png", ".png")), file);
+
+                            var task1 = Task.Run(async () =>
                             {
-                                UpdateTile();
+                                error = await HandleDownloadAsync(download, true);
+
+                                var tsk = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                                {
+                                    if (!error)
+                                    {
+                                        var t = UpdateTile();
+                                    }
+                                });
+                            });
+                            tasks[i++] = task1;
+                        }
+
+                        file = await folder.CreateFileAsync(item.PngFile, CreationCollisionOption.OpenIfExists);
+                        download = downloader.CreateDownload(new Uri(item.PngUrl), file);
+
+                        var task = Task.Run(async () =>
+                        {
+                            error = await HandleDownloadAsync(download, true);
+
+                            var tsk = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
+                            {
+                                if (!error)
+                                {
+                                    try
+                                    {
+                                        var bitmap = new BitmapImage();
+                                        var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri(item.Thumbnail));
+                                        var stream = await file1.OpenAsync(FileAccessMode.Read);
+
+                                        await bitmap.SetSourceAsync(stream);
+                                        item.Image = bitmap;
+
+                                        stream.Dispose();
+                                    }
+                                    catch { }
+                                }
                             });
                         });
-                    }
-
-                    file = await folder.CreateFileAsync(item.PngFile, CreationCollisionOption.ReplaceExisting);
-                    download = downloader.CreateDownload(new Uri(item.PngUrl), file);
-
-                    var task = Task.Run(async () =>
-                        {
-                            await HandleDownloadAsync(download, true);
-
-                            var tsk = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                                {
-                                    item.Image = new BitmapImage(new Uri(item.Thumbnail));
-                                });
-                        });
+                        tasks[i++] = task;
                 }
+                await Task.WhenAll(tasks);
+                if (!error)
+                    ApplicationData.Current.LocalSettings.Values["last_update"] = DateTime.UtcNow.ToString("R");
             }
         }
 
@@ -790,7 +907,7 @@ namespace LibrelioApplication
             catch { }
         }
 
-        private void UpdateCovers()
+        private async Task UpdateCovers()
         {
             var loader = new ResourceLoader();
             var group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
@@ -799,7 +916,19 @@ namespace LibrelioApplication
             {
                 for (int i = 0; i < group.Items.Count; i++)
                 {
-                    group.Items[i].Image = new BitmapImage(new Uri(group.Items[i].Thumbnail));
+                    try
+                    {
+                        var bitmap = new BitmapImage();
+                        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(group.Items[i].Thumbnail));
+                        var stream = await file.OpenAsync(FileAccessMode.Read);
+
+                        await bitmap.SetSourceAsync(stream);
+                        group.Items[i].Image = bitmap;
+
+                        stream.Dispose();
+                    }
+                    catch { }
+                    //group.Items[i].Image = new BitmapImage(new Uri(group.Items[i].Thumbnail));
                 }
             }
         }
@@ -848,7 +977,7 @@ namespace LibrelioApplication
             }
         }
 
-        private void UpdateTile()
+        private async Task UpdateTile()
         {
             try
             {
@@ -864,63 +993,71 @@ namespace LibrelioApplication
                 tileTextAttributes[1].InnerText = item.Subtitle;
 
                 XmlNodeList tileImageAttributes = tileXml.GetElementsByTagName("image");
-                //var tempFolder = ApplicationData.Current.LocalFolder;
-                //var imageFile = await tempFolder.CreateFileAsync("firstpge.png", CreationCollisionOption.ReplaceExisting);
-                //var fileHandle =
-                //        await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\firstpge.png");
 
-                //((XmlElement)tileImageAttributes[0]).SetAttribute("src", "ms-appx:///Assets/WideLogo.png");
-                //((XmlElement)tileImageAttributes[0]).SetAttribute("alt", "background");
                 string url = "";
                 if (item.PngFile.Contains("_newsstand.png"))
                 {
                     url = item.Thumbnail.Replace("_newsstand.png", ".png");
                 }
-                ((XmlElement)tileImageAttributes[0]).SetAttribute("src", url);
-                ((XmlElement)tileImageAttributes[0]).SetAttribute("alt", "magazine image");
-
-                //XmlDocument squareTileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquareText04);
-                //XmlNodeList squareTileTextAttributes = squareTileXml.GetElementsByTagName("text");
-                //squareTileTextAttributes[0].AppendChild(squareTileXml.CreateTextNode("Hello World! My very own tile notification"));
-                //IXmlNode node = tileXml.ImportNode(squareTileXml.GetElementsByTagName("binding").Item(0), true);
-                //tileXml.GetElementsByTagName("visual").Item(0).AppendChild(node);
+                await ScaleImageForTile(url);
+                ((XmlElement)tileImageAttributes[0]).SetAttribute("src", "ms-appdata:///local/Covers/thumbnail.png");
 
                 TileNotification tileNotification = new TileNotification(tileXml);
-
-                //tileNotification.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
-
                 TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotification);
             }
             catch { }
         }
 
+        private async Task ScaleImageForTile(string url)
+        {
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(url));
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+
+            var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+
+            var memStream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+            var encoder = await Windows.Graphics.Imaging.BitmapEncoder.CreateForTranscodingAsync(memStream, decoder);
+
+            // Scaling occurs before flip/rotation.
+            encoder.BitmapTransform.ScaledWidth = 195;
+            encoder.BitmapTransform.ScaledHeight = 250;
+
+            try
+            {
+                await encoder.FlushAsync();
+            }
+            catch (Exception)
+            {
+            }
+
+            stream.Dispose();
+            stream = null;
+
+            var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
+            file = await folder.CreateFileAsync("thumbnail.png", CreationCollisionOption.ReplaceExisting);
+            stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+            // Overwrite the contents of the file with the updated image stream.
+            memStream.Seek(0);
+            await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), stream.GetOutputStreamAt(0));
+
+            await stream.FlushAsync();
+            stream.Dispose();
+            memStream.Dispose();
+
+            await Task.Delay(1000);
+        }
+
         private async void Appbar_Click(object sender, RoutedEventArgs e)
         {
+            if (isRefreshing) return;
+
             Button b = sender as Button;
             if (b != null) {
                 string tag = (string)b.Tag;
                 switch (tag) {
                     case "Refresh":
                         {
-                            var app = Application.Current as App;
-                            await app.Manager.LoadPLISTAsync();
-                            await LoadDefaultData();
-
-                            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
-                            if (list.Count > 0)
-                            {
-                                foreach (var item in list)
-                                {
-                                    GridViewItem container = itemGridView.ItemContainerGenerator.ContainerFromItem(item) as GridViewItem;
-                                    VariableSizedWrapGrid.SetRowSpan(container, item.RowSpan);
-                                    VariableSizedWrapGrid.SetColumnSpan(container, item.ColSpan);
-                                    VariableSizedWrapGrid vswGrid = VisualTreeHelper.GetParent(container) as VariableSizedWrapGrid;
-                                    vswGrid.InvalidateMeasure();
-                                }
-                            }
-
-                            UpdateCovers();
-                            UpdateTile();
+                            await UpdateUIOnline();
                             break;
                         }
                     //case "Slideshow":
@@ -936,9 +1073,10 @@ namespace LibrelioApplication
             
         }
 
-        private async Task HandleDownloadAsync(DownloadOperation download, bool start, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
+        private async Task<bool> HandleDownloadAsync(DownloadOperation download, bool start, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             var app = Application.Current as App;
+            bool error = false;
 
             try
             {
@@ -958,14 +1096,18 @@ namespace LibrelioApplication
             }
             catch (TaskCanceledException)
             {
+                error = true;
             }
             catch (Exception ex)
             {
+                error = true;
             }
             finally
             {
                 app.activeDownloads.Remove(download);
             }
+
+            return error;
         } 
 
         private T FindChild<T>(UIElement element, Func<T, bool> isObject)

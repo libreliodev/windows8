@@ -882,14 +882,14 @@ namespace LibrelioApplication.Data
                     var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
-                    group.Items.Add(it);
+                    group.Items.Insert(it.Index, it);
 
                 } else {
 
                     var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
-                    group.Items.Add(it);
+                    group.Items.Insert(it.Index, it);
                 }
             }
 

@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>Wind</value>
+  </data>
+  <data name="no_media_warning" xml:space="preserve">
+    <value>No media</value>
+  </data>
+  <data name="no_media_hint" xml:space="preserve">
+    <value>Disconnect from PC</value>
+  </data>
+  <data name="open_failed" xml:space="preserve">
+    <value>Cant open PDF. Please put file wind_355.pdf on SD card for testing …</value>
+  </data>
+  <data name="search_backwards" xml:space="preserve">
+    <value>Search back</value>
+  </data>
+  <data name="search_forwards" xml:space="preserve">
+    <value>Search forward</value>
+  </data>
+  <data name="search_document" xml:space="preserve">
+    <value>Search in document</value>
+  </data>
+  <data name="picker_title" xml:space="preserve">
+    <value>Wind</value>
+  </data>
+  <data name="outline_title" xml:space="preserve">
+    <value>Outline</value>
+  </data>
+  <data name="enter_password" xml:space="preserve">
+    <value>Enter your password</value>
+  </data>
+  <data name="text_not_found" xml:space="preserve">
+    <value>Not found</value>
+  </data>
+  <data name="items_you_own" xml:space="preserve">
+    <value>Items you own</value>
+  </data>
+  <data name="recent_transactions" xml:space="preserve">
+    <value>Recent activity</value>
+  </data>
+  <data name="edit_payload" xml:space="preserve">
+    <value>Edit Payload</value>
+  </data>
+  <data name="items_for_sale" xml:space="preserve">
+    <value>Items for sale</value>
+  </data>
+  <data name="searching_" xml:space="preserve">
+    <value>Searching…</value>
+  </data>
+  <data name="link_control" xml:space="preserve">
+    <value>Link highlight</value>
+  </data>
+  <data name="exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="not_connected" xml:space="preserve">
+    <value>Not connected to Internet…</value>
+  </data>
+  <data name="restore_purchise" xml:space="preserve">
+    <value>Restore purchises</value>
+  </data>
+  <data name="subscription_monthly" xml:space="preserve">
+    <value>Subscribe month</value>
+  </data>
+  <data name="subscription_yearly" xml:space="preserve">
+    <value>Subscribe year</value>
+  </data>
+  <data name="android_purchased" xml:space="preserve">
+    <value>Purchase finished</value>
+  </data>
+  <data name="android_canceled" xml:space="preserve">
+    <value>Purchase cancelled</value>
+  </data>
+  <data name="android_refunded" xml:space="preserve">
+    <value>Purchase refunded</value>
+  </data>
+  <data name="android_item_unavailable" xml:space="preserve">
+    <value>Product unavailable</value>
+  </data>
+  <data name="cannot_connect_title" xml:space="preserve">
+    <value>Cant connect</value>
+  </data>
+  <data name="cannot_connect_message" xml:space="preserve">
+    <value>Cant connect Google Play server</value>
+  </data>
+  <data name="billing_not_supported_message" xml:space="preserve">
+    <value>Google Play not supported on your device</value>
+  </data>
+  <data name="subscriptions_not_supported_title" xml:space="preserve">
+    <value>Subscriptions not supported</value>
+  </data>
+  <data name="subscriptions_not_supported_message" xml:space="preserve">
+    <value>Subscriptions not supported on your device</value>
+  </data>
+  <data name="billing_not_supported_title" xml:space="preserve">
+    <value>Billing not supported.</value>
+  </data>
+  <data name="android_test_canceled" xml:space="preserve">
+    <value>android.test.canceled</value>
+  </data>
+  <data name="android_test_purchased" xml:space="preserve">
+    <value>android.test.purchased</value>
+  </data>
+  <data name="android_test_item_unavailable" xml:space="preserve">
+    <value>android.test.item unavailable</value>
+  </data>
+  <data name="android_test_refunded" xml:space="preserve">
+    <value>android.test.refunded</value>
+  </data>
+  <data name="edit_subscriptions" xml:space="preserve">
+    <value>Edit Subscriptions</value>
+  </data>
+  <data name="help_url" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="restoring_transactions" xml:space="preserve">
+    <value>Restoring transactions</value>
+  </data>
+  <data name="learn_more" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="buy" xml:space="preserve">
+    <value>Buy</value>
+  </data>
+  <data name="select_item" xml:space="preserve">
+    <value>Select item</value>
+  </data>
+  <data name="edit_payload_title" xml:space="preserve">
+    <value>Edit the developer payload associated with this purchase</value>
+  </data>
+  <data name="edit_payload_accept" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="edit_payload_clear" xml:space="preserve">
+    <value>No Payload</value>
+  </data>
+  <data name="purchise" xml:space="preserve">
+    <value>Purchassse</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="subscribe_year" xml:space="preserve">
+    <value>Subscribe year</value>
+  </data>
+  <data name="no_further_occurences_found" xml:space="preserve">
+    <value>No more found</value>
+  </data>
+  <data name="connection_failed" xml:space="preserve">
+    <value>Connection failed!</value>
+  </data>
+  <data name="abonnement_wind" xml:space="preserve">
+    <value>Abonnement Wind</value>
+  </data>
+  <data name="server_error" xml:space="preserve">
+    <value>Bad responce from server.</value>
+  </data>
+  <data name="connecting" xml:space="preserve">
+    <value>Connexion...</value>
+  </data>
+  <data name="download_failed_please_check_your_connection" xml:space="preserve">
+    <value>Le téléchargement a échoué, veuillez vérifier votre connection internet</value>
+  </data>
+  <data name="please_check_your_connection" xml:space="preserve">
+    <value>Veuillez vérifier votre connection internet</value>
+  </data>
+  <data name="download_in_progress" xml:space="preserve">
+    <value>Téléchargement en cours</value>
+  </data>
+  <data name="caching_operation_in_progress" xml:space="preserve">
+    <value>Opération de cache en cours</value>
+  </data>
+  <data name="what_do_you_want_to_buy" xml:space="preserve">
+    <value>Que souhaitez-vous acheter?</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="done" xml:space="preserve">
+    <value>Terminé</value>
+  </data>
+  <data name="the_order_failed" xml:space="preserve">
+    <value>La commande a échoué</value>
+  </data>
+  <data name="buy_and_download" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="try_again" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="downloads" xml:space="preserve">
+    <value>Téléchargements</value>
+  </data>
+  <data name="downloaded" xml:space="preserve">
+    <value>Téléchargé</value>
+  </data>
+  <data name="free_Download" xml:space="preserve">
+    <value>Téléchargement gratuit</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>Télécharger ...</value>
+  </data>
+  <data name="free_sample" xml:space="preserve">
+    <value>Extrait gratuit</value>
+  </data>
+  <data name="sample" xml:space="preserve">
+    <value>Extrait</value>
+  </data>
+  <data name="read" xml:space="preserve">
+    <value>Lire</value>
+  </data>
+  <data name="magazines" xml:space="preserve">
+    <value>Magazines</value>
+  </data>
+  <data name="do_you_really_want_to_quit_this_app" xml:space="preserve">
+    <value>Voulez-vous vraiment quitter cette application?</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>Oui</value>
+  </data>
+  <data name="i_have_a_subscriber_code" xml:space="preserve">
+    <value>J\'ai un code abonné</value>
+  </data>
+  <data name="i_have_a_promo_code" xml:space="preserve">
+    <value>J\'ai un code promo</value>
+  </data>
+  <data name="restore_my_purchases" xml:space="preserve">
+    <value>Restaurer mes achats</value>
+  </data>
+  <data name="restore_completed" xml:space="preserve">
+    <value>Restauration effectuée</value>
+  </data>
+  <data name="free_subscription" xml:space="preserve">
+    <value>Abonnement gratuit</value>
+  </data>
+  <data name="subscriber_code" xml:space="preserve">
+    <value>Code abonné</value>
+  </data>
+  <data name="please_enter_your_code" xml:space="preserve">
+    <value>Veuillez saisir votre code</value>
+  </data>
+  <data name="invalid_code" xml:space="preserve">
+    <value>Code non valide</value>
+  </data>
+  <data name="share_on_facebook" xml:space="preserve">
+    <value>Partager sur Facebook</value>
+  </data>
+  <data name="share_on_twitter" xml:space="preserve">
+    <value>Partager sur Twitter</value>
+  </data>
+  <data name="share_by_mail" xml:space="preserve">
+    <value>Partager par mail</value>
+  </data>
+  <data name="languages" xml:space="preserve">
+    <value>Langues</value>
+  </data>
+  <data name="ios_6_required" xml:space="preserve">
+    <value>Désolé, iOS 6 est requis pour cette opération</value>
+  </data>
+  <data name="month" xml:space="preserve">
+    <value>mois</value>
+  </data>
+  <data name="months" xml:space="preserve">
+    <value>mois</value>
+  </data>
+  <data name="year" xml:space="preserve">
+    <value>an</value>
+  </data>
+  <data name="week" xml:space="preserve">
+    <value>semaine</value>
+  </data>
+  <data name="deleting" xml:space="preserve">
+    <value>Suppression ...</value>
+  </data>
+  <data name="downloading" xml:space="preserve">
+    <value>Téléchargement</value>
+  </data>
+  <data name="opening" xml:space="preserve">
+    <value>Ouverture ...</value>
+  </data>
+  <data name="preparing" xml:space="preserve">
+    <value>Préparation</value>
+  </data>
+  <data name="all_magazines" xml:space="preserve">
+    <value>Tous les magazines</value>
+  </data>
+  <data name="my_magazines" xml:space="preserve">
+    <value>Mes Magazines</value>
+  </data>
+  <data name="already_subscribed" xml:space="preserve">
+    <value>Vous êtes déjà abonné</value>
+  </data>
+  <data name="buy_number" xml:space="preserve">
+    <value>Acheter ce numéro pour:</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="download_failed" xml:space="preserve">
+    <value>Télécharger échoué, s'il vous plaît vérifier votre connexion Internet</value>
+  </data>
+  <data name="download_progress" xml:space="preserve">
+    <value>Télécharger en cours</value>
+  </data>
+  <data name="download_sample" xml:space="preserve">
+    <value>Téléchargez l'extrait</value>
+  </data>
+  <data name="img_not_downloaded" xml:space="preserve">
+    <value>Image non téléchargé</value>
+  </data>
+  <data name="no_options" xml:space="preserve">
+    <value>Aucune option d'achat pour ce magazine sont disponibles en ce moment</value>
+  </data>
+  <data name="open_sample" xml:space="preserve">
+    <value>Ouvrez l'extrait</value>
+  </data>
+  <data name="purchase_successfull" xml:space="preserve">
+    <value>Achat réussie</value>
+  </data>
+  <data name="slide_show_inf" xml:space="preserve">
+    <value>Double Tap / clic droit pour fermer</value>
+  </data>
+  <data name="subscribe_one_month" xml:space="preserve">
+    <value>Abonnez-vous pour un mois:</value>
+  </data>
+  <data name="subscribe_one_year" xml:space="preserve">
+    <value>Abonnez-vous pour un an:</value>
+  </data>
+</root>

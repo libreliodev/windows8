@@ -428,6 +428,7 @@ namespace LibrelioApplication
                 else
                 {
                     noOptions.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    noOptions.Text = loader.GetString("no_options");
                 }
             }
 

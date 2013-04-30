@@ -17,6 +17,8 @@ using Windows.UI.Xaml;
 using Windows.Graphics.Imaging;
 using MuPDFWinRT;
 using Windows.ApplicationModel.Resources;
+using System.Net.Http.Headers;
+using Windows.Storage.Search;
 
 
 namespace LibrelioApplication
@@ -83,43 +85,38 @@ namespace LibrelioApplication
             {
                 XmlDocument xml = new XmlDocument();
 
-
                 bool noXml = false;
                 try
                 {
-                    var resonse = await new HttpClient().GetAsync(this._pList.AbsoluteUrl);
-                    resonse.EnsureSuccessStatusCode();
-                    var str = await resonse.Content.ReadAsStringAsync();
+                    var httpClient = new HttpClient();
+                    var url = new Uri(this._pList.AbsoluteUrl);
+                    var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+                    var value = ApplicationData.Current.LocalSettings.Values["last_update"] as string;
+                    if (value == null)
+                    {
+                        var date = new DateTime(2012, 4, 15);
+                        ApplicationData.Current.LocalSettings.Values["last_update"] = date.ToUniversalTime().ToString("R");
+                        value = ApplicationData.Current.LocalSettings.Values["last_update"] as string;
+                    }
+
+                    httpRequestMessage.Headers.IfModifiedSince = DateTime.Parse(value);
+                    var response = await httpClient.SendAsync(httpRequestMessage);
+
+                    //var resonse = await new HttpClient().GetAsync(this._pList.AbsoluteUrl);
+                    response.EnsureSuccessStatusCode();
+                    var str = await response.Content.ReadAsStringAsync();
                     xml.LoadXml(str, settings);
                     //xml = await XmlDocument.LoadFromUriAsync(new Uri(this._pList.AbsoluteUrl), settings);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    if (ex.Message.Contains("304") || ex.Message.Contains("Not Modified")) return;
                     noXml = true;
                 }
+
                 if (!noXml)
                 {
-                    await ReadPList(xml);
-                }
-                else
-                {
-                    var fileHandle =
-                        await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\Magazines.plist");
-                    var stream = await fileHandle.OpenReadAsync();
-                    var dataReader = new DataReader(stream.GetInputStreamAt(0));
-                    var size = await dataReader.LoadAsync((uint)stream.Size);
-                    var str = dataReader.ReadString(size);
-                    dataReader.DetachStream();
-                    stream.Dispose();
-                    stream = null;
-                    if (str.Contains("<!DOCTYPE"))
-                    {
-                        var pos = str.IndexOf("<!DOCTYPE");
-                        var end = str.IndexOf(">", pos + 7);
-                        if (end >= 0)
-                            str = str.Remove(pos, end - pos + 1);
-                    }
-                    xml.LoadXml(str, settings);
                     await ReadPList(xml);
                 }
             }
@@ -776,6 +773,7 @@ namespace LibrelioApplication
             if (localXml == null)
             {
                 var file = await _folder.CreateFileAsync("magazines.metadata", CreationCollisionOption.OpenIfExists);
+                Task task = null;
                 try
                 {
                     localXml = await XmlDocument.LoadFromFileAsync(file);
@@ -786,10 +784,11 @@ namespace LibrelioApplication
                     var root = localXml.CreateElement("root");
                     localXml.AppendChild(root);
 
-                    var task = localXml.SaveToFileAsync(file).AsTask();
-
-                    return;
+                    task = localXml.SaveToFileAsync(file).AsTask();
                 }
+
+                if (task != null)
+                    await task;
             }
 
             _magazinesLocalUrl.Clear();
@@ -819,6 +818,47 @@ namespace LibrelioApplication
                 var task = localXml.SaveToFileAsync(file).AsTask();
 
                 _magazinesLocalUrl.Clear();
+            }
+
+            if (_magazinesLocalUrl.Count == 0)
+            {
+                var fileHandle =
+                            await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\Magazines.plist");
+                var stream = await fileHandle.OpenReadAsync();
+                var dataReader = new DataReader(stream.GetInputStreamAt(0));
+                var size = await dataReader.LoadAsync((uint)stream.Size);
+                var str = dataReader.ReadString(size);
+                dataReader.DetachStream();
+                stream.Dispose();
+                stream = null;
+                if (str.Contains("<!DOCTYPE"))
+                {
+                    var pos = str.IndexOf("<!DOCTYPE");
+                    var end = str.IndexOf(">", pos + 7);
+                    if (end >= 0)
+                        str = str.Remove(pos, end - pos + 1);
+                }
+                XmlDocument xml = new XmlDocument();
+                xml.LoadXml(str);
+                await ReadPList(xml);
+
+                var folder = ApplicationData.Current.LocalFolder;
+                try
+                {
+                    // Set query options to create groups of files within result
+                    var queryOptions = new QueryOptions(Windows.Storage.Search.CommonFolderQuery.DefaultQuery);
+                    queryOptions.UserSearchFilter = "System.FileName:=Covers";
+
+                    // Create query and retrieve result
+                    StorageFolderQueryResult queryResult = folder.CreateFolderQueryWithOptions(queryOptions);
+                    IReadOnlyList<StorageFolder> folders = await queryResult.GetFoldersAsync();
+
+                    if (folders.Count != 1)
+                    {
+                        await Utils.Utils.LoadDefaultData();
+                    }
+                }
+                catch { }
             }
         }
 

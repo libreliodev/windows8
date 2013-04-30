@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LibrelioMagazine</RootNamespace>
     <AssemblyName>LibrelioMagazine</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <DefaultLanguage>fr</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>LibrelioMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
@@ -224,7 +224,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <PRIResource Include="Assets\strings\fr\resources.resw" />
     <Page Include="..\src\SlideShowPage.xaml">
       <Link>Common\SlideShowPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -271,11 +270,16 @@
     <Content Include="Assets\test\receipt.pmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <PRIResource Include="..\Assets\strings\en\resources.resw">
+      <Link>Assets\strings\en\resources.resw</Link>
+    </PRIResource>
+    <PRIResource Include="..\Assets\strings\fr\resources.resw">
+      <Link>Assets\strings\fr\resources.resw</Link>
+    </PRIResource>
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
-    <None Include="CustomizationAssets\Magazines.plist" />
-    <PRIResource Include="Assets\strings\en\resources.resw" />
+    <Content Include="CustomizationAssets\Magazines.plist" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CustomizationAssets\Covers\" />
