@@ -131,34 +131,34 @@
       <Link>Common\SuspensionManager.cs</Link>
     </Compile>
     <Compile Include="..\src\DataModel\MagazineModel.cs">
-      <Link>NewFolder1\MagazineModel.cs</Link>
+      <Link>LinkedSource\MagazineModel.cs</Link>
     </Compile>
     <Compile Include="..\src\DownloadingPage.xaml.cs">
-      <Link>NewFolder1\DownloadingPage.xaml.cs</Link>
+      <Link>LinkedSource\DownloadingPage.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\DownloadManager.cs">
-      <Link>NewFolder1\DownloadManager.cs</Link>
+      <Link>LinkedSource\DownloadManager.cs</Link>
     </Compile>
     <Compile Include="..\src\FullScreenContainer.xaml.cs">
-      <Link>NewFolder1\FullScreenContainer.xaml.cs</Link>
+      <Link>LinkedSource\FullScreenContainer.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\MagazineManager.cs">
-      <Link>NewFolder1\MagazineManager.cs</Link>
+      <Link>LinkedSource\MagazineManager.cs</Link>
     </Compile>
     <Compile Include="..\src\MagazinesPage.xaml.cs">
-      <Link>NewFolder1\MagazinesPage.xaml.cs</Link>
+      <Link>LinkedSource\MagazinesPage.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\PageButton.xaml.cs">
-      <Link>NewFolder1\PageButton.xaml.cs</Link>
+      <Link>LinkedSource\PageButton.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\PdfViewPage.xaml.cs">
-      <Link>NewFolder1\PdfViewPage.xaml.cs</Link>
+      <Link>LinkedSource\PdfViewPage.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\PurchaseModule.xaml.cs">
-      <Link>NewFolder1\PurchaseModule.xaml.cs</Link>
+      <Link>LinkedSource\PurchaseModule.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\SlideShow.xaml.cs">
-      <Link>NewFolder1\SlideShow.xaml.cs</Link>
+      <Link>LinkedSource\SlideShow.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\SlideShowPage.xaml.cs">
       <Link>Common\SlideShowPage.xaml.cs</Link>
@@ -173,7 +173,7 @@
       <Link>Common\VideoPage.xaml.cs</Link>
     </Compile>
     <Compile Include="..\src\VideoPlayer.xaml.cs">
-      <Link>NewFolder1\VideoPlayer.xaml.cs</Link>
+      <Link>LinkedSource\VideoPlayer.xaml.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -182,11 +182,21 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Assets\buy.png" />
-    <Content Include="Assets\buyinvert.png" />
-    <Content Include="Assets\cornerdownloaded.png" />
-    <Content Include="Assets\cornerfree1.png" />
-    <Content Include="Assets\cornerfree2.png" />
+    <Content Include="..\Assets\buy.png">
+      <Link>Assets\buy.png</Link>
+    </Content>
+    <Content Include="..\Assets\buyinvert.png">
+      <Link>Assets\buyinvert.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerdownloaded.png">
+      <Link>Assets\cornerdownloaded.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree1.png">
+      <Link>Assets\cornerfree1.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree2.png">
+      <Link>Assets\cornerfree2.png</Link>
+    </Content>
     <Content Include="CustomizationAssets\application_.xml" />
     <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
@@ -213,32 +223,32 @@
     <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
     <Page Include="..\src\DownloadingPage.xaml">
-      <Link>NewFolder1\DownloadingPage.xaml</Link>
+      <Link>LinkedSource\DownloadingPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\FullScreenContainer.xaml">
-      <Link>NewFolder1\FullScreenContainer.xaml</Link>
+      <Link>LinkedSource\FullScreenContainer.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\PageButton.xaml">
-      <Link>NewFolder1\PageButton.xaml</Link>
+      <Link>LinkedSource\PageButton.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\PurchaseModule.xaml">
-      <Link>NewFolder1\PurchaseModule.xaml</Link>
+      <Link>LinkedSource\PurchaseModule.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\SlideShow.xaml">
-      <Link>NewFolder1\SlideShow.xaml</Link>
+      <Link>LinkedSource\SlideShow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\VideoPlayer.xaml">
-      <Link>NewFolder1\VideoPlayer.xaml</Link>
+      <Link>LinkedSource\VideoPlayer.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -253,7 +263,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\PdfViewPage.xaml">
-      <Link>NewFolder1\PdfViewPage.xaml</Link>
+      <Link>LinkedSource\PdfViewPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -264,7 +274,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="..\src\MagazinesPage.xaml">
-      <Link>NewFolder1\MagazinesPage.xaml</Link>
+      <Link>LinkedSource\MagazinesPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -285,17 +295,17 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\test\receipt.pmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <PRIResource Include="..\Assets\strings\en\resources.resw">
       <Link>Assets\strings\en\resources.resw</Link>
     </PRIResource>
     <PRIResource Include="..\Assets\strings\fr\resources.resw">
       <Link>Assets\strings\fr\resources.resw</Link>
     </PRIResource>
+    <Content Include="..\Assets\test\receipt.pmd">
+      <Link>Assets\test\receipt.pmd</Link>
+    </Content>
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
-      <Link>NewFolder1\LibrelioMagazine_TemporaryKey.pfx</Link>
+      <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
     <Content Include="CustomizationAssets\Magazines.plist" />
   </ItemGroup>

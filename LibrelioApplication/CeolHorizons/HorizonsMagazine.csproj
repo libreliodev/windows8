@@ -182,11 +182,21 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Assets\buy.png" />
-    <Content Include="Assets\buyinvert.png" />
-    <Content Include="Assets\cornerdownloaded.png" />
-    <Content Include="Assets\cornerfree1.png" />
-    <Content Include="Assets\cornerfree2.png" />
+    <Content Include="..\Assets\buy.png">
+      <Link>Assets\buy.png</Link>
+    </Content>
+    <Content Include="..\Assets\buyinvert.png">
+      <Link>Assets\buyinvert.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerdownloaded.png">
+      <Link>Assets\cornerdownloaded.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree1.png">
+      <Link>Assets\cornerfree1.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree2.png">
+      <Link>Assets\cornerfree2.png</Link>
+    </Content>
     <Content Include="CustomizationAssets\application_.xml" />
     <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\backgroundLarge.png" />
@@ -281,15 +291,15 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\test\receipt.pmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <PRIResource Include="..\Assets\strings\en\resources.resw">
       <Link>Assets\strings\en\resources.resw</Link>
     </PRIResource>
     <PRIResource Include="..\Assets\strings\fr\resources.resw">
       <Link>Assets\strings\fr\resources.resw</Link>
     </PRIResource>
+    <Content Include="..\Assets\test\receipt.pmd">
+      <Link>Assets\test\receipt.pmd</Link>
+    </Content>
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
