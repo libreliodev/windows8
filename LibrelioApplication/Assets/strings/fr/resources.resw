@@ -127,7 +127,7 @@
     <value>Disconnect from PC</value>
   </data>
   <data name="open_failed" xml:space="preserve">
-    <value>Cant open PDF. Please put file wind_355.pdf on SD card for testing …</value>
+    <value>Impossible d'ouvrir ce magazine</value>
   </data>
   <data name="search_backwards" xml:space="preserve">
     <value>Search back</value>
@@ -145,7 +145,7 @@
     <value>Outline</value>
   </data>
   <data name="enter_password" xml:space="preserve">
-    <value>Enter your password</value>
+    <value>Entrez votre mot de passe</value>
   </data>
   <data name="text_not_found" xml:space="preserve">
     <value>Not found</value>
@@ -199,13 +199,13 @@
     <value>Product unavailable</value>
   </data>
   <data name="cannot_connect_title" xml:space="preserve">
-    <value>Cant connect</value>
+    <value>Connexion impossible</value>
   </data>
   <data name="cannot_connect_message" xml:space="preserve">
-    <value>Cant connect Google Play server</value>
+    <value>Impossible de se connecter au serveur</value>
   </data>
   <data name="billing_not_supported_message" xml:space="preserve">
-    <value>Google Play not supported on your device</value>
+    <value>Windows Store n'est pas disponible sur votre appareil</value>
   </data>
   <data name="subscriptions_not_supported_title" xml:space="preserve">
     <value>Subscriptions not supported</value>
@@ -214,7 +214,7 @@
     <value>Subscriptions not supported on your device</value>
   </data>
   <data name="billing_not_supported_title" xml:space="preserve">
-    <value>Billing not supported.</value>
+    <value>Achat impossible</value>
   </data>
   <data name="android_test_canceled" xml:space="preserve">
     <value>android.test.canceled</value>
@@ -241,7 +241,7 @@
     <value>Learn more</value>
   </data>
   <data name="buy" xml:space="preserve">
-    <value>Buy</value>
+    <value>Acheter</value>
   </data>
   <data name="select_item" xml:space="preserve">
     <value>Select item</value>
@@ -268,7 +268,7 @@
     <value>No more found</value>
   </data>
   <data name="connection_failed" xml:space="preserve">
-    <value>Connection failed!</value>
+    <value>La connexion a échoué!</value>
   </data>
   <data name="abonnement_wind" xml:space="preserve">
     <value>Abonnement Wind</value>
@@ -340,10 +340,10 @@
     <value>Oui</value>
   </data>
   <data name="i_have_a_subscriber_code" xml:space="preserve">
-    <value>J\'ai un code abonné</value>
+    <value>J'ai un code abonné</value>
   </data>
   <data name="i_have_a_promo_code" xml:space="preserve">
-    <value>J\'ai un code promo</value>
+    <value>J'ai un code promo</value>
   </data>
   <data name="restore_my_purchases" xml:space="preserve">
     <value>Restaurer mes achats</value>
@@ -418,33 +418,33 @@
     <value>Fermer</value>
   </data>
   <data name="download_failed" xml:space="preserve">
-    <value>Télécharger échoué, s'il vous plaît vérifier votre connexion Internet</value>
+    <value>Le téléchargmeent a échoué</value>
   </data>
   <data name="download_progress" xml:space="preserve">
-    <value>Télécharger en cours</value>
+    <value>Téléchargement</value>
   </data>
   <data name="download_sample" xml:space="preserve">
-    <value>Téléchargez l'extrait</value>
+    <value>Télécharger l'extrait</value>
   </data>
   <data name="img_not_downloaded" xml:space="preserve">
     <value>Image non téléchargé</value>
   </data>
   <data name="no_options" xml:space="preserve">
-    <value>Aucune option d'achat pour ce magazine sont disponibles en ce moment</value>
+    <value>Aucune option d'achat pour ce magazine n'est disponible pour le moment</value>
   </data>
   <data name="open_sample" xml:space="preserve">
     <value>Ouvrez l'extrait</value>
   </data>
   <data name="purchase_successfull" xml:space="preserve">
-    <value>Achat réussie</value>
+    <value>Achat réussi</value>
   </data>
   <data name="slide_show_inf" xml:space="preserve">
     <value>Double Tap / clic droit pour fermer</value>
   </data>
   <data name="subscribe_one_month" xml:space="preserve">
-    <value>Abonnez-vous pour un mois:</value>
+    <value>S'abonner pour un mois:</value>
   </data>
   <data name="subscribe_one_year" xml:space="preserve">
-    <value>Abonnez-vous pour un an:</value>
+    <value>S'abonner pour un an:</value>
   </data>
 </root>

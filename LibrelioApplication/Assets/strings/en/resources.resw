@@ -127,7 +127,7 @@
     <value>Disconnect from PC</value>
   </data>
   <data name="open_failed" xml:space="preserve">
-    <value>Cant open PDF. Please put file wind_355.pdf on SD card for testing …</value>
+    <value>Can't open magazine</value>
   </data>
   <data name="search_backwards" xml:space="preserve">
     <value>Search back</value>
@@ -199,10 +199,10 @@
     <value>Product unavailable</value>
   </data>
   <data name="cannot_connect_title" xml:space="preserve">
-    <value>Cant connect</value>
+    <value>Can't connect</value>
   </data>
   <data name="cannot_connect_message" xml:space="preserve">
-    <value>Cant connect Google Play server</value>
+    <value>Can't connect Windows Store server</value>
   </data>
   <data name="billing_not_supported_message" xml:space="preserve">
     <value>Google Play not supported on your device</value>
@@ -415,7 +415,7 @@
     <value>You are already subscribed</value>
   </data>
   <data name="buy_number" xml:space="preserve">
-    <value>Buy this number for:</value>
+    <value>Buy this issue for:</value>
   </data>
   <data name="close" xml:space="preserve">
     <value>Close</value>

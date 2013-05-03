@@ -14,4 +14,5 @@ This project is free software: you can redistribute it and/or modify it under th
 This project is Copyright 20012-2013 WidgetAvenue - Librelio, except included libraries:
 - Copyright 2006-2012 Artifex Software, Inc for the MuPDF library
 
-The use of the Google Analytics library is governed by the following terms: http://www.google.com/analytics/tos.html
+##Customization
+The customization process is detailed at https://github.com/libreliodev/windows8/issues/1#issuecomment-17126807
