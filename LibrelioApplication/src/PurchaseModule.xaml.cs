@@ -88,10 +88,29 @@ namespace LibrelioApplication
             _item = mag;
             product_id = mag.FileName.Replace("_.pdf", "");
             relativePath = mag.RelativePath;
-            licenseInformation = CurrentAppSimulator.LicenseInformation;
+            licenseInformation = CurrentApp.LicenseInformation;
+            IReadOnlyDictionary<string, ProductListing> productListings = null;
 
-            var appListing = await CurrentAppSimulator.LoadListingInformationAsync();
-            var productListings = appListing.ProductListings;
+            try
+            {
+                var appListing = await CurrentApp.LoadListingInformationAsync();
+                productListings = appListing.ProductListings;
+            }
+            catch
+            {
+                subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                noOptions.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                noOptions.Text = loader.GetString("no_options");
+                this.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                return;
+            }
+
             ProductListing product = null;
             
             //statusContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
@@ -119,7 +138,7 @@ namespace LibrelioApplication
                     string receipt = "";
                     try
                     {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
                         receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
 
                     }
@@ -169,7 +188,7 @@ namespace LibrelioApplication
                             string receipt = "";
                             try
                             {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                                receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
 
                             }
                             catch { }
@@ -222,7 +241,7 @@ namespace LibrelioApplication
                 {
                     string receipt = "";
                     try {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
                         receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
 
                     } catch { }
@@ -274,7 +293,7 @@ namespace LibrelioApplication
                         {
                             string receipt = "";
                             try {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                                receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
 
                             }  catch { }
                             if (receipt != "")
@@ -326,7 +345,7 @@ namespace LibrelioApplication
                     string receipt = "";
                     try
                     {
-                        receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                        receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
                         receipt = DownloadManager.GetProductReceiptFromAppReceipt(product.ProductId, receipt);
 
                     }
@@ -376,7 +395,7 @@ namespace LibrelioApplication
                             string receipt = "";
                             try
                             {
-                                receipt = await CurrentAppSimulator.GetAppReceiptAsync().AsTask();
+                                receipt = await CurrentApp.GetAppReceiptAsync().AsTask();
 
                             }
                             catch { }
@@ -463,7 +482,7 @@ namespace LibrelioApplication
                     // The customer doesn't own this feature, so 
                     // show the purchase dialog.
 
-                    var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync("yearlysubscription", true);
+                    var receipt = await CurrentApp.RequestProductPurchaseAsync("yearlysubscription", true);
                     //var b = DownloadManager.ReceiptExpired(receipt);
                     if (!licenseInformation.ProductLicenses["yearlysubscription"].IsActive || receipt == "") return;
                     await DownloadManager.StoreReceiptAsync("yearlysubscription", receipt);
@@ -471,18 +490,18 @@ namespace LibrelioApplication
 
                     // TEST ONLY
                     // =================================================
-                    var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
-                    var xml = new XmlDocument();
-                    xml = await XmlDocument.LoadFromFileAsync(f);
-                    var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
-                    item.SetAttribute("ProductId", "yearlysubscription");
-                    var date = new DateTimeOffset(DateTime.Now);
-                    date = date.AddMinutes(3);
-                    var str = date.ToString("u");
-                    str = str.Replace(" ", "T");
-                    item.SetAttribute("ExpirationDate", str);
-                    receipt = xml.GetXml();
-                    if (DownloadManager.ReceiptExpired(receipt)) return;
+                    //var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+                    //var xml = new XmlDocument();
+                    //xml = await XmlDocument.LoadFromFileAsync(f);
+                    //var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+                    //item.SetAttribute("ProductId", "yearlysubscription");
+                    //var date = new DateTimeOffset(DateTime.Now);
+                    //date = date.AddMinutes(3);
+                    //var str = date.ToString("u");
+                    //str = str.Replace(" ", "T");
+                    //item.SetAttribute("ExpirationDate", str);
+                    //receipt = xml.GetXml();
+                    //if (DownloadManager.ReceiptExpired(receipt)) return;
                     // =================================================
 
                     if (Bought != null)
@@ -524,25 +543,25 @@ namespace LibrelioApplication
                     // The customer doesn't own this feature, so 
                     // show the purchase dialog.
 
-                    var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync("monthlysubscription", true);
+                    var receipt = await CurrentApp.RequestProductPurchaseAsync("monthlysubscription", true);
                     if (!licenseInformation.ProductLicenses["monthlysubscription"].IsActive || receipt == "") return;
                     await DownloadManager.StoreReceiptAsync("monthlysubscription", receipt);
                     // the in-app purchase was successful
 
                     // TEST ONLY
                     // =================================================
-                    var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
-                    var xml = new XmlDocument();
-                    xml = await XmlDocument.LoadFromFileAsync(f);
-                    var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
-                    item.SetAttribute("ProductId", "monthlysubscription");
-                    var date = new DateTimeOffset(DateTime.Now);
-                    date = date.AddMinutes(3);
-                    var str = date.ToString("u");
-                    str = str.Replace(" ", "T");
-                    item.SetAttribute("ExpirationDate", str);
-                    receipt = xml.GetXml();
-                    if (DownloadManager.ReceiptExpired(receipt)) return;
+                    //var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+                    //var xml = new XmlDocument();
+                    //xml = await XmlDocument.LoadFromFileAsync(f);
+                    //var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+                    //item.SetAttribute("ProductId", "monthlysubscription");
+                    //var date = new DateTimeOffset(DateTime.Now);
+                    //date = date.AddMinutes(3);
+                    //var str = date.ToString("u");
+                    //str = str.Replace(" ", "T");
+                    //item.SetAttribute("ExpirationDate", str);
+                    //receipt = xml.GetXml();
+                    //if (DownloadManager.ReceiptExpired(receipt)) return;
                     // =================================================
 
                     if (Bought != null)
@@ -584,25 +603,25 @@ namespace LibrelioApplication
                     // The customer doesn't own this feature, so 
                     // show the purchase dialog.
 
-                    var receipt = await CurrentAppSimulator.RequestProductPurchaseAsync(product_id, true);
+                    var receipt = await CurrentApp.RequestProductPurchaseAsync(product_id, true);
                     if (!licenseInformation.ProductLicenses[product_id].IsActive || receipt == "") return;
                     await DownloadManager.StoreReceiptAsync(product_id, receipt);
                     // the in-app purchase was successful
 
                     // TEST ONLY
                     // =================================================
-                    var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
-                    var xml = new XmlDocument();
-                    xml = await XmlDocument.LoadFromFileAsync(f);
-                    var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
-                    item.SetAttribute("ProductId", product_id);
-                    var date = new DateTimeOffset(DateTime.Now);
-                    date = date.AddMinutes(3);
-                    var str = date.ToString("u");
-                    str = str.Replace(" ", "T");
-                    item.SetAttribute("ExpirationDate", str);
-                    receipt = xml.GetXml();
-                    if (DownloadManager.ReceiptExpired(receipt)) return;
+                    //var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+                    //var xml = new XmlDocument();
+                    //xml = await XmlDocument.LoadFromFileAsync(f);
+                    //var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+                    //item.SetAttribute("ProductId", product_id);
+                    //var date = new DateTimeOffset(DateTime.Now);
+                    //date = date.AddMinutes(3);
+                    //var str = date.ToString("u");
+                    //str = str.Replace(" ", "T");
+                    //item.SetAttribute("ExpirationDate", str);
+                    //receipt = xml.GetXml();
+                    //if (DownloadManager.ReceiptExpired(receipt)) return;
                     // =================================================
 
                     buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;

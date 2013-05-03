@@ -1066,8 +1066,6 @@ namespace LibrelioApplication
             await stream.FlushAsync();
             stream.Dispose();
             memStream.Dispose();
-
-            await Task.Delay(1000);
         }
 
         private async void Appbar_Click(object sender, RoutedEventArgs e)

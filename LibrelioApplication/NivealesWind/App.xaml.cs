@@ -69,7 +69,7 @@ namespace LibrelioApplication
             
             if (rootFrame == null)
             {
-                var licenseInformation = CurrentAppSimulator.LicenseInformation;
+                var licenseInformation = CurrentApp.LicenseInformation;
 
                 //await LibrelioApplication.Utils.Utils.prepareTestData();
 
