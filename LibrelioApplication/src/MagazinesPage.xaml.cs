@@ -29,6 +29,8 @@ using Windows.Networking.BackgroundTransfer;
 using System.Threading;
 using Windows.Storage.Search;
 using System.Net.Http;
+using Windows.UI.Xaml.Documents;
+using Windows.Storage.FileProperties;
 
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
@@ -45,6 +47,7 @@ namespace LibrelioApplication
 
         private bool isOpening = false;
         private bool isRefreshing = false;
+        private int _width = -1;
 
         private CancellationTokenSource cts = null;
 
@@ -76,7 +79,7 @@ namespace LibrelioApplication
             purchaseModule.GetSample += purchaseModule_GetSample;
             purchaseModule.Open += purchaseModule_Open;
             purchaseModule.Delete += purchaseModule_Delete;
-            
+
             Debug.WriteLine("LoadState - finished");
         }
 
@@ -659,8 +662,8 @@ namespace LibrelioApplication
             //        return;
             //    }
             //}
-            var app = Application.Current as App;
             var loader1 = new ResourceLoader();
+            var app = Application.Current as App;
             var group = MagazineDataSource.GetGroup(loader1.GetString("my_magazines"));
             if (group.Items.Count == 0)
             {
@@ -692,6 +695,8 @@ namespace LibrelioApplication
                     snappedGridView.ItemsSource = app.snappedCollection;
                 }
             }
+
+            //progressBarContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
             //UpdateCovers();
 
@@ -743,8 +748,12 @@ namespace LibrelioApplication
         {
             try
             {
+                if (_width < 0) {
+
+                    await CalculateWidth();
+                }
                 var app = Application.Current as App;
-                var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+                var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, _width);
                 if (list.Count > 0)
                 {
                     foreach (var item in list)
@@ -775,16 +784,47 @@ namespace LibrelioApplication
             catch { }
         }
 
+        private async Task CalculateWidth()
+        {
+            var app = Application.Current as App;
+            if (app.Manager.MagazineLocalUrl.Count > 0)
+            {
+                var name = app.Manager.MagazineLocalUrl[0].FullName;              
+                if(name.Contains("_.")) name = name.Replace("_.", ".");
+                name = name.Replace(".pdf", ".png");
+
+                var thumb = String.Format("ms-appdata:///local/Covers/{0}", name);
+                try
+                {
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(thumb));
+                    // Get image properties
+                    ImageProperties imageProperties = await file.Properties.GetImagePropertiesAsync();
+                    _width = (int) (238 * imageProperties.Width / imageProperties.Height);
+                }
+                catch
+                {
+                    _width = 180;
+                }
+            }
+        }
+
         private async Task UpdateUIOnline()
         {
             if (isRefreshing) return;
 
             isRefreshing = true;
 
+            progressBarContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            progressBar.IsIndeterminate = true;
+
             var app = Application.Current as App;
             var isUpdated = await app.Manager.LoadPLISTAsync();
 
-            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl);
+            if (_width < 0) {
+
+                await CalculateWidth();
+            }
+            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, _width);
             if (list.Count > 0)
             {
                 foreach (var item in list)
@@ -805,6 +845,8 @@ namespace LibrelioApplication
             }
 
             isRefreshing = false;
+            progressBarContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            progressBar.IsIndeterminate = false;
         }
 
         private async Task DownloadCovers(bool isUpdated)
@@ -1042,8 +1084,9 @@ namespace LibrelioApplication
             var encoder = await Windows.Graphics.Imaging.BitmapEncoder.CreateForTranscodingAsync(memStream, decoder);
 
             // Scaling occurs before flip/rotation.
-            encoder.BitmapTransform.ScaledWidth = 195;
-            encoder.BitmapTransform.ScaledHeight = 250;
+            int width = (int)(125 * _width / 238);
+            encoder.BitmapTransform.ScaledWidth = (uint)width;
+            encoder.BitmapTransform.ScaledHeight = 125;
 
             try
             {
@@ -1056,12 +1099,45 @@ namespace LibrelioApplication
             stream.Dispose();
             stream = null;
 
+            PixelDataProvider pixelData = await decoder.GetPixelDataAsync(
+                                                            BitmapPixelFormat.Bgra8, // WriteableBitmap uses BGRA format 
+                                                            BitmapAlphaMode.Straight,
+                                                            encoder.BitmapTransform,
+                                                            ExifOrientationMode.IgnoreExifOrientation, // This sample ignores Exif orientation 
+                                                            ColorManagementMode.DoNotColorManage
+                                                        );
+
+            // An array containing the decoded image data, which could be modified before being displayed 
+            byte[] sourcePixels = pixelData.DetachPixelData();
+
+            var bitmap = new WriteableBitmap(125, 125);
+            var offset = (125 - width) / 2;
+            if (offset < 0) offset = 0;
+            using (Stream bitmapStream = bitmap.PixelBuffer.AsStream())
+            {
+                for (int i = 0; i < 125; i++)
+                {
+                    await bitmapStream.WriteAsync(new byte[offset * 4],                0,             offset * 4);
+                    await bitmapStream.WriteAsync(sourcePixels,                        width * 4 * i, width * 4);
+                    await bitmapStream.WriteAsync(new byte[(offset + (125 - width) % 2) * 4], 0, (offset + (125 - width) % 2) * 4);
+                }
+            }
+
             var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
             file = await folder.CreateFileAsync("thumbnail.png", CreationCollisionOption.ReplaceExisting);
             stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+
+            encoder = await Windows.Graphics.Imaging.BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+            Stream pixelStream = bitmap.PixelBuffer.AsStream();
+            byte[] pixels = new byte[pixelStream.Length];
+            await pixelStream.ReadAsync(pixels, 0, pixels.Length);
+
+            encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, (uint)bitmap.PixelWidth, (uint)bitmap.PixelHeight, 96.0, 96.0, pixels);
+            await encoder.FlushAsync();
+
             // Overwrite the contents of the file with the updated image stream.
-            memStream.Seek(0);
-            await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), stream.GetOutputStreamAt(0));
+            //memStream.Seek(0);
+            //await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), stream.GetOutputStreamAt(0));
 
             await stream.FlushAsync();
             stream.Dispose();

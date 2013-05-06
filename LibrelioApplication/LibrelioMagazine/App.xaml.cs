@@ -39,6 +39,7 @@ namespace LibrelioApplication
         public bool needToDownload = false;
         public string ClientName = "";
         public string MagazineName = "";
+        public string Color = "";
         public bool NoMagazines = false;
         public ObservableCollection<Data.MagazineViewModel> snappedCollection = null;
 
@@ -80,6 +81,11 @@ namespace LibrelioApplication
                 var appName = xml.SelectSingleNode("/resources/string[@name='app_name']");
                 ClientName = xml.SelectSingleNode("/resources/string[@name='client_name']").InnerText;
                 MagazineName = xml.SelectSingleNode("/resources/string[@name='magazine_name']").InnerText;
+
+                var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
+                Color = node.InnerText;
+
+                SetupCustomColors();
 
                 Application.Current.Resources["AppName"] = appName.InnerText;
 
@@ -198,7 +204,16 @@ namespace LibrelioApplication
             {
                 activeDownloads.Remove(download);
             }
-        } 
+        }
+
+        private void SetupCustomColors()
+        {
+            if (this.Resources.ContainsKey("ProgressBarIndeterminateForegroundThemeBrush"))
+            {
+                var brush = this.Resources["ProgressBarIndeterminateForegroundThemeBrush"] as SolidColorBrush;
+                brush.Color = Utils.Utils.ColorFromHex(Color).Color;
+            }
+        }
 
     }
 }

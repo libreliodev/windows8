@@ -26,6 +26,7 @@
             IsSourceGrouped="true"
             ItemsPath="TopItems"
             d:Source="{Binding AllGroups, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
+
         <!--<CollectionViewSource
             x:Name="itemsViewSource"
             Source="{Binding Items}"
@@ -155,6 +156,10 @@
         
         <Grid Grid.RowSpan="2">
             <local:PurchaseModule x:Name="purchaseModule" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+        </Grid>
+
+        <Grid x:Name="progressBarContainer" Grid.RowSpan="2" VerticalAlignment="Top" Margin="0,5" Visibility="Collapsed">
+            <ProgressBar x:Name="progressBar" Height="5"></ProgressBar>
         </Grid>
 
          <!-- Vertical scrolling list only used when snapped -->

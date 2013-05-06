@@ -238,7 +238,7 @@ namespace LibrelioApplication
         {
         }
 
-        private async void pdfThumbnail_Loaded(object sender, RoutedEventArgs e)
+        private void pdfThumbnail_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -249,13 +249,14 @@ namespace LibrelioApplication
                     return;
                 }
 
-                var fileHandle =
-                    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
+                //var fileHandle =
+                //    await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
 
-                var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
-                var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
-                string color = node.InnerText;
-                progressBar.Foreground = Utils.Utils.ColorFromHex(color);
+                //var xml = await XmlDocument.LoadFromFileAsync(fileHandle);
+                //var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
+                //string color = node.InnerText;
+                var app = Application.Current as App;
+                progressBar.Foreground = Utils.Utils.ColorFromHex(app.Color);
 
                 //manager = new MagazineManager("http://librelio-europe.s3.amazonaws.com/niveales/wind/", "Magazines");
 

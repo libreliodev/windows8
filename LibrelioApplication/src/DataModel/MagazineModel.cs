@@ -508,9 +508,10 @@ namespace LibrelioApplication.Data
         //    this._group = group;
         //}
 
-        public MagazineViewModel(String uniqueId, int colSpan, int rowSpan, String title, String subtitle, MagazineDataGroup group, MagazineModel m)
+        public MagazineViewModel(String uniqueId, int colSpan, int rowSpan, int width, String title, String subtitle, MagazineDataGroup group, MagazineModel m)
             : base(uniqueId, title, subtitle)
         {
+            _width = width;
             Title = m.Title;
             Subtitle = m.Subtitle;
             IsDownloaded = m.isDowloaded;
@@ -569,7 +570,7 @@ namespace LibrelioApplication.Data
             this._group = group;
         }
 
-        public bool Update(int colSpan, int rowSpan, MagazineModel m)
+        public bool Update(int colSpan, int rowSpan, int width, MagazineModel m)
         {
             bool needUpdateLayout = false;
 
@@ -626,7 +627,7 @@ namespace LibrelioApplication.Data
 
             ColSpan = colSpan;
             RowSpan = rowSpan;
-            var w= 180;
+            var w = width;
             var h = 238;
             w *= ColSpan;
             h *= RowSpan;
@@ -802,7 +803,7 @@ namespace LibrelioApplication.Data
 
         public MagazineDataSource() {  }
 
-        public static IReadOnlyList<MagazineViewModel> LoadMagazines(IList<LibrelioLocalUrl> magazines) {
+        public static IReadOnlyList<MagazineViewModel> LoadMagazines(IList<LibrelioLocalUrl> magazines, int width) {
 
            var list = new List<MagazineViewModel>();
 
@@ -833,12 +834,12 @@ namespace LibrelioApplication.Data
                     var item = GetItem(m.Title + m.Subtitle);
                     if (item != null)
                     {
-                        var b = item.Update(1, 1, m);
+                        var b = item.Update(1, 1, width, m);
                         if (b) list.Add(item);
                         continue;
                     }
 
-                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, m.Title, m.Subtitle, group, m));
+                    group.Items.Add(new MagazineViewModel(m.Title + m.Subtitle, 1, 1, width, m.Title, m.Subtitle, group, m));
                 }
             }
 
@@ -868,12 +869,12 @@ namespace LibrelioApplication.Data
                 {
                     if (m.Index == 0)
                     {
-                        var b = item.Update(2, 2, m);
+                        var b = item.Update(2, 2, width, m);
                         if (b) list.Add(item);
                     }
                     else
                     {
-                        var b = item.Update(1, 1, m);
+                        var b = item.Update(1, 1, width, m);
                         if (b) list.Add(item);
                     }
 
@@ -882,7 +883,7 @@ namespace LibrelioApplication.Data
 
                 if (m.Index == 0) {
 
-                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, m.Title, m.Subtitle, group, m);
+                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 2, 2, width, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
                     if (it.Index < group.Items.Count)
@@ -894,7 +895,7 @@ namespace LibrelioApplication.Data
 
                 } else {
 
-                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, m.Title, m.Subtitle, group, m);
+                    var it = new MagazineViewModel(m.Title + m.Subtitle + "1", 1, 1, width, m.Title, m.Subtitle, group, m);
                     if (it.IsDownloaded)
                         it.SecondButtonVisible = false;
                     if (it.Index < group.Items.Count)
