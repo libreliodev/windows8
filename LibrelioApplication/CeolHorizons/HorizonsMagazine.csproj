@@ -197,7 +197,9 @@
     <Content Include="..\Assets\cornerfree2.png">
       <Link>Assets\cornerfree2.png</Link>
     </Content>
-    <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\backgroundLarge.png" />
     <Content Include="CustomizationAssets\backgroundMin.png" />
