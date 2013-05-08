@@ -1003,7 +1003,11 @@ namespace LibrelioApplication
             if (!loadedFirstPage)
             {
                 loadedFirstPage = true;
-                //var task = InitPageLink(0);
+                try
+                {
+                    var task = InitPageLink(0);
+                }
+                catch { }
             }
         }
 
@@ -1564,7 +1568,7 @@ namespace LibrelioApplication
                     {
                         try
                         {
-                            //await InitPageLink(pageNum);
+                            await InitPageLink(pageNum);
                         }
                         catch { }
                     });
@@ -2342,7 +2346,11 @@ namespace LibrelioApplication
 
                 switchOrientation = false;
 
-                //await InitPageLink(pageNum);
+                try
+                {
+                    await InitPageLink(pageNum);
+                }
+                catch { }
             });
         }
 
