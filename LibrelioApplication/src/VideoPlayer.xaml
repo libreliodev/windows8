@@ -84,7 +84,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased" Loaded="frame_Loaded">
+    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased" Loaded="frame_Loaded" Tapped="frame_Tapped" >
         <Grid x:Name="content" Visibility="Collapsed">
             <MediaElement AutoPlay="False" x:Name="videoPlayer" Width="500" Height="300" Visibility="Visible" MediaOpened="videoPlayer_MediaOpened" MediaFailed="videoPlayer_MediaFailed" MediaEnded="videoPlayer_MediaEnded"/>
             <WebView x:Name="webView" Visibility="Collapsed" />

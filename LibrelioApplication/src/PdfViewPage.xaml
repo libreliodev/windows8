@@ -130,7 +130,7 @@ x:Name="pageRoot"
             SelectionMode="None"
             IsSwipeEnabled="false"
             IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick" SelectionChanged="itemGridView_SelectionChanged" Grid.Row="1" Height="150">
+            ItemClick="ItemView_ItemClick" Grid.Row="1" Height="150">
 
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -140,7 +140,7 @@ x:Name="pageRoot"
 
                     <GridView.ItemTemplate>
                         <DataTemplate >
-                            <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Width="150"  Height="150">
+                            <Grid HorizontalAlignment="Left" Tag="{Binding Idx}" Width="150"  Height="150" PointerReleased="Grid_PointerReleased_1" >
                                 <!--<StackPanel VerticalAlignment="Top" Background="{StaticResource ListViewItemOverlayBackgroundThemeBrush}">
                                     <TextBlock Text="{Binding PageNumber}" Height="30" Margin="15,0,15,0" HorizontalAlignment="Center" Foreground="#FFBF2D2D" FontFamily="Global User Interface" FontSize="10"/>
                                 </StackPanel>
@@ -186,7 +186,7 @@ x:Name="pageRoot"
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>-->
 
-        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Canvas.ZIndex="1" >
+        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Canvas.ZIndex="1" Tapped="Output_Tapped">
             <!--<ScrollViewer 
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
 		                  VerticalScrollMode="Auto" HorizontalScrollMode="Auto" ZoomMode="Enabled"
@@ -225,7 +225,7 @@ x:Name="pageRoot"
                                       Padding="0" ViewChanged="ScrollViewer_ViewChanged_1" Loaded="ScrollViewer_Loaded_1"
                                       >
 
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" >
                                     <Image HorizontalAlignment="Center" Source="{Binding Image}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
                                     <Image HorizontalAlignment="Center" Source="{Binding ZoomedImage}" Stretch="Uniform" Width="{Binding PageWidth}" Height="{Binding PageHeight}" Margin="0"/>
                             </Grid>

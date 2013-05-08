@@ -63,27 +63,41 @@ namespace LibrelioApplication
             _pageNum = PageNum;
         }
 
-        private void frame_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            isPressed = true;
-        }
+        //private void frame_PointerPressed(object sender, PointerRoutedEventArgs e)
+        //{
+        //    isPressed = true;
+        //}
 
-        private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //private void frame_PointerReleased(object sender, PointerRoutedEventArgs e)
+        //{
+        //    if (isPressed && !_isInternalLink)
+        //    {
+        //        Clicked(_folderUrl, _url);
+        //    }
+        //    else if (_isInternalLink)
+        //    {
+        //        InternalClicked(_pageNum);
+        //    }
+        //    isPressed = false;
+        //}
+
+        //private void frame_PointerExited(object sender, PointerRoutedEventArgs e)
+        //{
+        //    isPressed = false;
+        //}
+
+        private void frame_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (isPressed && !_isInternalLink)
+            e.Handled = true;
+
+            if (!_isInternalLink)
             {
                 Clicked(_folderUrl, _url);
             }
-            else if (_isInternalLink)
+            else
             {
                 InternalClicked(_pageNum);
             }
-            isPressed = false;
-        }
-
-        private void frame_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            isPressed = false;
         }
     }
 }

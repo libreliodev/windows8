@@ -467,5 +467,10 @@ namespace LibrelioApplication
                 itemListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
             }
         }
+
+        private void frame_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

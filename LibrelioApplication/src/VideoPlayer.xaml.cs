@@ -324,5 +324,10 @@ namespace LibrelioApplication
             controlsFrame.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             UiHidden = true;
         }
+
+        private void frame_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

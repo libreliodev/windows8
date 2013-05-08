@@ -446,6 +446,8 @@ namespace LibrelioApplication
 
         private bool switchOrientation = false;
 
+        private bool isLeftThumbnailPressed = false;
+
         public PdfViewPage()
         {
             this.InitializeComponent();
@@ -562,14 +564,6 @@ namespace LibrelioApplication
             }
         }
 
-        void embdedFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-        }
-
-        void embdedFrame_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-        }
-
 
         private static T findFirstInVisualTree<T>(DependencyObject parent) where T : class
         {
@@ -608,15 +602,6 @@ namespace LibrelioApplication
             return foundChild;
         }
 
-        //string getPageName(int page) {
-        //    return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + ".png"));
-        //}
-
-        //string getThumbName(int page)
-        //{
-        //    return String.Format("ms-appdata:///local/{0}", (pdfFileName.Replace(".pdf", "") + "_page" + page + "_thumb" + ".png"));
-        //}
-
         float CalculateZoomFactor(int height)
         {
             var rect = Window.Current.Bounds;
@@ -629,50 +614,8 @@ namespace LibrelioApplication
             return (float)(rect.Width) / width;
         }
 
-        //void PdfViewPage_PointerReleased(object sender, PointerRoutedEventArgs e)
-        //{
-        //    if (sender is MyListViewItem) {
-        //        var p = e.GetCurrentPoint((UIElement)sender);
-        //        PageData data = (PageData)(((MyListViewItem)sender).Content);
-        //        Windows.Foundation.Point pos = p.Position;
-        //        for (int i = 0; i < data.Links.Count; i++)
-        //        {
-        //            if (data.Links[i].rect.Contains(p.Position))
-        //            {
-        //                Uri uri = new Uri(data.Links[i].url);
-        //                if (uri.Host == LOCAL_HOST)
-        //                {
-        //                    if (uri.LocalPath.EndsWith(".png") || uri.LocalPath.EndsWith(".jpg"))
-        //                    {
-        //                        if (uri.Query.Contains("warect=full"))
-        //                        {
-        //                            Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
-        //                        }
-        //                        else
-        //                        {
-        //                            //TODO continue with real links - right now coord and size worked incorrectly
-        //                            //embdedFrame.Width = data.Links[i].rect.Width * scrollViewer.ZoomFactor;
-        //                            //embdedFrame.Height = data.Links[i].rect.Height * scrollViewer.ZoomFactor;
-        //                            //embdedFrame.Margin = new Thickness(30+data.Links[i].rect.Left * scrollViewer.ZoomFactor, data.Links[i].rect.Top * scrollViewer.ZoomFactor, 0, 0);
-        //                            //embdedFrame.Visibility = Windows.UI.Xaml.Visibility.Visible;
-        //                            //embdedFrame.Navigate(typeof(LibrelioApplication.SlideShowPage), data.Links[i].url);
-        //                        }
-        //                    }
-        //                    if (uri.LocalPath.EndsWith(".mov"))
-        //                    {
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //    }
-        //}
-
-
-        private void itemGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+        // Thumbnail click
+        // ==================================================================================
 
         /// <summary>
         /// Invoked when an item is clicked.
@@ -682,7 +625,8 @@ namespace LibrelioApplication
         /// <param name="e">Event data that describes the item clicked.</param>
         void ItemView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            int idx = ((PageData)e.ClickedItem).Idx-1;
+            var item = (PageData)e.ClickedItem;
+            int idx = item.Idx - 1;
             if (ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
             {
                 if (idx > 0)
@@ -690,39 +634,26 @@ namespace LibrelioApplication
                     idx = 2 * idx - 1;
                 }
             }
-            pagesListView.ScrollIntoView(pages[idx]);
+
+            if (ApplicationView.Value == ApplicationViewState.FullScreenPortrait && 
+                item.ImageRight != null && 
+                !isLeftThumbnailPressed)
+                pagesListView.ScrollIntoView(pages[idx + 1]);
+            else
+                pagesListView.ScrollIntoView(pages[idx]);
+
+            isLeftThumbnailPressed = false;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Grid_PointerReleased_1(object sender, PointerRoutedEventArgs e)
         {
-            int i1 = 2;
+            var item = (UIElement)sender;
+            var point = e.GetCurrentPoint(item);
+            if (point.Position.X < item.RenderSize.Width / 2)
+                isLeftThumbnailPressed = true;
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            int i2 = 2;
-        }
-
-        private void Appbar_Click(object sender, RoutedEventArgs e)
-        {
-            Button b = sender as Button;
-            if (b != null) {
-                string tag = (string)b.Tag;
-                switch (tag) { 
-                    case "Slideshow":
-                        //msgBox if need:
-                        Utils.Utils.navigateTo(typeof(LibrelioApplication.SlideShowPage), "http://localhost/sample_5.jpg?warect=full&waplay=auto1&wadelay=3000&wabgcolor=white");
-                        break;
-                    case "Video":
-                        Utils.Utils.navigateTo(typeof(LibrelioApplication.VideoPage), "http://localhost/test_move1.mov?waplay=auto1");
-                        break;
-                }
-
-            }
-            
-        }
-
-        //---------------------------------------------------------------
+        // ==================================================================================
 
         // open the testmagazine.pdf in the Assets\test folder and return a buffer with it's content
         private async Task<IBuffer> GetPDFFileData()
@@ -1072,7 +1003,7 @@ namespace LibrelioApplication
             if (!loadedFirstPage)
             {
                 loadedFirstPage = true;
-                var task = InitPageLink(0);
+                //var task = InitPageLink(0);
             }
         }
 
@@ -1633,7 +1564,7 @@ namespace LibrelioApplication
                     {
                         try
                         {
-                            await InitPageLink(pageNum);
+                            //await InitPageLink(pageNum);
                         }
                         catch { }
                     });
@@ -1766,8 +1697,11 @@ namespace LibrelioApplication
 
                     await Task.Run(() =>
                     {
+                        if (page != pageNum) return;
+
                         for (int j = 0; j < links.Count; j++)
                         {
+                            if (page != pageNum) return;
                             links[j].AcceptVisitor(linkVistor);
                         }
                     });
@@ -1793,8 +1727,11 @@ namespace LibrelioApplication
 
                     await Task.Run(() =>
                     {
+                        if (page != pageNum) return;
+
                         for (int j = 0; j < links.Count; j++)
                         {
+                            if (page != pageNum) return;
                             links[j].AcceptVisitor(linkVistor);
                         }
                     });
@@ -2210,191 +2147,230 @@ namespace LibrelioApplication
             }
         }
 
+        // Size changed
+        // ==========================================================================
+
         private void pageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //if (ApplicationView.Value == ApplicationViewState.Snapped)
-            //{
-            //    if (this.Frame.CanGoBack)
-            //        this.Frame.GoBack();
-            //    return;
-            //}
-
             if (pages.Count > 0)
             {
-                if (pages[0].Width != Window.Current.Bounds.Width ||
-                    pages[0].Height != Window.Current.Bounds.Height)
-                {
-                    int width = 0;
-                    int height = 0;
+                if (pages[0].Width != e.NewSize.Width ||
+                    pages[0].Height != e.NewSize.Height) {
+
                     MuPDFWinRT.Point size = document.GetPageSize(0);
 
-                    ApplicationViewState currentViewState = ApplicationView.Value;
+                    if (e.NewSize.Width >= e.NewSize.Height) {
 
-                    if (currentViewState != ApplicationViewState.FullScreenPortrait)
-                    {
-                        if (pages != null && pages.Count > 1)
-                        {
-                            if (pages[1].Width < pages[1].Height)
-                            {
-                                pageNum = (pageNum + 1) / 2;
-                                switchOrientation = true;
-                            }
-                        }
+                        SwitchToLandscape(size);
 
-                        // calculate display zoom factor
-                        defaultZoomFactor = CalculateZoomFactor(size.Y);
-                        currentZoomFactor = defaultZoomFactor;
+                    } else {
 
-                        if (defaultZoomFactor > 1)
-                        {
-                            // if the screen is bigger the the document size we adjust with offsetZF
-                            offsetZF = defaultZoomFactor;
-                            defaultZoomFactor = currentZoomFactor = 1.0f;
-                        }
-                        else
-                        {
-                            offsetZF = 1.0f;
-                        }
-
-                        width = (int)(size.X * currentZoomFactor * offsetZF);
-                        height = (int)(size.Y * currentZoomFactor * offsetZF);
-
-                        pagesListView.ItemsSource = null;
-                        pages.Clear();
-
-                        for (int p = 0; p < pageCount; p++)
-                        {
-                            if (p == 0 || p == pageCount - 1)
-                            {
-                                // add the loading DataTemplate to the UI       
-                                var data = new PageData()
-                                {
-                                    Image = null,
-                                    Width = Window.Current.Bounds.Width,
-                                    Height = Window.Current.Bounds.Height,
-                                    Idx = p + 1,
-                                    ZoomFactor = defaultZoomFactor,
-                                    FirstPageZoomFactor = defaultZoomFactor,
-                                    SecondPageZoomFactor = defaultZoomFactor,
-                                    PageWidth = width,
-                                    PageHeight = height,
-                                    Loading = false
-                                };
-                                pages.Add(data);
-                            }
-                            else
-                            {
-                                // add the loading DataTemplate to the UI       
-                                var data = new PageData()
-                                {
-                                    Image = null,
-                                    Width = Window.Current.Bounds.Width,
-                                    Height = Window.Current.Bounds.Height,
-                                    Idx = p + 1,
-                                    ZoomFactor = defaultZoomFactor,
-                                    FirstPageZoomFactor = defaultZoomFactor,
-                                    SecondPageZoomFactor = defaultZoomFactor,
-                                    PageWidth = 2 * width,
-                                    PageHeight = height,
-                                    Loading = false
-                                };
-                                pages.Add(data);
-                            }
-                            var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(p) as GridViewItem;
-                            var scr = findFirstInVisualTree<ScrollViewer>(item);
-                            if (scr != null)
-                            {
-                                scr.ZoomToFactor(defaultZoomFactor);
-                            }
-                        }
-                        pagesListView.ItemsSource = pages;
-                    }
-                    else
-                    {
-                        if (pages != null && pages.Count > 1)
-                        {
-                            if (pages[1].Width > pages[1].Height)
-                            {
-                                if (pageNum > 0)
-                                {
-                                    pageNum = pageNum * 2 - 1;
-                                    switchOrientation = true;
-                                }
-                            }
-                        }
-                        // calculate display zoom factor
-                        defaultZoomFactor = CalculateZoomFactor1(size.X);
-                        currentZoomFactor = defaultZoomFactor;
-
-                        if (defaultZoomFactor > 1)
-                        {
-                            // if the screen is bigger the the document size we adjust with offsetZF
-                            offsetZF = defaultZoomFactor;
-                            defaultZoomFactor = currentZoomFactor = 1.0f;
-                        }
-                        else
-                        {
-                            offsetZF = 1.0f;
-                        }
-
-                        width = (int)(size.X * currentZoomFactor * offsetZF);
-                        height = (int)(size.Y * currentZoomFactor * offsetZF);
-
-                        pagesListView.ItemsSource = null;
-                        pages.Clear();
-                        for (int p = 0; p <= 2 * (pageCount - 1) - 1; p++)
-                        {
-                            // add the loading DataTemplate to the UI       
-                            var data = new PageData()
-                            {
-                                Image = null,
-                                Width = Window.Current.Bounds.Width,
-                                Height = Window.Current.Bounds.Height,
-                                Idx = p + 1,
-                                ZoomFactor = defaultZoomFactor,
-                                FirstPageZoomFactor = defaultZoomFactor,
-                                SecondPageZoomFactor = defaultZoomFactor,
-                                PageWidth = width,
-                                PageHeight = height,
-                                Loading = false
-                            };
-                            pages.Add(data);
-
-                            var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(p) as GridViewItem;
-                            var scr = findFirstInVisualTree<ScrollViewer>(item);
-                            if (scr != null)
-                            {
-                                scr.ZoomToFactor(defaultZoomFactor);
-                            }
-                        }
-                        pagesListView.ItemsSource = pages;
+                        SwitchToPortrait(size);
                     }
                 }
 
-                var task = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
-                {
-                    if (cancelDraw)
-                    {
-                        needBuffer = true;
-                        return;
-                    }
-
-                    if ((isBusyRedraw || isBuffering) && !cancelDraw)
-                    {
-                        cancelDraw = true;
-                        document.CancelDraw();
-                        needBuffer = true;
-                        return;
-                    }
-
-                    pagesListView.ScrollIntoView(pages[pageNum]);
-                    await BufferPages(pageNum, NUM_NEIGHBOURS_BUFFER);
-
-                    switchOrientation = false;
-
-                    await InitPageLink(pageNum);
-                });
+                UpdateViewSwitchOrientation();
             }
+        }
+
+        private void SwitchToLandscape(MuPDFWinRT.Point size)
+        {
+            if (pages != null && pages.Count > 1)
+            {
+                if (pages[1].Width < pages[1].Height)
+                {
+                    pageNum = (pageNum + 1) / 2;
+                    switchOrientation = true;
+                }
+            }
+
+            // calculate display zoom factor
+            defaultZoomFactor = CalculateZoomFactor(size.Y);
+            currentZoomFactor = defaultZoomFactor;
+
+            if (defaultZoomFactor > 1)
+            {
+                // if the screen is bigger the the document size we adjust with offsetZF
+                offsetZF = defaultZoomFactor;
+                defaultZoomFactor = currentZoomFactor = 1.0f;
+            }
+            else
+            {
+                offsetZF = 1.0f;
+            }
+
+            var width = (int)(size.X * currentZoomFactor * offsetZF);
+            var height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+            pagesListView.ItemsSource = null;
+            pages.Clear();
+
+            for (int p = 0; p < pageCount; p++)
+            {
+                if (p == 0 || p == pageCount - 1)
+                {
+                    // add the loading DataTemplate to the UI       
+                    var data = new PageData()
+                    {
+                        Image = null,
+                        Width = Window.Current.Bounds.Width,
+                        Height = Window.Current.Bounds.Height,
+                        Idx = p + 1,
+                        ZoomFactor = defaultZoomFactor,
+                        FirstPageZoomFactor = defaultZoomFactor,
+                        SecondPageZoomFactor = defaultZoomFactor,
+                        PageWidth = width,
+                        PageHeight = height,
+                        Loading = false
+                    };
+                    pages.Add(data);
+                }
+                else
+                {
+                    // add the loading DataTemplate to the UI       
+                    var data = new PageData()
+                    {
+                        Image = null,
+                        Width = Window.Current.Bounds.Width,
+                        Height = Window.Current.Bounds.Height,
+                        Idx = p + 1,
+                        ZoomFactor = defaultZoomFactor,
+                        FirstPageZoomFactor = defaultZoomFactor,
+                        SecondPageZoomFactor = defaultZoomFactor,
+                        PageWidth = 2 * width,
+                        PageHeight = height,
+                        Loading = false
+                    };
+                    pages.Add(data);
+                }
+                var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(p) as GridViewItem;
+                var scr = findFirstInVisualTree<ScrollViewer>(item);
+                if (scr != null)
+                {
+                    scr.ZoomToFactor(defaultZoomFactor);
+                }
+            }
+
+            pagesListView.ItemsSource = pages;
+        }
+
+        private void SwitchToPortrait(MuPDFWinRT.Point size)
+        {
+ 	        if (pages != null && pages.Count > 1)
+            {
+                if (pages[1].Width > pages[1].Height)
+                {
+                    if (pageNum > 0)
+                    {
+                        pageNum = pageNum * 2 - 1;
+                        switchOrientation = true;
+                    }
+                }
+            }
+            // calculate display zoom factor
+            defaultZoomFactor = CalculateZoomFactor1(size.X);
+            currentZoomFactor = defaultZoomFactor;
+
+            if (defaultZoomFactor > 1)
+            {
+                // if the screen is bigger the the document size we adjust with offsetZF
+                offsetZF = defaultZoomFactor;
+                defaultZoomFactor = currentZoomFactor = 1.0f;
+            }
+            else
+            {
+                offsetZF = 1.0f;
+            }
+
+            var width = (int)(size.X * currentZoomFactor * offsetZF);
+            var height = (int)(size.Y * currentZoomFactor * offsetZF);
+
+            pagesListView.ItemsSource = null;
+            pages.Clear();
+            for (int p = 0; p <= 2 * (pageCount - 1) - 1; p++)
+            {
+                // add the loading DataTemplate to the UI       
+                var data = new PageData()
+                {
+                    Image = null,
+                    Width = Window.Current.Bounds.Width,
+                    Height = Window.Current.Bounds.Height,
+                    Idx = p + 1,
+                    ZoomFactor = defaultZoomFactor,
+                    FirstPageZoomFactor = defaultZoomFactor,
+                    SecondPageZoomFactor = defaultZoomFactor,
+                    PageWidth = width,
+                    PageHeight = height,
+                    Loading = false
+                };
+                pages.Add(data);
+
+                var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(p) as GridViewItem;
+                var scr = findFirstInVisualTree<ScrollViewer>(item);
+                if (scr != null)
+                {
+                    scr.ZoomToFactor(defaultZoomFactor);
+                }
+            }
+
+            pagesListView.ItemsSource = pages;
+        }
+
+        private void UpdateViewSwitchOrientation()
+        {
+            var task = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+            {
+                if (cancelDraw)
+                {
+                    needBuffer = true;
+                    switchOrientation = false;
+                    pagesListView.ScrollIntoView(pages[pageNum]);
+                    return;
+                }
+
+                if ((isBusyRedraw || isBuffering) && !cancelDraw)
+                {
+                    cancelDraw = true;
+                    needBuffer = true;
+                    switchOrientation = false;
+                    pagesListView.ScrollIntoView(pages[pageNum]);
+                    return;
+                }
+
+                pagesListView.ScrollIntoView(pages[pageNum]);
+                await BufferPages(pageNum, NUM_NEIGHBOURS_BUFFER);
+
+                switchOrientation = false;
+
+                //await InitPageLink(pageNum);
+            });
+        }
+
+        // ==========================================================================
+
+        // Tapped handlers 
+        // ==========================================================================
+
+        private void LeftPressed()
+        {
+            if (pageNum > 0)
+                pagesListView.ScrollIntoView(pages[pageNum - 1]);
+        }
+
+        private void RightPressed()
+        {
+            if (pageNum < pagesListView.Items.Count - 1)
+                pagesListView.ScrollIntoView(pages[pageNum + 1]);
+        }
+
+        private void Output_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var point = e.GetPosition(null);
+
+            if (point.X < Window.Current.Bounds.Width / 2)
+                LeftPressed();
+            else
+                RightPressed();
         }
 
     }

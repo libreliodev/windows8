@@ -78,7 +78,7 @@
 
     </UserControl.Resources>
 
-    <Grid x:Name="frame" Margin="0" Background="#00000000" PointerReleased="frame_PointerReleased" >
+    <Grid x:Name="frame" Margin="0" Background="Transparent" Tapped="frame_Tapped" PointerReleased="frame_PointerReleased" >
         
         <GridView  x:Name="itemListView" 
                    Padding="0"
