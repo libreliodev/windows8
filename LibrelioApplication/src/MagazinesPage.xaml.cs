@@ -31,6 +31,7 @@ using Windows.Storage.Search;
 using System.Net.Http;
 using Windows.UI.Xaml.Documents;
 using Windows.Storage.FileProperties;
+using Windows.ApplicationModel.DataTransfer;
 
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
@@ -41,7 +42,7 @@ namespace LibrelioApplication
     /// A page that displays a collection of item previews.  In the Split Application this page
     /// is used to display and select one of the available groups.
     /// </summary>
-    public sealed partial class ItemsPage : LibrelioApplication.Common.LayoutAwarePage
+    public sealed partial class ItemsPage : LibrelioApplication.Common.SharePage
     {
         //private MagazineManager manager = null;
 

@@ -44,6 +44,8 @@ namespace LibrelioApplication
         public string Color = "";
         public bool NoMagazines = false;
         public ObservableCollection<Data.MagazineViewModel> snappedCollection = null;
+        public string SharingTitle = "";
+        public string SharingText = "";
 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
@@ -83,6 +85,9 @@ namespace LibrelioApplication
                 var appName = xml.SelectSingleNode("/resources/string[@name='app_name']");
                 ClientName = xml.SelectSingleNode("/resources/string[@name='client_name']").InnerText;
                 MagazineName = xml.SelectSingleNode("/resources/string[@name='magazine_name']").InnerText;
+
+                SharingTitle = xml.SelectSingleNode("/resources/string[@name='sharing_title']").InnerText;
+                SharingText = xml.SelectSingleNode("/resources/string[@name='sharing_text']").InnerText;
 
                 var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
                 Color = node.InnerText;

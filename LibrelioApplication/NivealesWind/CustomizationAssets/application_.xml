@@ -10,6 +10,8 @@
   <bool name="enable_code_subs">true</bool>
   <string name="client_name" >niveales</string>
   <string name="magazine_name">wind</string>
+  <string name="sharing_title">Test title</string>
+  <string name="sharing_text"><body><p>This is a paragraph.</p><p>This is a paragraph.</p><p>This is a paragraph.</p></body></string>
   <string name="google_analytics">UA-1732003-23</string>
 
 

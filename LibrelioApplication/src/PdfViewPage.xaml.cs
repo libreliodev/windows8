@@ -1794,7 +1794,7 @@ namespace LibrelioApplication
                     var linkVistor = new LinkInfoVisitor();
                     linkVistor.OnURILink += visitor_OnURILink;
                     linkVistor.OnInternalLink += vis_OnInternalLink;
-                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = pageCount - 1, count = links.Count, handled = 0 });
+                    visitorList.Add(new LinkInfo() { visitor = linkVistor, index = 2 * page - 1, count = links.Count, handled = 0 });
 
                     pages[pageCount - 1].Links = new ObservableCollection<PageLink>();
 
@@ -1868,13 +1868,14 @@ namespace LibrelioApplication
                     link.rect = new Rect(__param1.Rect.Left, __param1.Rect.Top, __param1.Rect.Right - __param1.Rect.Left, __param1.Rect.Bottom - __param1.Rect.Top);
                     link.PageNumber = __param1.PageNumber;
 
-                    if (visitor.index == 0 || visitor.index == pageCount - 1 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
+                    if (visitor.index == 0 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
                     {
                         pages[visitor.index].Links.Add(link);
                     }
-                    else if (visitor.index == pageCount - 1)
+                    else if (visitor.index == 2 * (pageCount - 1) - 1)
                     {
-                        pages[pageCount - 1].Links.Add(link);
+                        index = (visitor.index + 1) / 2;
+                        pages[index].Links.Add(link);
                     }
                     else if (visitor.index % 2 == 0)
                     {
@@ -1902,43 +1903,25 @@ namespace LibrelioApplication
                     link.rect = new Rect(__param1.Rect.Left, __param1.Rect.Top, __param1.Rect.Right - __param1.Rect.Left, __param1.Rect.Bottom - __param1.Rect.Top);
                     link.url = __param1.URI;
 
-                    if (visitor.index == 0 || visitor.index == pageCount - 1 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
+                    if (visitor.index == 0 || ApplicationView.Value == ApplicationViewState.FullScreenPortrait)
                     {
-                        //if (pages[index].Links == null)
-                        //{
-                        //    pages[index].Links = new ObservableCollection<PageLink>();
-                        //}
                         pages[visitor.index].Links.Add(link);
                     }
-                    else if (visitor.index == pageCount - 1)
+                    else if (visitor.index == 2 * (pageCount - 1) - 1)
                     {
-                        pages[pageCount - 1].Links.Add(link);
+                        index = (visitor.index + 1) / 2;
+                        pages[index].Links.Add(link);
                     }
                     else if (visitor.index % 2 == 0)
                     {
                         index = (int)(visitor.index / 2);
-                        //if (pages[index].LinksRight == null)
-                        //{
-                        //    pages[index].LinksRight = new ObservableCollection<PageLink>();
-                        //}
                         pages[index].LinksRight.Add(link);
                     }
                     else if (visitor.index % 2 == 1)
                     {
                         index = (int)(visitor.index / 2) + 1;
-                        //if (pages[index].LinksLeft == null)
-                        //{
-                        //    pages[index].LinksLeft = new ObservableCollection<PageLink>();
-                        //}
                         pages[index].LinksLeft.Add(link);
                     }
-
-                    //var vis = visitorList[visitorList.IndexOf(visitor)];
-                    //vis.handled++;
-                    //if (vis.handled == vis.count)
-                    //{
-                    //    LoadLinks(index);
-                    //}
                 }
             }
         }
@@ -2524,9 +2507,9 @@ namespace LibrelioApplication
 
             var point = e.GetPosition(null);
 
-            if (point.X < Window.Current.Bounds.Width / 2)
+            if (point.X < Window.Current.Bounds.Width / 8)
                 LeftPressed();
-            else
+            else if (point.X > Window.Current.Bounds.Width - (Window.Current.Bounds.Width / 8))
                 RightPressed();
 
             isTappedProcessing = false;

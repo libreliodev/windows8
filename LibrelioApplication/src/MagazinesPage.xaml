@@ -1,4 +1,4 @@
-﻿<common:LayoutAwarePage
+﻿<common:SharePage
     x:Name="pageRoot"
     x:Class="LibrelioApplication.ItemsPage"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
@@ -343,4 +343,4 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
-</common:LayoutAwarePage>
+</common:SharePage>
