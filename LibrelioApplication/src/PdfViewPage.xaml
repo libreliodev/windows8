@@ -186,7 +186,7 @@ x:Name="pageRoot"
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>-->
 
-        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Canvas.ZIndex="1" Tapped="Output_Tapped">
+        <Grid x:Name="Output" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Canvas.ZIndex="1" Tapped="Output_Tapped" DoubleTapped="Output_DoubleTapped">
             <!--<ScrollViewer 
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
 		                  VerticalScrollMode="Auto" HorizontalScrollMode="Auto" ZoomMode="Enabled"
@@ -254,6 +254,10 @@ x:Name="pageRoot"
             <ProgressRing x:Name="startRing" IsActive="true" Width="43" Height="43" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" />
             
             <local:FullScreenContainer x:Name="fullScreenContainer"  Visibility="Collapsed"/>
+
+            <Grid x:Name="purchaseModuleContainer" Background="#88000000" Visibility="Collapsed" Tapped="purchaseModuleContainer_Tapped">
+                <local:PurchaseModule x:Name="purchaseModule" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+            </Grid>
 
             <!--<local:MyListView Name="pagesListView" SelectionMode="None" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsZoomedInView="True">
                     <ListView.ItemsPanel>

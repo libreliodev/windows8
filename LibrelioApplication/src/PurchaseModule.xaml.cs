@@ -18,6 +18,8 @@ using Windows.Data.Xml.Dom;
 using Windows.UI.Popups;
 using LibrelioApplication.Data;
 using Windows.ApplicationModel.Resources;
+using Windows.Storage;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -43,9 +45,18 @@ namespace LibrelioApplication
             this.InitializeComponent();
         }
 
-        public async Task Init(Data.MagazineViewModel mag, bool local = false)
+        public async Task Init(Data.MagazineViewModel mag, bool local = false, bool intern = false)
         {
-            thumbnail.Source = mag.Image;
+            bool needToUpdateImage = false;
+            if (mag.Image != null)
+            {
+                thumbnail.Source = mag.Image;
+            }
+            else
+            {
+                needToUpdateImage = true;
+            }
+
             title.Text = mag.Title;
             subtitle.Text = mag.Subtitle;
             var loader = new ResourceLoader();
@@ -101,12 +112,20 @@ namespace LibrelioApplication
                 subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                if (!intern)
+                    getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                else
+                    getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 noOptions.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 noOptions.Text = loader.GetString("no_options");
                 this.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                if (needToUpdateImage)
+                {
+                    var task = LoadImage(mag);
+                }
 
                 return;
             }
@@ -118,7 +137,10 @@ namespace LibrelioApplication
             subscribeBtnContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             subscribeBtn1Container.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             buyMagContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-            getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            if (!intern)
+                getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            else
+                getSampleContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             openContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             deleteContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
@@ -451,8 +473,26 @@ namespace LibrelioApplication
                 }
             }
 
+            if (needToUpdateImage)
+            {
+                await LoadImage(mag);
+            }
+
             //statusContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             //buttonContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+        }
+
+        private async Task LoadImage(Data.MagazineViewModel mag)
+        {
+            try
+            {
+                var file = await StorageFile.GetFileFromPathAsync(mag.PngPath);
+                var image = new BitmapImage();
+                await image.SetSourceAsync(await file.OpenReadAsync());
+                mag.Image = image;
+                thumbnail.Source = mag.Image;
+            }
+            catch { }
         }
 
         public Data.MagazineViewModel GetCurrentItem()
@@ -674,6 +714,16 @@ namespace LibrelioApplication
         }
 
         private void Grid_PointerReleased_1(object sender, PointerRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Grid_Tapped_1(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Grid_DoubleTapped_1(object sender, DoubleTappedRoutedEventArgs e)
         {
             e.Handled = true;
         }

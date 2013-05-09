@@ -72,6 +72,9 @@ namespace LibrelioApplication
             //this.DefaultViewModel["Items"] = dataSrc;
             //// TODO: Create an appropriate data model for your problem domain to replace the sample data
             //var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
+
+            HandleRedirectDownload();
+
             var sampleDataGroups = MagazineDataSource.GetGroups((String)navigationParameter);
             this.DefaultViewModel["Groups"] = sampleDataGroups;
 
@@ -81,6 +84,20 @@ namespace LibrelioApplication
             purchaseModule.Delete += purchaseModule_Delete;
 
             Debug.WriteLine("LoadState - finished");
+        }
+
+        private void HandleRedirectDownload()
+        {
+            var app = Application.Current as App;
+            if (app.needToRedirectDownload)
+            {
+                app.needToRedirectDownload = false;
+                if (app.RedirectParam != null)
+                {
+                    app.needToDownload = true;
+                    this.Frame.Navigate(typeof(DownloadingPage), app.RedirectParam);
+                }
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

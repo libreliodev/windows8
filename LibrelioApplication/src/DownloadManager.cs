@@ -603,6 +603,11 @@ namespace LibrelioApplication
         {
             return !IsLocalAsset(url) && !IsFullScreenAsset(url) && url.Contains("waplay=auto");
         }
+
+        public static bool IsBuyLink(string url)
+        {
+            return (url.Contains("buy://localhost"));
+        }
     }
 
     public sealed class LibrelioUrl

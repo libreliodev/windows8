@@ -37,6 +37,8 @@ namespace LibrelioApplication
         public List<DownloadOperation> activeDownloads;
         public bool loadedPList = false;
         public bool needToDownload = false;
+        public bool needToRedirectDownload = false;
+        public DownloadMagazine RedirectParam = null;
         public string ClientName = "";
         public string MagazineName = "";
         public string Color = "";

@@ -24,6 +24,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media.Animation;
 using MuPDFWinRT;
+using Windows.ApplicationModel.Resources;
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
 
@@ -448,6 +449,13 @@ namespace LibrelioApplication
 
         private bool isLeftThumbnailPressed = false;
 
+        private bool isTappedProcessing = false;
+        private bool isDoubleTappedProcessing = false;
+        private bool doubleTapped = false;
+        private bool doubleTappedZoomed = false;
+
+        private bool isBuyProcessing = false;
+
         public PdfViewPage()
         {
             this.InitializeComponent();
@@ -465,6 +473,57 @@ namespace LibrelioApplication
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             pdfStream = navigationParameter as MagazineData;
+
+            purchaseModule.Bought += purchaseModule_Bought;
+        }
+
+        async void purchaseModule_Bought(object sender, string url)
+        {
+            var purchase = sender as PurchaseModule;
+
+            var item = purchase.GetCurrentItem();
+            var app = Application.Current as App;
+
+
+            if (app.Manager == null)
+            {
+                app.Manager = new MagazineManager("Magazines");
+                await app.Manager.LoadLocalMagazineList();
+            }
+
+            DownloadMagazine param = null;
+            if (app.Manager.MagazineUrl.Count > 0)
+            {
+                var it = app.Manager.MagazineUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName));
+
+
+                if (it.Count() > 0)
+                    param = new DownloadMagazine()
+                    {
+                        url = it.First(),
+                        redirectUrl = url
+                    };
+            }
+            else if (app.Manager.MagazineLocalUrl.Count > 0)
+            {
+                var it = app.Manager.MagazineLocalUrl.Where((magUrl) => magUrl.FullName.Equals(item.FileName));
+
+
+                if (it.Count() > 0)
+                    param = new DownloadMagazine()
+                    {
+                        url = DownloadManager.ConvertFromLocalUrl(it.First()),
+                        redirectUrl = url
+                    };
+            }
+
+            if (param != null)
+            {
+                app.needToRedirectDownload = true;
+                app.RedirectParam = param;
+                if (this.Frame.CanGoBack)
+                    this.Frame.GoBack();
+            }
         }
 
         /// <summary>
@@ -1538,7 +1597,16 @@ namespace LibrelioApplication
 
                 if (p != pageNum)
                 {
-                    RemovePageItems(pageNum);
+                    isTappedProcessing = false;
+                    isDoubleTappedProcessing = false;
+                    doubleTapped = false;
+                    doubleTappedZoomed = false;
+
+                    try
+                    {
+                        RemovePageItems(pageNum);
+                    }
+                    catch { }
 
                     pages[pageNum].ZoomedImage = null;
                     pages[pageNum].FirstPageZoomFactor = defaultZoomFactor;
@@ -1597,6 +1665,7 @@ namespace LibrelioApplication
         private void ScrollViewer_ViewChanged_1(object sender, ScrollViewerViewChangedEventArgs e)
         {
             if (switchOrientation) return;
+            if (isDoubleTappedProcessing) return;
 
             if (!e.IsIntermediate)
             {
@@ -1720,7 +1789,7 @@ namespace LibrelioApplication
             {
                 if (pages[pageCount - 1].Links == null)
                 {
-                    var links = document.GetLinks(0);
+                    var links = document.GetLinks(2 * page - 1);
 
                     var linkVistor = new LinkInfoVisitor();
                     linkVistor.OnURILink += visitor_OnURILink;
@@ -1945,6 +2014,15 @@ namespace LibrelioApplication
                         grid.Children.Add(videoPlayer);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url });
                     }
+                    else if (DownloadManager.IsBuyLink(item.url))
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, item.PageNumber, item.url.Replace("buy://localhost/", ""), offsetZF);
+                        if (page != pageNum) return;
+                        grid.Children.Add(button);
+                        button.BuyClicked += button_BuyClicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "BuyLink", PageNum = item.PageNumber });
+                    }
                 }
             }
 
@@ -2015,6 +2093,15 @@ namespace LibrelioApplication
                         if (page != pageNum) return;
                         grid.Children.Add(videoPlayer);
                         pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url, page = ActivePage.Left });
+                    }
+                    else if (DownloadManager.IsBuyLink(item.url))
+                    {
+                        var button = new PageButton();
+                        button.SetRect(rect, item.PageNumber, item.url.Replace("buy://localhost/", ""), offsetZF);
+                        if (page != pageNum) return;
+                        grid.Children.Add(button);
+                        button.BuyClicked += button_BuyClicked;
+                        pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "BuyLink", PageNum = item.PageNumber });
                     }
                 }
             }
@@ -2087,8 +2174,55 @@ namespace LibrelioApplication
                             grid.Children.Add(videoPlayer);
                             pages[page].Addons.Add(new UIAddon { element = videoPlayer, type = UIType.VideoPlayer, url = item.url, page = ActivePage.Right });
                         }
+                        else if (DownloadManager.IsBuyLink(item.url))
+                        {
+                            var button = new PageButton();
+                            button.SetRect(rect, item.PageNumber, item.url.Replace("buy://localhost/", ""), offsetZF);
+                            if (page != pageNum) return;
+                            grid.Children.Add(button);
+                            button.BuyClicked += button_BuyClicked;
+                            pages[page].Addons.Add(new UIAddon { element = button, type = UIType.PageButton, url = "BuyLink", PageNum = item.PageNumber });
+                        }
                 }
             }
+        }
+
+        async void button_BuyClicked(string url)
+        {
+            if (isBuyProcessing) return;
+            isBuyProcessing = true;
+
+            purchaseModuleContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            var pos = url.LastIndexOf('/');
+            if (pos >= 0)
+                url = url.Remove(0, pos + 1);
+
+            var app = Application.Current as App;
+            var items = app.Manager.MagazineLocalUrl.Where((item) => item.FullName.Equals(url));
+            if (items.Count() > 0)
+            {
+                var item = items.First();
+                var m = new MagazineModel(item, 0);
+                var mag = new MagazineViewModel(m.Title + m.Subtitle + 1, 1, 1, 0, m.Title, m.Subtitle, null, m);
+                try
+                {
+                    await purchaseModule.Init(mag, false, true);
+                }
+                catch
+                {
+                    purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                }
+            }
+
+            isBuyProcessing = false;
+        }
+
+        private void purchaseModuleContainer_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            purchaseModule.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            purchaseModuleContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
         void button_InternalClicked(int pageNum)
@@ -2371,14 +2505,87 @@ namespace LibrelioApplication
                 pagesListView.ScrollIntoView(pages[pageNum + 1]);
         }
 
-        private void Output_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void Output_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (isTappedProcessing) return;
+
+            isTappedProcessing = true;
+
+            await Task.Delay(100);
+
+            if (doubleTapped)
+            {
+                isTappedProcessing = false;
+                doubleTapped = false;
+                return;
+            }
+
+            doubleTapped = false;
+
             var point = e.GetPosition(null);
 
             if (point.X < Window.Current.Bounds.Width / 2)
                 LeftPressed();
             else
                 RightPressed();
+
+            isTappedProcessing = false;
+        }
+
+        // ==========================================================================
+
+        // Double Tapped handlers 
+        // ==========================================================================
+
+        private async void Output_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if (isDoubleTappedProcessing) return;
+
+            var point = e.GetPosition(null);
+            isDoubleTappedProcessing = true;
+
+            doubleTapped = true;
+            var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum) as GridViewItem;
+            var scr = findFirstInVisualTree<ScrollViewer>(item);
+            if (scr != null)
+            {
+                if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
+                {
+                    //for (float i = scr.ZoomFactor - 0.1f; i < 2 * defaultZoomFactor; i += 0.1f)
+                    //{
+                    //    scr.ZoomToFactor(i);
+                    //    CenterPointIntoZoom(point, scr, i);
+                    //    //await Task.Delay(5);
+                    //}
+                    isDoubleTappedProcessing = false;
+                    scr.ZoomToFactor(2 * defaultZoomFactor);
+                    doubleTappedZoomed = true;
+                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
+                }
+                else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
+                {
+                    isDoubleTappedProcessing = false;
+                    scr.ZoomToFactor(defaultZoomFactor);
+                    doubleTappedZoomed = false;
+                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
+                }
+            }
+
+            isDoubleTappedProcessing = false;
+        }
+
+        private void CenterPointIntoZoom(Windows.Foundation.Point point, ScrollViewer scr, float zoom)
+        {
+            var hOffset = point.X * zoom - (scr.ViewportWidth / 2);
+            if (hOffset < 0) hOffset = 0;
+            if (scr.ExtentWidth * zoom - hOffset < scr.ViewportWidth)
+                hOffset = scr.ExtentWidth - hOffset;
+            var vOffset = point.Y * zoom - (scr.ViewportHeight / 2);
+            if (vOffset < 0) vOffset = 0;
+            if (scr.ExtentHeight * zoom - vOffset < scr.ViewportHeight)
+                vOffset = scr.ExtentHeight - vOffset;
+            scr.ScrollToHorizontalOffset(hOffset);
+            scr.ScrollToVerticalOffset(vOffset);
         }
 
     }
