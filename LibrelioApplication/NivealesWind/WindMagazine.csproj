@@ -307,7 +307,9 @@
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
-    <Content Include="CustomizationAssets\Magazines.plist" />
+    <Content Include="CustomizationAssets\Magazines.plist">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

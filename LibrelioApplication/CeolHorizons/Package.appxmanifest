@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="ceol.horizons" Publisher="CN=Dorin" Version="1.0.0.11" />
+  <Identity Name="ceol.horizons" Publisher="CN=Dorin" Version="1.0.0.12" />
   <Properties>
     <DisplayName>Horizons Monde</DisplayName>
     <PublisherDisplayName>Céol</PublisherDisplayName>
