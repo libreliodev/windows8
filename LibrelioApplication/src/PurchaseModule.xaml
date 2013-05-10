@@ -70,8 +70,10 @@
                                     <VisualState x:Name="PointerFocused"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="3" CornerRadius="150" d:IsLocked="True">
-                                <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" d:IsLocked="True"/>
+                            <Border Background="Transparent">
+                                <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="8" CornerRadius="150" d:IsLocked="True">
+                                    <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" d:IsLocked="True"/>
+                                </Border>
                             </Border>
                             <Rectangle x:Name="FocusVisualWhite" IsHitTestVisible="False" Opacity="0" StrokeDashOffset="1.5" StrokeEndLineCap="Square" Stroke="{StaticResource FocusVisualWhiteStrokeThemeBrush}" StrokeDashArray="1,1" d:IsLocked="True"/>
                             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Opacity="0" StrokeDashOffset="0.5" StrokeEndLineCap="Square" Stroke="{StaticResource FocusVisualBlackStrokeThemeBrush}" StrokeDashArray="1,1" d:IsLocked="True"/>
@@ -195,60 +197,60 @@
             <TextBlock x:Name="subtitle" FontSize="15" Foreground="#AF000000" />
             
             <!--<Image Source="/Assets/button1.png" Width="30" Height="30" HorizontalAlignment="Left"/>-->
-            <StackPanel x:Name="getSampleContainer" Orientation="Horizontal" Margin="0,15,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="getSampleButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="getSample_Click">
+            <StackPanel x:Name="getSampleContainer" Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Left">
+                <Button x:Name="getSampleButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="getSample_Click">
                     <!--<Button.Content>
                         <Border BorderThickness="0">
                             <Image Source="/Assets/button1.png" Width="20" Height="23" Stretch="Fill" />
                         </Border>
                     </Button.Content>-->
                 </Button>
-                <TextBlock x:Name="getSample" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="getSample" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <TextBlock x:Name="noOptions" Text="" TextWrapping="Wrap" FontSize="13" Foreground="Black" Margin="0,25,10,0" Visibility="Collapsed" />
             <!--<Button x:Name="buyMag" Style="{StaticResource TextButtonStyle1}" Content="" FontSize="13" Foreground="#FF000000" Margin="0,20,0,10" Click="buyMag_Click" VerticalAlignment="Center" Visibility="Collapsed" />-->
-            <StackPanel x:Name="buyMagContainer" Orientation="Horizontal" Margin="0,2.5,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="buyMagButton" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="buyMag_Click">
+            <StackPanel x:Name="buyMagContainer" Orientation="Horizontal" Margin="0" HorizontalAlignment="Left">
+                <Button x:Name="buyMagButton" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="buyMag_Click">
                     <Button.Content>
                         <Border BorderThickness="0">
                             <Image Source="/Assets/buy.png" Width="18" Height="18" Stretch="Fill" />
                         </Border>
                     </Button.Content>
                 </Button>
-                <TextBlock x:Name="buyMag" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="buyMag" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <!--<Button x:Name="subscribeBtn" Style="{StaticResource TextButtonStyle1}" Content="" FontSize="13" Foreground="#FF000000" Margin="0,10" Click="subscribeBtn_Click" Visibility="Collapsed" />-->
-            <StackPanel x:Name="subscribeBtnContainer" Orientation="Horizontal" Margin="0,2.5,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="subscribeBtnButton" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="subscribeBtn_Click">
+            <StackPanel x:Name="subscribeBtnContainer" Orientation="Horizontal" Margin="0" HorizontalAlignment="Left">
+                <Button x:Name="subscribeBtnButton" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="subscribeBtn_Click">
                     <Button.Content>
                         <Border BorderThickness="0">
                             <Image Source="/Assets/buy.png" Width="18" Height="18" Stretch="Fill" />
                         </Border>
                     </Button.Content>
                 </Button>
-                <TextBlock x:Name="subscribeBtn" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="subscribeBtn" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <!--<Button x:Name="subscribeBtn1" Style="{StaticResource TextButtonStyle1}" Content="" FontSize="13" Foreground="#FF000000" Margin="0,10" Click="subscribeBtn1_Click" Visibility="Collapsed" />-->
-            <StackPanel x:Name="subscribeBtn1Container" Orientation="Horizontal" Margin="0,2.5,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="subscribeBtn1Button" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="subscribeBtn1_Click">
+            <StackPanel x:Name="subscribeBtn1Container" Orientation="Horizontal" Margin="0" HorizontalAlignment="Left">
+                <Button x:Name="subscribeBtn1Button" Style="{StaticResource ButtonStyle1}" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="subscribeBtn1_Click">
                     <Button.Content>
                         <Border BorderThickness="0">
                             <Image Source="/Assets/buy.png" Width="18" Height="18" Stretch="Fill" />
                         </Border>
                     </Button.Content>
                 </Button>
-                <TextBlock x:Name="subscribeBtn1" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+                <TextBlock x:Name="subscribeBtn1" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <!--<Button x:Name="getSample" Style="{StaticResource TextButtonStyle1}" Content="Download Sample" FontSize="13" Foreground="#FF000000" Margin="0,10" Click="getSample_Click" Visibility="Collapsed" />-->
             <!--<Button x:Name="open" Style="{StaticResource TextButtonStyle1}" Content="Open" FontSize="13" Foreground="#FF000000" Margin="0,25,0,10" Visibility="Collapsed" Click="open_Click" />-->
-            <StackPanel x:Name="openContainer" Orientation="Horizontal" Margin="0,15,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="openButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="open_Click" />
-                <TextBlock x:Name="open" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+            <StackPanel x:Name="openContainer" Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Left">
+                <Button x:Name="openButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="open_Click" />
+                <TextBlock x:Name="open" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <!--<Button x:Name="delete" Style="{StaticResource TextButtonStyle1}" Content="Delete" FontSize="13" Foreground="#FF000000" Margin="0,55" Visibility="Collapsed" Click="delete_Click" />-->
-            <StackPanel x:Name="deleteContainer" Orientation="Horizontal" Margin="0,15,0,2.5" HorizontalAlignment="Left">
-                <Button x:Name="deleteButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="31" Height="31" BorderThickness="1" Margin="0"  Click="delete_Click" />
-                <TextBlock x:Name="delete" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="4,0,0,0" VerticalAlignment="Center" />
+            <StackPanel x:Name="deleteContainer" Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Left">
+                <Button x:Name="deleteButton" Style="{StaticResource ButtonStyle1}" Content="" FontFamily="Segoe UI Symbol" Width="43" Height="43" BorderThickness="1" Margin="0"  Click="delete_Click" />
+                <TextBlock x:Name="delete" Text="" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" Foreground="#FF222222" Margin="0,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
         </StackPanel>
 

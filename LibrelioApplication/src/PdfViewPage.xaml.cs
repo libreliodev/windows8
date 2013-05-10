@@ -2323,7 +2323,8 @@ namespace LibrelioApplication
             var width = (int)(size.X * currentZoomFactor * offsetZF);
             var height = (int)(size.Y * currentZoomFactor * offsetZF);
 
-            pagesListView.ItemsSource = null;
+            //pagesListView.ItemsSource = null;
+            pagesListView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             pages.Clear();
 
             for (int p = 0; p < pageCount; p++)
@@ -2372,7 +2373,8 @@ namespace LibrelioApplication
                 }
             }
 
-            pagesListView.ItemsSource = pages;
+            //pagesListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //pagesListView.ItemsSource = pages;
         }
 
         private void SwitchToPortrait(MuPDFWinRT.Point size)
@@ -2406,7 +2408,8 @@ namespace LibrelioApplication
             var width = (int)(size.X * currentZoomFactor * offsetZF);
             var height = (int)(size.Y * currentZoomFactor * offsetZF);
 
-            pagesListView.ItemsSource = null;
+            //pagesListView.ItemsSource = null;
+            pagesListView.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             pages.Clear();
             for (int p = 0; p <= 2 * (pageCount - 1) - 1; p++)
             {
@@ -2434,7 +2437,8 @@ namespace LibrelioApplication
                 }
             }
 
-            pagesListView.ItemsSource = pages;
+            //pagesListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            //pagesListView.ItemsSource = pages;
         }
 
         private void UpdateViewSwitchOrientation()
@@ -2446,6 +2450,7 @@ namespace LibrelioApplication
                     needBuffer = true;
                     switchOrientation = false;
                     pagesListView.ScrollIntoView(pages[pageNum]);
+                    pagesListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
                     return;
                 }
 
@@ -2455,10 +2460,12 @@ namespace LibrelioApplication
                     needBuffer = true;
                     switchOrientation = false;
                     pagesListView.ScrollIntoView(pages[pageNum]);
+                    pagesListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
                     return;
                 }
 
                 pagesListView.ScrollIntoView(pages[pageNum]);
+                pagesListView.Visibility = Windows.UI.Xaml.Visibility.Visible;
                 await BufferPages(pageNum, NUM_NEIGHBOURS_BUFFER);
 
                 switchOrientation = false;

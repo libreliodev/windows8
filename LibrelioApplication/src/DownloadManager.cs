@@ -410,18 +410,18 @@ namespace LibrelioApplication
 
             // TEST ONLY
             // =================================================
-            var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
-            var xml = new XmlDocument();
-            xml = await XmlDocument.LoadFromFileAsync(f);
-            var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
-            item.SetAttribute("ProductId", productId);
-            var date = new DateTimeOffset(DateTime.Now);
-            date = date.AddMinutes(3);
-            var str = date.ToString("u");
-            str = str.Replace(" ", "T");
-            item.SetAttribute("ExpirationDate", str);
-            receipt = xml.GetXml();
-            if (DownloadManager.ReceiptExpired(receipt)) return;
+            //var f = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\test\receipt.pmd");
+            //var xml = new XmlDocument();
+            //xml = await XmlDocument.LoadFromFileAsync(f);
+            //var item = xml.GetElementsByTagName("ProductReceipt")[0] as XmlElement;
+            //item.SetAttribute("ProductId", productId);
+            //var date = new DateTimeOffset(DateTime.Now);
+            //date = date.AddMinutes(3);
+            //var str = date.ToString("u");
+            //str = str.Replace(" ", "T");
+            //item.SetAttribute("ExpirationDate", str);
+            //receipt = xml.GetXml();
+            //if (DownloadManager.ReceiptExpired(receipt)) return;
             // =================================================
 
             var folder = ApplicationData.Current.RoamingFolder;
