@@ -157,6 +157,9 @@
     <Compile Include="..\src\PurchaseModule.xaml.cs">
       <Link>LinkedSource\PurchaseModule.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\SharePage.cs">
+      <Link>LinkedSource\SharePage.cs</Link>
+    </Compile>
     <Compile Include="..\src\SlideShow.xaml.cs">
       <Link>LinkedSource\SlideShow.xaml.cs</Link>
     </Compile>
@@ -197,9 +200,7 @@
     <Content Include="..\Assets\cornerfree2.png">
       <Link>Assets\cornerfree2.png</Link>
     </Content>
-    <Content Include="CustomizationAssets\application_.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="CustomizationAssets\application_.xml" />
     <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\backgroundLarge.png" />
     <Content Include="CustomizationAssets\backgroundMin.png" />
@@ -301,6 +302,7 @@
     </PRIResource>
     <Content Include="..\Assets\test\receipt.pmd">
       <Link>Assets\test\receipt.pmd</Link>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>

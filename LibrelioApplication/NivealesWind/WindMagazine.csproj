@@ -157,6 +157,9 @@
     <Compile Include="..\src\PurchaseModule.xaml.cs">
       <Link>LinkedSource\PurchaseModule.xaml.cs</Link>
     </Compile>
+    <Compile Include="..\src\SharePage.cs">
+      <Link>LinkedSource\SharePage.cs</Link>
+    </Compile>
     <Compile Include="..\src\SlideShow.xaml.cs">
       <Link>LinkedSource\SlideShow.xaml.cs</Link>
     </Compile>
@@ -307,9 +310,7 @@
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
-    <Content Include="CustomizationAssets\Magazines.plist">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="CustomizationAssets\Magazines.plist" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

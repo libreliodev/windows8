@@ -394,7 +394,7 @@ namespace LibrelioApplication
     /// A page that displays pdf (actually list of png files and description in json format).
     /// </summary>
     //public sealed partial class PdfViewPage : LibrelioApplication.Common.LayoutAwarePage
-    public sealed partial class PdfViewPage : Common.LayoutAwarePage
+    public sealed partial class PdfViewPage : Common.SharePage
     {
 
         static string LOCAL_HOST = "localhost";

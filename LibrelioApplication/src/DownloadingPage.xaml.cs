@@ -52,7 +52,7 @@ namespace LibrelioApplication
     /// <summary>
     /// A basic page that provides characteristics common to most applications.
     /// </summary>
-    public sealed partial class DownloadingPage : LibrelioApplication.Common.LayoutAwarePage
+    public sealed partial class DownloadingPage : LibrelioApplication.Common.SharePage
     {
         CancellationTokenSource cts;
 
