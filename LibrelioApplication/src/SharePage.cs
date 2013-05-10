@@ -69,6 +69,7 @@ namespace LibrelioApplication.Common
                 //requestData.Properties.Description = DescriptionInputBox.Text; // The description is optional.
                 string htmlFormat = HtmlFormatHelper.CreateHtmlFormat(app.SharingText);
                 requestData.SetHtmlFormat(htmlFormat);
+                //requestData.SetUri(new Uri("https://www.gooogle.com/"));
                 succeeded = true;
             }
             else
