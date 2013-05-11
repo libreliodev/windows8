@@ -200,7 +200,9 @@
     <Content Include="..\Assets\cornerfree2.png">
       <Link>Assets\cornerfree2.png</Link>
     </Content>
-    <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="CustomizationAssets\background.png" />
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
     <Content Include="CustomizationAssets\Covers\wind_355.png" />
