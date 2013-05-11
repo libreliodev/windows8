@@ -202,6 +202,24 @@
     </Content>
     <Content Include="CustomizationAssets\application_.xml" />
     <Content Include="CustomizationAssets\background.png" />
+    <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
+    <Content Include="CustomizationAssets\Covers\wind_355.png" />
+    <Content Include="CustomizationAssets\Covers\wind_356.png" />
+    <Content Include="CustomizationAssets\Covers\wind_357.png" />
+    <Content Include="CustomizationAssets\Covers\wind_358.png" />
+    <Content Include="CustomizationAssets\Covers\wind_362.png" />
+    <Content Include="CustomizationAssets\Covers\wind_363.png" />
+    <Content Include="CustomizationAssets\Covers\wind_364.png" />
+    <Content Include="CustomizationAssets\Covers\wind_365.png" />
+    <Content Include="CustomizationAssets\Covers\wind_366.png" />
+    <Content Include="CustomizationAssets\Covers\wind_367.png" />
+    <Content Include="CustomizationAssets\Covers\wind_368.png" />
+    <Content Include="CustomizationAssets\Covers\wind_369.png" />
+    <Content Include="CustomizationAssets\Covers\wind_370.png" />
+    <Content Include="CustomizationAssets\Covers\wind_371.png" />
+    <Content Include="CustomizationAssets\Covers\wind_372.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
     <Content Include="CustomizationAssets\icon.scale-100.png" />
     <Content Include="CustomizationAssets\logo.scale-100.png" />
     <Content Include="CustomizationAssets\startup_background.scale-100.png" />
@@ -294,9 +312,7 @@
     </None>
     <Content Include="CustomizationAssets\Magazines.plist" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomizationAssets\Covers\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
