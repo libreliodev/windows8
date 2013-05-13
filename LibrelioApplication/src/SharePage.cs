@@ -67,8 +67,6 @@ namespace LibrelioApplication.Common
                 DataPackage requestData = request.Data;
                 requestData.Properties.Title = app.SharingTitle;
                 requestData.Properties.Description = app.SharingText; // The description is optional.
-                //string htmlFormat = HtmlFormatHelper.CreateHtmlFormat(app.SharingText);
-                //requestData.SetHtmlFormat(htmlFormat);
                 requestData.SetUri(new Uri(app.SharingLink));
                 succeeded = true;
             }

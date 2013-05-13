@@ -329,5 +329,10 @@ namespace LibrelioApplication
         {
             e.Handled = true;
         }
+
+        private void frame_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

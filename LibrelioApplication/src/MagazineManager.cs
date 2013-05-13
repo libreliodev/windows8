@@ -80,7 +80,11 @@ namespace LibrelioApplication
             bool isUpdated = false;
 
             _folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_name, CreationCollisionOption.OpenIfExists);
-            await LoadLocalMetadata();
+            if (_magazinesLocalUrl.Count == 0)
+            {
+                await LoadLocalMetadata();
+                await LoadLocalMetadataDownloaded();
+            }
 
             var settings = new XmlLoadSettings();
             settings.ProhibitDtd = false;
@@ -592,6 +596,22 @@ namespace LibrelioApplication
             }
         }
 
+        public async Task RemoveMagazineDownloaded(LibrelioLocalUrl magLocal)
+        {
+            await RemoveDownloadedMetadataEntry(magLocal);
+            _magazinesLocalUrlDownloaded.Remove(magLocal);
+
+            var items = _magazinesLocalUrl.Where(magazine => magazine.FullName.Equals(magLocal.FullName));
+
+            if (items != null && items.Count() > 0)
+            {
+                var magazine = items.First();
+                var index = _magazinesLocalUrl.IndexOf(magazine);
+                if (index == -1) return;
+                _magazinesLocalUrl[index] = DownloadManager.DeleteLocalUrl(magLocal);
+            }
+        }
+
         public async Task<StorageFolder> AddMagazineFolderStructure(LibrelioLocalUrl magLocal)
         {
             var currentFolder = _folder;
@@ -799,24 +819,26 @@ namespace LibrelioApplication
 
             string xpath = "/root";
             var mags = localXml.SelectNodes(xpath);
+            var root = mags[0];
 
-            while (mags[0].ChildNodes.Count > 0)
+            while (root.ChildNodes.Count > 0)
             {
-                mags[0].RemoveChild(mags[0].ChildNodes.Item(0));
+                root.RemoveChild(root.ChildNodes.Item(0));
             }
         }
 
         public async Task RemoveDownloadedMetadataEntry(LibrelioLocalUrl magLocal)
         {
             if (localDownloadedXml == null)
-                await LoadLocalMetadata();
+                await LoadLocalMetadataDownloaded();
 
             string xpath = "/root/mag[url='" + magLocal.Url + "']";
             var mags = localDownloadedXml.SelectNodes(xpath);
 
             if (mags.Count > 0)
             {
-                mags[0].ParentNode.RemoveChild(mags[0]);
+                var parent = mags[0].ParentNode;
+                parent.RemoveChild(mags[0]);
             }
 
             var xmlfile = await _folder.CreateFileAsync("magazines_downloaded.metadata", CreationCollisionOption.OpenIfExists);
