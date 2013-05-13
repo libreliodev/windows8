@@ -438,4 +438,7 @@
   <data name="subscribe_one_year" xml:space="preserve">
     <value>S'abonner pour un an:</value>
   </data>
+  <data name="privacy_policy" xml:space="preserve">
+    <value>Politique de confidentialité</value>
+  </data>
 </root>

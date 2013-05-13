@@ -441,4 +441,7 @@
   <data name="subscribe_one_year" xml:space="preserve">
     <value>Subscribe for one year:</value>
   </data>
+  <data name="privacy_policy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
 </root>

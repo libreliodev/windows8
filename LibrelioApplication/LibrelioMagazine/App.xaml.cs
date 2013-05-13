@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Windows.UI.ApplicationSettings;
 using Windows.System;
+using Windows.ApplicationModel.Resources;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -148,7 +149,8 @@ namespace LibrelioApplication
         {
             if (!args.Request.ApplicationCommands.Any(command => command.Id.Equals("privacypolicy")))
             {
-                var privacy = new SettingsCommand("privacypolicy","Politique de confidentialité", privacy_Handler);
+                var loader = new ResourceLoader();
+                var privacy = new SettingsCommand("privacypolicy", loader.GetString("privacy_policy"), privacy_Handler);
                 args.Request.ApplicationCommands.Add(privacy);
             }
 
