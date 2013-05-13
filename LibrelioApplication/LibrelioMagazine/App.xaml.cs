@@ -148,7 +148,7 @@ namespace LibrelioApplication
         {
             if (!args.Request.ApplicationCommands.Any(command => command.Id.Equals("privacypolicy")))
             {
-                var privacy = new SettingsCommand("privacypolicy", "Privacy Policy", privacy_Handler);
+                var privacy = new SettingsCommand("privacypolicy","Politique de confidentialité", privacy_Handler);
                 args.Request.ApplicationCommands.Add(privacy);
             }
 
