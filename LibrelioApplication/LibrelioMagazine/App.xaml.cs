@@ -23,6 +23,8 @@ using Windows.Networking.BackgroundTransfer;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Windows.UI.ApplicationSettings;
+using Windows.System;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -46,6 +48,8 @@ namespace LibrelioApplication
         public ObservableCollection<Data.MagazineViewModel> snappedCollection = null;
         public string SharingTitle = "";
         public string SharingText = "";
+        public string SharingLink = "";
+        public string PrivacyLink = "";
 
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
@@ -77,6 +81,7 @@ namespace LibrelioApplication
                 var licenseInformation = CurrentApp.LicenseInformation;
 
                 //await LibrelioApplication.Utils.Utils.prepareTestData();
+                SettingsPane.GetForCurrentView().CommandsRequested += App_CommandsRequested;
 
                 var fileHandle =
                     await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"CustomizationAssets\application_.xml");
@@ -88,6 +93,9 @@ namespace LibrelioApplication
 
                 SharingTitle = xml.SelectSingleNode("/resources/string[@name='sharing_title']").InnerText;
                 SharingText = xml.SelectSingleNode("/resources/string[@name='sharing_text']").InnerText;
+                SharingLink = xml.SelectSingleNode("/resources/string[@name='sharing_link']").InnerText;
+
+                PrivacyLink = xml.SelectSingleNode("/resources/string[@name='privacy_link']").InnerText;
 
                 var node = xml.SelectSingleNode("/resources/hex[@name='background_color']");
                 Color = node.InnerText;
@@ -134,6 +142,22 @@ namespace LibrelioApplication
             }
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        void App_CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            if (!args.Request.ApplicationCommands.Any(command => command.Id.Equals("privacypolicy")))
+            {
+                var privacy = new SettingsCommand("privacypolicy", "Privacy Policy", privacy_Handler);
+                args.Request.ApplicationCommands.Add(privacy);
+            }
+
+        }
+
+        private async void privacy_Handler(Windows.UI.Popups.IUICommand command)
+        {
+            Uri uri = new Uri(PrivacyLink);
+            await Launcher.LaunchUriAsync(uri);
         }
 
         /// <summary>

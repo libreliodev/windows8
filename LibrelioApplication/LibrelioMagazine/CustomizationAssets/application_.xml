@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
-  
+
 
   <string name="app_name">Wind</string>
   <hex name="background_color">#ff0000</hex>
@@ -11,8 +11,9 @@
   <string name="client_name" >niveales</string>
   <string name="magazine_name">wind</string>
   <string name="sharing_title">Site et applications Wind</string>
-  <string name="sharing_text"><![CDATA[<body><p>Je te recommande le site et les applis Wind Magazine</p></body>]]></string>
+  <string name="sharing_text">Je te recommande le site et les applis Wind Magazine</string>
   <string name="sharing_link">http://www.windmag.com</string>
+  <string name="privacy_link">https://www.google.com</string>
   <string name="google_analytics">UA-1732003-23</string>
 
 
