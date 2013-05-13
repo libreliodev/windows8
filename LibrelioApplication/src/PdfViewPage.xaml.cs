@@ -2543,25 +2543,15 @@ namespace LibrelioApplication
             {
                 if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
                 {
-                    //for (float i = scr.ZoomFactor - 0.1f; i < 2 * defaultZoomFactor; i += 0.1f)
-                    //{
-                    //    scr.ZoomToFactor(i);
-                    //    CenterPointIntoZoom(point, scr, i);
-                    //    //await Task.Delay(5);
-                    //}
-                    //isDoubleTappedProcessing = false;
                     scr.ZoomToFactor(2 * defaultZoomFactor);
                     doubleClickPoint = point;
                     doubleTappedZoomed = true;
-                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
                 }
                 else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
                 {
-                    //isDoubleTappedProcessing = false;
                     scr.ZoomToFactor(defaultZoomFactor);
                     doubleClickPoint = point;
                     doubleTappedZoomed = false;
-                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
                 }
             }
 
@@ -2591,20 +2581,6 @@ namespace LibrelioApplication
             }
 
             isDoubleTappedProcessing = false;
-        }
-
-        private void CenterPointIntoZoom(Windows.Foundation.Point point, ScrollViewer scr, float zoom)
-        {
-            var hOffset = point.X * zoom - (scr.ViewportWidth / 2);
-            if (hOffset < 0) hOffset = 0;
-            if (scr.ExtentWidth * zoom - hOffset < scr.ViewportWidth)
-                hOffset = scr.ExtentWidth - hOffset;
-            var vOffset = point.Y * zoom - (scr.ViewportHeight / 2);
-            if (vOffset < 0) vOffset = 0;
-            if (scr.ExtentHeight * zoom - vOffset < scr.ViewportHeight)
-                vOffset = scr.ExtentHeight - vOffset;
-            scr.ScrollToHorizontalOffset(hOffset);
-            scr.ScrollToVerticalOffset(vOffset);
         }
 
     }
