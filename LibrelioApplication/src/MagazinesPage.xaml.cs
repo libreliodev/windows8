@@ -337,9 +337,10 @@ namespace LibrelioApplication
             {
                 app.Manager = new MagazineManager("Magazines");
                 await app.Manager.LoadLocalMagazineList();
+                await app.Manager.LoadLocalMagazineListDownloaded();
             }
 
-            var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, item.FileName);
+            var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrlDownloaded, item.FileName);
             if (mag == null) { isOpening = false; return; }
             var str = await DownloadManager.OpenPdfFile(mag);
             if (str == null) { isOpening = false; return; }
@@ -398,10 +399,12 @@ namespace LibrelioApplication
             if (app.Manager == null) {
 
                 app.Manager = new MagazineManager("Magazines");
-                await app.Manager.LoadLocalMagazineList();
+                await app.Manager.LoadLocalMagazineListDownloaded();
             }
 
-            var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrl, item.FileName);
+            var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrlDownloaded, item.FileName);
+            if (mag == null) return;
+
             var folder = await StorageFolder.GetFolderFromPathAsync(mag.FolderPath);
             var files = await folder.GetFilesAsync();
             foreach (var file in files) {
@@ -419,8 +422,8 @@ namespace LibrelioApplication
 
             } catch { }
 
-            mag = DownloadManager.DeleteLocalUrl(mag);
-            await app.Manager.AddUpdateMetadataEntry(mag);
+            await app.Manager.RemoveDownloadedMetadataEntry(mag);
+
             var title = item.FileName;
             var loader = new ResourceLoader();
             var group = MagazineDataSource.GetGroup(loader.GetString("my_magazines"));
@@ -446,11 +449,15 @@ namespace LibrelioApplication
                 }
             }
             group = MagazineDataSource.GetGroup(loader.GetString("all_magazines"));
-            item = group.Items.Where((magazine) => magazine.FileName.Equals(title)).First();
-            if (item != null)
+            var items = group.Items.Where((magazine) => magazine.FileName.Equals(title));
+            if (items != null && items.Count() > 0)
             {
-                item.IsDownloaded = false;
-                item.IsSampleDownloaded = false;
+                item = items.First();
+                if (item != null)
+                {
+                    item.IsDownloaded = false;
+                    item.IsSampleDownloaded = false;
+                }
             }
 
             isOpening = false;
@@ -547,6 +554,10 @@ namespace LibrelioApplication
 
         private async void Grid_Loaded_1(object sender, RoutedEventArgs e)
         {
+            itemGridView.Opacity = 0;
+            progressRingContainer.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            loadingUI.IsActive = true;
+
             cts = new CancellationTokenSource();
             //var app = Application.Current as App;
             await LoadUI();
@@ -751,6 +762,8 @@ namespace LibrelioApplication
             {
                 await app.Manager.LoadLocalMagazineList();
 
+                await app.Manager.LoadLocalMagazineListDownloaded();
+
                 if (app.Manager.MagazineLocalUrl.Count > 0)
                 {
                     await LoadUIInternal();
@@ -771,7 +784,7 @@ namespace LibrelioApplication
                     await CalculateWidth();
                 }
                 var app = Application.Current as App;
-                var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, _width);
+                var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, app.Manager.MagazineLocalUrlDownloaded, _width);
                 if (list.Count > 0)
                 {
                     foreach (var item in list)
@@ -787,19 +800,44 @@ namespace LibrelioApplication
                 }
 
                 await UpdateCovers();
-                await Task.Delay(50);
-                var loader = new ResourceLoader();
-                itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
-                await Task.Delay(50);
-                var scrollViewer1 = findFirstInVisualTree<ScrollViewer>(itemGridView);
-                if (scrollViewer1 != null)
-                {
-                    scrollViewer1.ScrollToHorizontalOffset(scrollViewer1.HorizontalOffset - 120);
-                }
+                itemGridView.LayoutUpdated += itemGridView_LayoutUpdated;
                 var task = UpdateLocalCovers();
                 var task1 = UpdateTile();
             }
             catch { }
+        }
+
+        private void itemGridView_LayoutUpdated(object sender, object e)
+        {
+            itemGridView.LayoutUpdated -= itemGridView_LayoutUpdated;
+
+            var scrollViewer1 = findFirstInVisualTree<ScrollViewer>(itemGridView);
+            if (scrollViewer1 != null)
+            {
+                scrollViewer1.ViewChanged += scrollViewer1_ViewChanged;
+            }
+
+            var loader = new ResourceLoader();
+            itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
+        }
+
+        void scrollViewer1_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (!e.IsIntermediate)
+            {
+                var scrollViewer1 = sender as ScrollViewer;
+                if (scrollViewer1 != null)
+                {
+                    scrollViewer1.ViewChanged -= scrollViewer1_ViewChanged;
+                    var task = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                        {
+                            scrollViewer1.ScrollToHorizontalOffset(scrollViewer1.HorizontalOffset - 120);
+                            progressRingContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                            loadingUI.IsActive = false;
+                            itemGridView.Opacity = 1;
+                        });
+                }
+            }
         }
 
         private async Task CalculateWidth()
@@ -842,7 +880,7 @@ namespace LibrelioApplication
 
                 await CalculateWidth();
             }
-            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, _width);
+            var list = MagazineDataSource.LoadMagazines(app.Manager.MagazineLocalUrl, app.Manager.MagazineLocalUrlDownloaded, _width);
             if (list.Count > 0)
             {
                 foreach (var item in list)

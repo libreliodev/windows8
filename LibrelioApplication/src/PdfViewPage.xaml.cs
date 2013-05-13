@@ -456,6 +456,8 @@ namespace LibrelioApplication
 
         private bool isBuyProcessing = false;
 
+        private Windows.Foundation.Point doubleClickPoint;
+
         public PdfViewPage()
         {
             this.InitializeComponent();
@@ -2541,41 +2543,44 @@ namespace LibrelioApplication
             {
                 if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
                 {
-                    //for (float i = scr.ZoomFactor - 0.1f; i < 2 * defaultZoomFactor; i += 0.1f)
-                    //{
-                    //    scr.ZoomToFactor(i);
-                    //    CenterPointIntoZoom(point, scr, i);
-                    //    //await Task.Delay(5);
-                    //}
-                    isDoubleTappedProcessing = false;
                     scr.ZoomToFactor(2 * defaultZoomFactor);
+                    doubleClickPoint = point;
                     doubleTappedZoomed = true;
-                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
                 }
                 else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
                 {
-                    isDoubleTappedProcessing = false;
                     scr.ZoomToFactor(defaultZoomFactor);
+                    doubleClickPoint = point;
                     doubleTappedZoomed = false;
-                    //CenterPointIntoZoom(point, scr, 2 * defaultZoomFactor);
                 }
             }
 
-            isDoubleTappedProcessing = false;
+            scr.LayoutUpdated += scr_LayoutUpdated;
         }
 
-        private void CenterPointIntoZoom(Windows.Foundation.Point point, ScrollViewer scr, float zoom)
+        void scr_LayoutUpdated(object sender, object e)
         {
-            var hOffset = point.X * zoom - (scr.ViewportWidth / 2);
-            if (hOffset < 0) hOffset = 0;
-            if (scr.ExtentWidth * zoom - hOffset < scr.ViewportWidth)
-                hOffset = scr.ExtentWidth - hOffset;
-            var vOffset = point.Y * zoom - (scr.ViewportHeight / 2);
-            if (vOffset < 0) vOffset = 0;
-            if (scr.ExtentHeight * zoom - vOffset < scr.ViewportHeight)
-                vOffset = scr.ExtentHeight - vOffset;
-            scr.ScrollToHorizontalOffset(hOffset);
-            scr.ScrollToVerticalOffset(vOffset);
+            if (!isDoubleTappedProcessing) return;
+
+            var item = pagesListView.ItemContainerGenerator.ContainerFromIndex(pageNum) as GridViewItem;
+            var scr = findFirstInVisualTree<ScrollViewer>(item);
+            if (scr != null)
+            {
+                var hOffset = doubleClickPoint.X * scr.ZoomFactor - (scr.ViewportWidth / 2);
+                if (hOffset < 0) hOffset = 0;
+                if (scr.ExtentWidth * scr.ZoomFactor - hOffset < scr.ViewportWidth)
+                    hOffset = scr.ExtentWidth - hOffset;
+                var vOffset = doubleClickPoint.Y * scr.ZoomFactor - (scr.ViewportHeight / 2);
+                if (vOffset < 0) vOffset = 0;
+                if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
+                    vOffset = scr.ExtentHeight - vOffset;
+                scr.ScrollToHorizontalOffset(hOffset);
+                scr.ScrollToVerticalOffset(vOffset);
+
+                scr.LayoutUpdated -= scr_LayoutUpdated;
+            }
+
+            isDoubleTappedProcessing = false;
         }
 
     }

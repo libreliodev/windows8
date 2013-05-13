@@ -162,7 +162,11 @@
             <ProgressBar x:Name="progressBar" Height="5"></ProgressBar>
         </Grid>
 
-         <!-- Vertical scrolling list only used when snapped -->
+        <Grid x:Name="progressRingContainer" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Visibility="Collapsed">
+            <ProgressRing x:Name="loadingUI" IsActive="False" Width="20" Height="20" Foreground="White"></ProgressRing>
+        </Grid>
+
+        <!-- Vertical scrolling list only used when snapped -->
         <!--<ListView
             x:Name="itemListView"
             AutomationProperties.AutomationId="ItemsListView"

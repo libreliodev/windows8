@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -36,14 +37,17 @@ namespace LibrelioApplication
         private LibrelioUrl _pList = null;
         private IList<LibrelioUrl> _magazinesUrl = new List<LibrelioUrl>();
         private IList<LibrelioLocalUrl> _magazinesLocalUrl = new List<LibrelioLocalUrl>();
+        private IList<LibrelioLocalUrl> _magazinesLocalUrlDownloaded = new List<LibrelioLocalUrl>();
 
         private StorageFolder _folder = null;
 
         private XmlDocument localXml = null;
+        private XmlDocument localDownloadedXml = null;
 
         public LibrelioUrl PLIST { get { return _pList; } }
         public IList<LibrelioUrl> MagazineUrl { get { return _magazinesUrl; } }
         public IList<LibrelioLocalUrl> MagazineLocalUrl { get { return _magazinesLocalUrl; } }
+        public IList<LibrelioLocalUrl> MagazineLocalUrlDownloaded { get { return _magazinesLocalUrlDownloaded; } }
 
         public string StatusText { get; set; }
 
@@ -135,6 +139,12 @@ namespace LibrelioApplication
         {
             _folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_name, CreationCollisionOption.OpenIfExists);
             await LoadLocalMetadata();
+        }
+
+        public async Task LoadLocalMagazineListDownloaded()
+        {
+            _folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(_name, CreationCollisionOption.OpenIfExists);
+            await LoadLocalMetadataDownloaded();
         }
 
         public async Task<BitmapSource> DownloadThumbnailAsync(LibrelioUrl magUrl)
@@ -544,10 +554,20 @@ namespace LibrelioApplication
                 var magLocal = new LibrelioLocalUrl(magUrl.Index, magUrl.Title, magUrl.Subtitle, currentFolder.Path + "\\",
                                                     magUrl.FullName, magUrl.AbsoluteUrl, magUrl.RelativeUrl, isd);
 
-                if (!UpdataLocalUrl(magLocal))
-                    _magazinesLocalUrl.Add(magLocal);
+                if (!UpdataLocalUrlDownloaded(magLocal))
+                    _magazinesLocalUrlDownloaded.Add(magLocal);
 
-                await AddUpdateMetadataEntry(magLocal);
+                await AddUpdateMetadataDownloadedEntry(magLocal);
+
+                var items = _magazinesLocalUrl.Where(magazine => magazine.FullName.Equals(magLocal.FullName));
+
+                if (items != null && items.Count() > 0)
+                {
+                    var magazine = items.First();
+                    var index = _magazinesLocalUrl.IndexOf(magazine);
+                    if (index == -1) return;
+                    _magazinesLocalUrl[index] = magLocal;
+                }
             }
         }
 
@@ -555,10 +575,20 @@ namespace LibrelioApplication
         {
             if (currentFolder != _folder)
             {
-                if (!UpdataLocalUrl(magUrl))
-                    _magazinesLocalUrl.Add(magUrl);
+                if (!UpdataLocalUrlDownloaded(magUrl))
+                    _magazinesLocalUrlDownloaded.Add(magUrl);
 
-                await AddUpdateMetadataEntry(magUrl);
+                await AddUpdateMetadataDownloadedEntry(magUrl);
+
+                var items = _magazinesLocalUrl.Where(magazine => magazine.FullName.Equals(magUrl.FullName));
+
+                if (items != null && items.Count() > 0)
+                {
+                    var magazine = items.First();
+                    var index = _magazinesLocalUrl.IndexOf(magazine);
+                    if (index == -1) return;
+                    _magazinesLocalUrl[index] = magUrl;
+                }
             }
         }
 
@@ -682,6 +712,117 @@ namespace LibrelioApplication
             await localXml.SaveToFileAsync(xmlfile);
         }
 
+        public async Task AddUpdateMetadataDownloadedEntry(LibrelioLocalUrl magLocal)
+        {
+            if (localDownloadedXml == null)
+                await LoadLocalMetadataDownloaded();
+
+            string xpath = "/root/mag[url='" + magLocal.Url + "']";
+            var mags = localDownloadedXml.SelectNodes(xpath);
+
+            if (mags.Count > 0)
+            {
+                mags[0].SelectNodes("index")[0].InnerText = magLocal.Index.ToString();
+                if (magLocal.Title == null) magLocal.Title = "";
+                mags[0].SelectNodes("title")[0].InnerText = magLocal.Title;
+                if (magLocal.Subtitle == null) magLocal.Subtitle = "";
+                mags[0].SelectNodes("subtitle")[0].InnerText = magLocal.Subtitle;
+                if (magLocal.FolderPath != "ND")
+                {
+                    mags[0].SelectNodes("path")[0].InnerText = magLocal.FolderPath + magLocal.FullName;
+                    mags[0].SelectNodes("metadata")[0].InnerText = magLocal.FolderPath + magLocal.MetadataName;
+                }
+                else
+                {
+                    mags[0].SelectNodes("path")[0].InnerText = "ND";
+                    mags[0].SelectNodes("metadata")[0].InnerText = "ND";
+                }
+                mags[0].SelectNodes("url")[0].InnerText = magLocal.Url;
+                mags[0].SelectNodes("relPath")[0].InnerText = magLocal.RelativePath;
+                mags[0].SelectNodes("sampledownloaded")[0].InnerText = magLocal.IsSampleDownloaded ? "true" : "false";
+            }
+            else
+            {
+                var mag = localDownloadedXml.CreateElement("mag");
+
+                var index = localDownloadedXml.CreateElement("index");
+                index.InnerText = magLocal.Index.ToString();
+                mag.AppendChild(index);
+
+                var title = localDownloadedXml.CreateElement("title");
+                if (magLocal.Title == null) magLocal.Title = "";
+                title.InnerText = magLocal.Title;
+                mag.AppendChild(title);
+
+                var subtitle = localDownloadedXml.CreateElement("subtitle");
+                if (magLocal.Subtitle == null) magLocal.Subtitle = "";
+                subtitle.InnerText = magLocal.Subtitle;
+                mag.AppendChild(subtitle);
+
+                var path = localDownloadedXml.CreateElement("path");
+                if (magLocal.FolderPath != "ND")
+                    path.InnerText = magLocal.FolderPath + magLocal.FullName;
+                else
+                    path.InnerText = "ND";
+                mag.AppendChild(path);
+
+                var metadata = localDownloadedXml.CreateElement("metadata");
+                if (magLocal.FolderPath != "ND")
+                    metadata.InnerText = magLocal.FolderPath + magLocal.MetadataName;
+                else
+                    metadata.InnerText = "ND";
+                mag.AppendChild(metadata);
+
+                var url = localDownloadedXml.CreateElement("url");
+                url.InnerText = magLocal.Url;
+                mag.AppendChild(url);
+
+                var relPath = localDownloadedXml.CreateElement("relPath");
+                relPath.InnerText = magLocal.RelativePath;
+                mag.AppendChild(relPath);
+
+                var isd = localDownloadedXml.CreateElement("sampledownloaded");
+                isd.InnerText = magLocal.IsSampleDownloaded ? "true" : "false";
+                mag.AppendChild(isd);
+
+                localDownloadedXml.GetElementsByTagName("root")[0].AppendChild(mag);
+            }
+
+            var xmlfile = await _folder.CreateFileAsync("magazines_downloaded.metadata", CreationCollisionOption.OpenIfExists);
+            await localDownloadedXml.SaveToFileAsync(xmlfile);
+        }
+
+        public async Task ClearMetadataEntry()
+        {
+            if (localXml == null)
+                await LoadLocalMetadata();
+
+            string xpath = "/root";
+            var mags = localXml.SelectNodes(xpath);
+
+            while (mags[0].ChildNodes.Count > 0)
+            {
+                mags[0].RemoveChild(mags[0].ChildNodes.Item(0));
+            }
+        }
+
+        public async Task RemoveDownloadedMetadataEntry(LibrelioLocalUrl magLocal)
+        {
+            if (localDownloadedXml == null)
+                await LoadLocalMetadata();
+
+            string xpath = "/root/mag[url='" + magLocal.Url + "']";
+            var mags = localDownloadedXml.SelectNodes(xpath);
+
+            if (mags.Count > 0)
+            {
+                mags[0].ParentNode.RemoveChild(mags[0]);
+            }
+
+            var xmlfile = await _folder.CreateFileAsync("magazines_downloaded.metadata", CreationCollisionOption.OpenIfExists);
+            await localDownloadedXml.SaveToFileAsync(xmlfile);
+        }
+
         public IList<LibrelioUrl> GetAssets(string magazineName)
         {
             return null;
@@ -756,29 +897,47 @@ namespace LibrelioApplication
             return false;
         }
 
+        private bool UpdataLocalUrlDownloaded(LibrelioLocalUrl url)
+        {
+            foreach (var local in _magazinesLocalUrlDownloaded)
+            {
+                if (local.FullName == url.FullName)
+                {
+                    var i = _magazinesLocalUrlDownloaded.IndexOf(local);
+                    _magazinesLocalUrlDownloaded[i] = url;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private async Task UpdateLocalMetadataFromPLIST()
         {
-            foreach (var url in _magazinesUrl)
+            await ClearMetadataEntry();
+            _magazinesLocalUrl.Clear();
+
+            for (int i = 0; i < _magazinesUrl.Count; i++)
             {
-                LibrelioLocalUrl local = null;
-                local = DownloadManager.FindInMetadata(url, localXml);
+                var url = _magazinesUrl[i];
+                var local = DownloadManager.ConvertToLocalUrl(url);
 
-                if (local != null)
-                    local.Index = url.Index;
+                _magazinesLocalUrl.Add(local);
 
-                if (local == null)
-                {
-                    local = DownloadManager.ConvertToLocalUrl(url);
-                    if (!UpdataLocalUrl(local))
-                        _magazinesLocalUrl.Insert(local.Index, local);
-                }
-                else
-                {
-                    UpdataLocalUrl(local);
-                }
-
-                //if (!DownloadManager.IsDownloaded(local))
                 await AddUpdateMetadataEntry(local);
+            }
+
+            foreach (var item in _magazinesLocalUrlDownloaded)
+            {
+                var items = _magazinesLocalUrl.Where(magazine => magazine.FullName.Equals(item.FullName));
+
+                if (items != null && items.Count() > 0)
+                {
+                    var magazine = items.First();
+                    var index = _magazinesLocalUrl.IndexOf(magazine);
+                    if (index == -1) continue;
+                    _magazinesLocalUrl[index] = item;
+                }
             }
         }
 
@@ -873,6 +1032,72 @@ namespace LibrelioApplication
                     }
                 }
                 catch { }
+            }
+        }
+
+        private async Task LoadLocalMetadataDownloaded()
+        {
+            if (localDownloadedXml == null)
+            {
+                var file = await _folder.CreateFileAsync("magazines_downloaded.metadata", CreationCollisionOption.OpenIfExists);
+                Task task = null;
+                try
+                {
+                    localDownloadedXml = await XmlDocument.LoadFromFileAsync(file);
+                }
+                catch
+                {
+                    localDownloadedXml = new XmlDocument();
+                    var root = localDownloadedXml.CreateElement("root");
+                    localDownloadedXml.AppendChild(root);
+
+                    task = localDownloadedXml.SaveToFileAsync(file).AsTask();
+                }
+
+                if (task != null)
+                    await task;
+            }
+
+            _magazinesLocalUrlDownloaded.Clear();
+            var mags = localDownloadedXml.SelectNodes("/root/mag");
+            bool error = false;
+            foreach (var mag in mags)
+            {
+                try
+                {
+                    _magazinesLocalUrlDownloaded.Add(DownloadManager.GetLocalUrl(mag));
+                }
+                catch
+                {
+                    error = true;
+                    break;
+                }
+            }
+
+            if (error)
+            {
+                var file = await _folder.CreateFileAsync("magazines_downloaded.metadata", CreationCollisionOption.ReplaceExisting);
+
+                localDownloadedXml = new XmlDocument();
+                var root = localDownloadedXml.CreateElement("root");
+                localDownloadedXml.AppendChild(root);
+
+                var task = localDownloadedXml.SaveToFileAsync(file).AsTask();
+
+                _magazinesLocalUrlDownloaded.Clear();
+            }
+
+            foreach (var item in _magazinesLocalUrlDownloaded)
+            {
+                var items = _magazinesLocalUrl.Where(magazine => magazine.FullName.Equals(item.FullName));
+
+                if (items != null && items.Count() > 0)
+                {
+                    var magazine = items.First();
+                    var index = _magazinesLocalUrl.IndexOf(magazine);
+                    if (index == -1) continue; 
+                    _magazinesLocalUrl[index] = item;
+                }
             }
         }
 
