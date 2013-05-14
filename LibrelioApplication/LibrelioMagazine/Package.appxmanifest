@@ -16,11 +16,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
-<<<<<<< HEAD
-      <VisualElements DisplayName="ms-resource:app_name" Logo="CustomizationAssets\logo.png" SmallLogo="CustomizationAssets\icon.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="#4caa00">
-=======
       <VisualElements DisplayName="Wind" Logo="CustomizationAssets\logo.png" SmallLogo="CustomizationAssets\icon.png" Description="Wind" ForegroundText="light" BackgroundColor="#ff0000">
->>>>>>> origin/master
         <DefaultTile ShowName="noLogos" WideLogo="CustomizationAssets\WideLogo.png" />
         <SplashScreen Image="CustomizationAssets\startup_background.png" />
       </VisualElements>
