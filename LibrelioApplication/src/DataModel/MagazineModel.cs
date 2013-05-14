@@ -831,7 +831,7 @@ namespace LibrelioApplication.Data
                 if (magazinesDownloaded[i].IsDownloaded) {
 
                     var m = new MagazineModel(magazinesDownloaded[i], i);
-                    var item = GetItem(m.Title + m.Subtitle);
+                    var item = GetItem(m.fileName);
                     if (item != null)
                     {
                         var b = item.Update(1, 1, width, m);
@@ -907,12 +907,17 @@ namespace LibrelioApplication.Data
                 }
             }
 
+            var removeCollection = new ObservableCollection<MagazineViewModel>();
             for (int p = 0; p < group.Items.Count; p++)
             {
                 var it = group.Items[p];
                 var result = magazines.Any(magazine => magazine.FullName.Equals(it.FileName));
                 if (!result)
-                    group.Items.Remove(it);
+                    removeCollection.Add(it);
+            }
+            foreach (var it in removeCollection)
+            {
+                group.Items.Remove(it);
             }
 
             return list;
