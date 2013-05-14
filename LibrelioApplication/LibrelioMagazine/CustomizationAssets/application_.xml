@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
-
+  
 
   <string name="app_name">PureGreen</string>
   <hex name="background_color">#4caa00</hex>
@@ -8,20 +8,12 @@
   <string name="monthly_subs_code">monthlysuscription</string>
   <bool name="enable_test_magazine">false</bool>
   <bool name="enable_code_subs">true</bool>
-<<<<<<< HEAD
   <string name="client_name" >ceol</string>
   <string name="magazine_name">puregreen</string>
-  <string name="sharing_title">Site et applications PureGreen</string>
-  <string name="sharing_text"><![CDATA[<body><p>Je te recommande le site et les applis PureGreen Magazine</p></body>]]></string>
+  <string name="sharing_title">Site et applications Pure Green</string>
+  <string name="sharing_text">Je te recommande le site et les applis Pure Green Magazine</string>
   <string name="sharing_link">http://www.puregreenmag.fr/</string>
-=======
-  <string name="client_name" >niveales</string>
-  <string name="magazine_name">wind</string>
-  <string name="sharing_title">Site et applications Wind</string>
-  <string name="sharing_text">Je te recommande le site et les applis Wind Magazine</string>
-  <string name="sharing_link">http://www.windmag.com</string>
-  <string name="privacy_link">https://www.google.com</string>
->>>>>>> origin/master
+  <string name="privacy_link">http://www.puregreenmag.fr/mentions-l%C3%A9gales</string>
   <string name="google_analytics">UA-1732003-23</string>
 
 

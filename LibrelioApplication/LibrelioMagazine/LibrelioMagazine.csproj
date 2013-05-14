@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,9 +12,9 @@
     <DefaultLanguage>fr</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>LibrelioMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>ceol.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <PackageCertificateThumbprint>CB46E1136A2983B08AEB1ABDEEE9BC9B245FBDE0</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>130AA1FEC41184ED272AA8896E6558BBF6CB35FF</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -200,26 +200,10 @@
     <Content Include="..\Assets\cornerfree2.png">
       <Link>Assets\cornerfree2.png</Link>
     </Content>
-    <Content Include="CustomizationAssets\application_.xml" />
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="CustomizationAssets\background.png" />
-    <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
-    <Content Include="CustomizationAssets\Covers\wind_355.png" />
-    <Content Include="CustomizationAssets\Covers\wind_356.png" />
-    <Content Include="CustomizationAssets\Covers\wind_357.png" />
-    <Content Include="CustomizationAssets\Covers\wind_358.png" />
-    <Content Include="CustomizationAssets\Covers\wind_362.png" />
-    <Content Include="CustomizationAssets\Covers\wind_363.png" />
-    <Content Include="CustomizationAssets\Covers\wind_364.png" />
-    <Content Include="CustomizationAssets\Covers\wind_365.png" />
-    <Content Include="CustomizationAssets\Covers\wind_366.png" />
-    <Content Include="CustomizationAssets\Covers\wind_367.png" />
-    <Content Include="CustomizationAssets\Covers\wind_368.png" />
-    <Content Include="CustomizationAssets\Covers\wind_369.png" />
-    <Content Include="CustomizationAssets\Covers\wind_370.png" />
-    <Content Include="CustomizationAssets\Covers\wind_371.png" />
-    <Content Include="CustomizationAssets\Covers\wind_372.png" />
-    <Content Include="CustomizationAssets\Covers\wind_373.png" />
-    <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
     <Content Include="CustomizationAssets\icon.scale-100.png" />
     <Content Include="CustomizationAssets\logo.scale-100.png" />
     <Content Include="CustomizationAssets\startup_background.scale-100.png" />
@@ -298,10 +282,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <PRIResource Include="..\Assets\strings\en\resources.resw">
+    <None Include="ceol.pfx" /><PRIResource Include="..\Assets\strings\en\resources.resw">
       <Link>Assets\strings\en\resources.resw</Link>
     </PRIResource>
-    <PRIResource Include="..\Assets\strings\fr\resources.resw">
+    <None Include="ceol.pfx" /><PRIResource Include="..\Assets\strings\fr\resources.resw">
       <Link>Assets\strings\fr\resources.resw</Link>
     </PRIResource>
     <Content Include="..\Assets\test\receipt.pmd">
@@ -310,7 +294,7 @@
     <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
       <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
     </None>
-    <Content Include="CustomizationAssets\Magazines.plist" />
+    <Content Include="CustomizationAssets\Magazines.plist" /><Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" /><Content Include="CustomizationAssets\Covers\wind_373.png" /><Content Include="CustomizationAssets\Covers\wind_372.png" /><Content Include="CustomizationAssets\Covers\wind_371.png" /><Content Include="CustomizationAssets\Covers\wind_370.png" /><Content Include="CustomizationAssets\Covers\wind_369.png" /><Content Include="CustomizationAssets\Covers\wind_368.png" /><Content Include="CustomizationAssets\Covers\wind_367.png" /><Content Include="CustomizationAssets\Covers\wind_366.png" /><Content Include="CustomizationAssets\Covers\wind_365.png" /><Content Include="CustomizationAssets\Covers\wind_364.png" /><Content Include="CustomizationAssets\Covers\wind_363.png" /><Content Include="CustomizationAssets\Covers\wind_362.png" /><Content Include="CustomizationAssets\Covers\wind_358.png" /><Content Include="CustomizationAssets\Covers\wind_357.png" /><Content Include="CustomizationAssets\Covers\wind_356.png" /><Content Include="CustomizationAssets\Covers\wind_355.png" /><Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
