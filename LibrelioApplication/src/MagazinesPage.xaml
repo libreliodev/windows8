@@ -27,10 +27,6 @@
             ItemsPath="TopItems"
             d:Source="{Binding AllGroups, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>
 
-        <!--<CollectionViewSource
-            x:Name="itemsViewSource"
-            Source="{Binding Items}"
-            d:Source="{Binding AllMagazines, Source={d:DesignInstance Type=data:MagazineDataSource, IsDesignTimeCreatable=True}}"/>-->
     </Page.Resources>
     
     <common:LayoutAwarePage.BottomAppBar>

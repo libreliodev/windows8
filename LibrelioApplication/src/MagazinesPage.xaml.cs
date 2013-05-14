@@ -405,24 +405,32 @@ namespace LibrelioApplication
             var mag = DownloadManager.GetLocalUrl(app.Manager.MagazineLocalUrlDownloaded, item.FileName);
             if (mag == null) return;
 
-            var folder = await StorageFolder.GetFolderFromPathAsync(mag.FolderPath);
-            var files = await folder.GetFilesAsync();
-            foreach (var file in files) {
+            StorageFolder folder = null;
+            try
+            {
+                folder = await StorageFolder.GetFolderFromPathAsync(mag.FolderPath);
+            }
+            catch { }
+            if (folder != null) {
+
+                var files = await folder.GetFilesAsync();
+                foreach (var file in files) {
+
+                    try {
+
+                        await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+
+                    } catch { }
+                }
 
                 try {
 
-                    await file.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
 
                 } catch { }
             }
 
-            try {
-
-                await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
-
-            } catch { }
-
-            await app.Manager.RemoveDownloadedMetadataEntry(mag);
+            await app.Manager.RemoveMagazineDownloaded(mag);
 
             var title = item.FileName;
             var loader = new ResourceLoader();
@@ -815,10 +823,19 @@ namespace LibrelioApplication
             if (scrollViewer1 != null)
             {
                 scrollViewer1.ViewChanged += scrollViewer1_ViewChanged;
-            }
 
-            var loader = new ResourceLoader();
-            itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
+                if (scrollViewer1.ExtentWidth > scrollViewer1.ViewportWidth)
+                {
+                    var loader = new ResourceLoader();
+                    itemGridView.ScrollIntoView(MagazineDataSource.GetGroup(loader.GetString("all_magazines")), ScrollIntoViewAlignment.Leading);
+                }
+                else
+                {
+                    progressRingContainer.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    loadingUI.IsActive = false;
+                    itemGridView.Opacity = 1;
+                }
+            }
         }
 
         void scrollViewer1_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -1173,9 +1190,9 @@ namespace LibrelioApplication
             {
                 for (int i = 0; i < 125; i++)
                 {
-                    await bitmapStream.WriteAsync(new byte[offset * 4],                0,             offset * 4);
-                    await bitmapStream.WriteAsync(sourcePixels,                        width * 4 * i, width * 4);
-                    await bitmapStream.WriteAsync(new byte[(offset + (125 - width) % 2) * 4], 0, (offset + (125 - width) % 2) * 4);
+                    await bitmapStream.WriteAsync(new byte[offset * 4],                       0,             offset * 4);
+                    await bitmapStream.WriteAsync(sourcePixels,                               width * 4 * i, width * 4);
+                    await bitmapStream.WriteAsync(new byte[(offset + (125 - width) % 2) * 4], 0,             (offset + (125 - width) % 2) * 4);
                 }
             }
 
