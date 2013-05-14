@@ -10,9 +10,10 @@
   <bool name="enable_code_subs">true</bool>
   <string name="client_name" >ceol</string>
   <string name="magazine_name">puregreen</string>
-  <string name="sharing_title">Site et applications PureGreen</string>
-  <string name="sharing_text"><![CDATA[<body><p>Je te recommande le site et les applis PureGreen Magazine</p></body>]]></string>
+  <string name="sharing_title">Site et applications Pure Green</string>
+  <string name="sharing_text">Je te recommande le site et les applis Pure Green Magazine</string>
   <string name="sharing_link">http://www.puregreenmag.fr/</string>
+  <string name="privacy_link">http://www.puregreenmag.fr/mentions-l%C3%A9gales</string>
   <string name="google_analytics">UA-1732003-23</string>
 
 

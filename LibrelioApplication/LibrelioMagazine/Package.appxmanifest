@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=Dorin" Version="1.0.0.11" />
+  <Identity Name="ceol-test" Publisher="cn=ceol" Version="1.0.0.11" />
   <Properties>
-    <DisplayName>LibrelioMagazine</DisplayName>
-    <PublisherDisplayName>voyager</PublisherDisplayName>
+    <DisplayName>PureGreen</DisplayName>
+    <PublisherDisplayName>Ceol</PublisherDisplayName>
     <Logo>CustomizationAssets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -11,11 +11,12 @@
     <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
   </Prerequisites>
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="en-us" />
+    <Resource Language="fr-fr" />
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
-      <VisualElements DisplayName="ms-resource:app_name" Logo="CustomizationAssets\logo.png" SmallLogo="CustomizationAssets\icon.png" Description="ms-resource:app_name" ForegroundText="light" BackgroundColor="#4caa00">
+      <VisualElements DisplayName="PureGreen" Logo="CustomizationAssets\logo.png" SmallLogo="CustomizationAssets\icon.png" Description="PureGreen" ForegroundText="light" BackgroundColor="#4caa00">
         <DefaultTile ShowName="noLogos" WideLogo="CustomizationAssets\WideLogo.png" />
         <SplashScreen Image="CustomizationAssets\startup_background.png" />
       </VisualElements>

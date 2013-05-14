@@ -1,6 +1,0 @@
-Microsoft (R) Build Engine Version 2.0.50727.6387
-[Microsoft .NET Framework, Version 2.0.50727.6400]
-Copyright (C) Microsoft Corporation 2005. All rights reserved.
-
-MSBUILD : eppor MSB1009: Project file does not exist.
-Switch: zzz
