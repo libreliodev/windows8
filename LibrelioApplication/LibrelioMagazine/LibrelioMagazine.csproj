@@ -300,11 +300,18 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="Assets\strings\zh\Resources.resw" />
+    <PRIResource Include="Assets\strings\de\Resources.resw" />
+    <PRIResource Include="Assets\strings\it\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="..\Assets\strings\en\resources.resw">
       <Link>Assets\strings\en\resources.resw</Link>
+      <SubType>Designer</SubType>
     </PRIResource>
     <PRIResource Include="..\Assets\strings\fr\resources.resw">
       <Link>Assets\strings\fr\resources.resw</Link>
+      <SubType>Designer</SubType>
     </PRIResource>
     <Content Include="..\Assets\test\receipt.pmd">
       <Link>Assets\test\receipt.pmd</Link>
