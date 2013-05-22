@@ -1126,6 +1126,10 @@ namespace LibrelioApplication
                 var item = group.Items[0];
                 var tileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileWideSmallImageAndText04);
 
+                var bindingElement = (XmlElement)tileXml.GetElementsByTagName("binding").Item(0);
+                bindingElement.SetAttribute("branding", "none");
+
+
                 XmlNodeList tileTextAttributes = tileXml.GetElementsByTagName("text");
                 tileTextAttributes[0].InnerText = item.Title;
                 tileTextAttributes[1].InnerText = item.Subtitle;
