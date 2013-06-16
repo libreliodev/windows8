@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using Windows.UI.ApplicationSettings;
 using Windows.System;
 using Windows.ApplicationModel.Resources;
+using Windows.Networking.Connectivity;
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -176,9 +177,25 @@ namespace LibrelioApplication
             //deferral.Complete();
         }
 
+        private bool ConnectedToInternet() {
+
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null) {
+
+                return false;
+            }
+
+            var level = InternetConnectionProfile.GetNetworkConnectivityLevel();
+
+            return level == NetworkConnectivityLevel.InternetAccess;
+        }
+
         // Enumerate the downloads that were going on in the background while the app was closed. 
-        private async Task DiscoverActiveDownloadsAsync()
-        {
+        private async Task DiscoverActiveDownloadsAsync() {
+
+            if (!ConnectedToInternet()) return;
+
             activeDownloads = new List<DownloadOperation>();
 
             IReadOnlyList<DownloadOperation> downloads = null;

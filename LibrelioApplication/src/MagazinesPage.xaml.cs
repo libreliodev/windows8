@@ -32,6 +32,8 @@ using System.Net.Http;
 using Windows.UI.Xaml.Documents;
 using Windows.Storage.FileProperties;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Networking.Connectivity;
+using Windows.UI.Popups;
 
 
 // The Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234233
@@ -881,8 +883,26 @@ namespace LibrelioApplication
             }
         }
 
+        private bool ConnectedToInternet()
+        {
+
+            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+            if (InternetConnectionProfile == null)
+            {
+
+                return false;
+            }
+
+            var level = InternetConnectionProfile.GetNetworkConnectivityLevel();
+
+            return level == NetworkConnectivityLevel.InternetAccess;
+        }
+
         private async Task UpdateUIOnline()
         {
+            if (!ConnectedToInternet()) return;
+
             if (isRefreshing) return;
 
             isRefreshing = true;
@@ -924,6 +944,8 @@ namespace LibrelioApplication
 
         private async Task DownloadCovers(bool isUpdated)
         {
+            if (!ConnectedToInternet()) return;
+
             var folder = ApplicationData.Current.LocalFolder;
             folder = await folder.CreateFolderAsync("Covers", CreationCollisionOption.OpenIfExists);
             if (folder == null) return;
