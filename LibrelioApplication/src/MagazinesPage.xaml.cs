@@ -571,22 +571,25 @@ namespace LibrelioApplication
             cts = new CancellationTokenSource();
             //var app = Application.Current as App;
             await LoadUI();
-            var value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
-            if (value == null)
-            {
-                var date = new DateTime(2012, 4, 15);
-                ApplicationData.Current.LocalSettings.Values["last_checked"] = date.ToUniversalTime().ToString("R");
-                value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
-            }
-            var lastChecked = DateTimeOffset.Parse(value);
-            var minutesPassed = (DateTime.UtcNow - lastChecked).TotalMinutes;
-            if (minutesPassed > 30)
-            {
-                minutesPassed = 30;
-                ApplicationData.Current.LocalSettings.Values["last_checked"] = DateTime.UtcNow.ToString("R");
-            }
+            if (ConnectedToInternet()) {
 
-            var tsk = StartLoopRefresh((int)minutesPassed);
+                var value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
+                if (value == null)
+                {
+                    var date = new DateTime(2012, 4, 15);
+                    ApplicationData.Current.LocalSettings.Values["last_checked"] = date.ToUniversalTime().ToString("R");
+                    value = ApplicationData.Current.LocalSettings.Values["last_checked"] as string;
+                }
+                var lastChecked = DateTimeOffset.Parse(value);
+                var minutesPassed = (DateTime.UtcNow - lastChecked).TotalMinutes;
+                if (minutesPassed > 30)
+                {
+                    minutesPassed = 30;
+                    ApplicationData.Current.LocalSettings.Values["last_checked"] = DateTime.UtcNow.ToString("R");
+                }
+
+                var tsk = StartLoopRefresh((int)minutesPassed);
+            }
 
             //bool updatedView = false;
 
