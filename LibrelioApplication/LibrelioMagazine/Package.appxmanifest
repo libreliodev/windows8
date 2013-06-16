@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=Dorin" Version="1.0.0.11" />
+  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=Dorin" Version="1.0.0.19" />
   <Properties>
     <DisplayName>LibrelioMagazine</DisplayName>
     <PublisherDisplayName>voyager</PublisherDisplayName>
@@ -11,8 +11,7 @@
     <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
   </Prerequisites>
   <Resources>
-    <Resource Language="en-us"/>
-    <Resource Language="fr-fr"/>
+    <Resource Language="x-generate" />
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
