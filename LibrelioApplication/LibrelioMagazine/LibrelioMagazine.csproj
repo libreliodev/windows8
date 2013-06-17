@@ -204,6 +204,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="CustomizationAssets\background.png" />
+    <Content Include="CustomizationAssets\backgroundLarge.png" />
+    <Content Include="CustomizationAssets\backgroundMin.png" />
     <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
     <Content Include="CustomizationAssets\Covers\wind_355.png" />
     <Content Include="CustomizationAssets\Covers\wind_356.png" />
@@ -223,10 +225,23 @@
     <Content Include="CustomizationAssets\Covers\wind_373.png" />
     <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
     <Content Include="CustomizationAssets\icon.scale-100.png" />
+    <Content Include="CustomizationAssets\icon.scale-140.png" />
+    <Content Include="CustomizationAssets\icon.scale-180.png" />
+    <Content Include="CustomizationAssets\icon.scale-80.png" />
     <Content Include="CustomizationAssets\logo.scale-100.png" />
+    <Content Include="CustomizationAssets\logo.scale-140.png" />
+    <Content Include="CustomizationAssets\logo.scale-180.png" />
+    <Content Include="CustomizationAssets\logo.scale-80.png" />
     <Content Include="CustomizationAssets\startup_background.scale-100.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-140.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-180.png" />
     <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-180.png" />
     <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-180.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-80.png" />
     <Page Include="..\src\DownloadingPage.xaml">
       <Link>LinkedSource\DownloadingPage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
