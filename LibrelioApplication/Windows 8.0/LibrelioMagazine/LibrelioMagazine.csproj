@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{86D8EC50-ACC7-424D-B60A-E0C98D0A36E5}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LibrelioMagazine</RootNamespace>
+    <AssemblyName>LibrelioMagazine</AssemblyName>
+    <DefaultLanguage>fr</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>LibrelioMagazine_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>CB46E1136A2983B08AEB1ABDEEE9BC9B245FBDE0</PackageCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE,TEST_SLIDE,TEST_VIDEO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <ProjectReference Include="..\MuPDF.WinRT\Win8\MuPDFWinRT.vcxproj">
+      <Project>{56c66c4f-3c21-4929-baf1-2eda2ec56823}</Project>
+      <Name>MuPDFWinRT</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\Common\BindableBase.cs">
+      <Link>Common\BindableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\BooleanNegationConverter.cs">
+      <Link>Common\BooleanNegationConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\BooleanToVisibilityConverter.cs">
+      <Link>Common\BooleanToVisibilityConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\LayoutAwarePage.cs">
+      <Link>Common\LayoutAwarePage.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\RichTextColumns.cs">
+      <Link>Common\RichTextColumns.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\ScrollViewerOffsetMediator.cs">
+      <Link>Common\ScrollViewerOffsetMediator.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\SuspensionManager.cs">
+      <Link>Common\SuspensionManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\DataModel\MagazineModel.cs">
+      <Link>LinkedSource\MagazineModel.cs</Link>
+    </Compile>
+    <Compile Include="..\src\DownloadingPage.xaml.cs">
+      <Link>LinkedSource\DownloadingPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\DownloadManager.cs">
+      <Link>LinkedSource\DownloadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\FullScreenContainer.xaml.cs">
+      <Link>LinkedSource\FullScreenContainer.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\MagazineManager.cs">
+      <Link>LinkedSource\MagazineManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\MagazinesPage.xaml.cs">
+      <Link>LinkedSource\MagazinesPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\PageButton.xaml.cs">
+      <Link>LinkedSource\PageButton.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\PdfViewPage.xaml.cs">
+      <Link>LinkedSource\PdfViewPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\PurchaseModule.xaml.cs">
+      <Link>LinkedSource\PurchaseModule.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\SharePage.cs">
+      <Link>LinkedSource\SharePage.cs</Link>
+    </Compile>
+    <Compile Include="..\src\SlideShow.xaml.cs">
+      <Link>LinkedSource\SlideShow.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\SlideShowPage.xaml.cs">
+      <Link>Common\SlideShowPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Utils\PList.cs">
+      <Link>Utils\PList.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Utils\Utils.cs">
+      <Link>Utils\Utils.cs</Link>
+    </Compile>
+    <Compile Include="..\src\VideoPage.xaml.cs">
+      <Link>Common\VideoPage.xaml.cs</Link>
+    </Compile>
+    <Compile Include="..\src\VideoPlayer.xaml.cs">
+      <Link>LinkedSource\VideoPlayer.xaml.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <Content Include="..\Assets\buy.png">
+      <Link>Assets\buy.png</Link>
+    </Content>
+    <Content Include="..\Assets\buyinvert.png">
+      <Link>Assets\buyinvert.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerdownloaded.png">
+      <Link>Assets\cornerdownloaded.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree1.png">
+      <Link>Assets\cornerfree1.png</Link>
+    </Content>
+    <Content Include="..\Assets\cornerfree2.png">
+      <Link>Assets\cornerfree2.png</Link>
+    </Content>
+    <Content Include="CustomizationAssets\application_.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="CustomizationAssets\background.png" />
+    <Content Include="CustomizationAssets\backgroundLarge.png" />
+    <Content Include="CustomizationAssets\backgroundMin.png" />
+    <Content Include="CustomizationAssets\Covers\AntoineAlbeau.png" />
+    <Content Include="CustomizationAssets\Covers\wind_355.png" />
+    <Content Include="CustomizationAssets\Covers\wind_356.png" />
+    <Content Include="CustomizationAssets\Covers\wind_357.png" />
+    <Content Include="CustomizationAssets\Covers\wind_358.png" />
+    <Content Include="CustomizationAssets\Covers\wind_362.png" />
+    <Content Include="CustomizationAssets\Covers\wind_363.png" />
+    <Content Include="CustomizationAssets\Covers\wind_364.png" />
+    <Content Include="CustomizationAssets\Covers\wind_365.png" />
+    <Content Include="CustomizationAssets\Covers\wind_366.png" />
+    <Content Include="CustomizationAssets\Covers\wind_367.png" />
+    <Content Include="CustomizationAssets\Covers\wind_368.png" />
+    <Content Include="CustomizationAssets\Covers\wind_369.png" />
+    <Content Include="CustomizationAssets\Covers\wind_370.png" />
+    <Content Include="CustomizationAssets\Covers\wind_371.png" />
+    <Content Include="CustomizationAssets\Covers\wind_372.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373.png" />
+    <Content Include="CustomizationAssets\Covers\wind_373_newsstand.png" />
+    <Content Include="CustomizationAssets\icon.scale-100.png" />
+    <Content Include="CustomizationAssets\icon.scale-140.png" />
+    <Content Include="CustomizationAssets\icon.scale-180.png" />
+    <Content Include="CustomizationAssets\icon.scale-80.png" />
+    <Content Include="CustomizationAssets\logo.scale-100.png" />
+    <Content Include="CustomizationAssets\logo.scale-140.png" />
+    <Content Include="CustomizationAssets\logo.scale-180.png" />
+    <Content Include="CustomizationAssets\logo.scale-80.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-100.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-140.png" />
+    <Content Include="CustomizationAssets\startup_background.scale-180.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\StoreLogo.scale-180.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-100.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-140.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-180.png" />
+    <Content Include="CustomizationAssets\WideLogo.scale-80.png" />
+    <Page Include="..\src\DownloadingPage.xaml">
+      <Link>LinkedSource\DownloadingPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\FullScreenContainer.xaml">
+      <Link>LinkedSource\FullScreenContainer.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\PageButton.xaml">
+      <Link>LinkedSource\PageButton.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\PurchaseModule.xaml">
+      <Link>LinkedSource\PurchaseModule.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\SlideShow.xaml">
+      <Link>LinkedSource\SlideShow.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\VideoPlayer.xaml">
+      <Link>LinkedSource\VideoPlayer.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\SlideShowPage.xaml">
+      <Link>Common\SlideShowPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\VideoPage.xaml">
+      <Link>Common\VideoPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\PdfViewPage.xaml">
+      <Link>LinkedSource\PdfViewPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Common\StandardStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\src\MagazinesPage.xaml">
+      <Link>LinkedSource\MagazinesPage.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Content Include="..\Assets\DarkGray.png">
+      <Link>Assets\DarkGray.png</Link>
+    </Content>
+    <Content Include="..\Assets\LightGray.png">
+      <Link>Assets\LightGray.png</Link>
+    </Content>
+    <Content Include="..\Assets\MediumGray.png">
+      <Link>Assets\MediumGray.png</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Assets\strings\zh\Resources.resw" />
+    <PRIResource Include="Assets\strings\de\Resources.resw" />
+    <PRIResource Include="Assets\strings\it\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <PRIResource Include="..\Assets\strings\en\resources.resw">
+      <Link>Assets\strings\en\resources.resw</Link>
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <PRIResource Include="..\Assets\strings\fr\resources.resw">
+      <Link>Assets\strings\fr\resources.resw</Link>
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <Content Include="..\Assets\test\receipt.pmd">
+      <Link>Assets\test\receipt.pmd</Link>
+    </Content>
+    <None Include="..\src\LibrelioMagazine_TemporaryKey.pfx">
+      <Link>LinkedSource\LibrelioMagazine_TemporaryKey.pfx</Link>
+    </None>
+    <Content Include="CustomizationAssets\Magazines.plist" />
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
+    <VisualStudioVersion>11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

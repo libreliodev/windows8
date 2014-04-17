@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
+  <Identity Name="76552f9a-4fb6-49a5-b0ba-32e6909b9845" Publisher="CN=Librelio" Version="1.1.0.23" />
+  <Properties>
+    <DisplayName>LibrelioMagazine</DisplayName>
+    <PublisherDisplayName>voyager</PublisherDisplayName>
+    <Logo>CustomizationAssets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.3.0</OSMinVersion>
+    <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="LibrelioMagazine.App">
+      <Extensions>
+        <Extension Category="windows.fileTypeAssociation">
+          <FileTypeAssociation Name="ext">
+            <SupportedFileTypes>
+              <FileType>.metadata</FileType>
+              <FileType>.pdf</FileType>
+              <FileType>.jpg</FileType>
+              <FileType>.jpeg</FileType>
+              <FileType>.png</FileType>
+              <FileType>.mp4</FileType>
+              <FileType>.pmd</FileType>
+              <FileType>.plist</FileType>
+            </SupportedFileTypes>
+          </FileTypeAssociation>
+        </Extension>
+      </Extensions>
+      <m2:VisualElements DisplayName="Wind" Description="Wind" BackgroundColor="#ff0000" ForegroundText="light" Square150x150Logo="CustomizationAssets\logo.png" Square30x30Logo="CustomizationAssets\icon.png">
+        <m2:DefaultTile Wide310x150Logo="CustomizationAssets\WideLogo.png">
+        </m2:DefaultTile>
+        <m2:SplashScreen Image="CustomizationAssets\startup_background.png" />
+        <m2:ApplicationView MinWidth="default" />
+      </m2:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
