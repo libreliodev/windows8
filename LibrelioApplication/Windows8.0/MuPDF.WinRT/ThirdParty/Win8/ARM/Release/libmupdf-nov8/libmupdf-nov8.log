@@ -1,0 +1,15 @@
+﻿Build started 08.04.2013 11:08:36 PM.
+     1>Project "C:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libmupdf-nov8.vcxproj" on node 3 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_ARM\CL.exe /c /I..\mupdf\scripts /I..\mupdf\fitz /I..\mupdf\pdf /I..\mupdf\thirdparty\jbig2dec /I..\mupdf\thirdparty\jpeg /I..\mupdf\thirdparty\openjpeg\libopenjpeg /I..\mupdf\thirdparty\zlib /I..\mupdf\thirdparty\freetype\include /IC:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ /I"Generated Files\\" /I"ARM\Release\libmupdf-nov8\\" /Zi /nologo /W3 /WX- /MP /O2 /Oi /Ot /Oy- /GL /D WRTSA /D NDEBUG /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"ARM\Release\libmupdf-nov8\\" /Fd"ARM\Release\libmupdf-nov8\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt ..\mupdf\pdf\pdf_js_none.c
+         pdf_js_none.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_ARM\Lib.exe /OUT:"ARM\Release\libmupdf-nov8.lib" /NOLOGO /MACHINE:ARM /LTCG "ARM\Release\libmupdf-nov8\pdf_js_none.obj"
+         libmupdf-nov8.vcxproj -> C:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ARM\Release\libmupdf-nov8.lib
+       _GenerateProjectPriFileCore:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\MakePri.exe New -ProjectRoot C:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ -ConfigXml ARM\Release\libmupdf-nov8\priconfig.xml -OutputFile C:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ARM\Release\libmupdf_nov8.pri -IndexName libmupdf_nov8 -Verbose -Overwrite  
+     1>Done Building Project "C:\Users\Dorin\Documents\GitHub_test\windows8\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libmupdf-nov8.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.00
