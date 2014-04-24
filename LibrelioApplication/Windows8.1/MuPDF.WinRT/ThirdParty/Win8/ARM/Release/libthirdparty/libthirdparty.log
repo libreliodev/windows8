@@ -1,0 +1,239 @@
+﻿Build started 24.04.2014 6:18:02 PM.
+     1>Project "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libthirdparty.vcxproj" on node 4 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_arm\CL.exe /c /I..\mupdf\scripts /I..\mupdf\fitz /I..\mupdf\pdf /I..\mupdf\thirdparty\jbig2dec /I..\mupdf\thirdparty\jpeg /I..\mupdf\thirdparty\openjpeg\libopenjpeg /I..\mupdf\thirdparty\zlib /I..\mupdf\thirdparty\freetype\include /I"D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\\" /I"Generated Files\\" /IARM\Release\libthirdparty\ /Zi /nologo /W3 /WX- /MP /O2 /Oi /Oy- /GL /D WRTSA /D _CRT_SECURE_NO_WARNINGS /D FT2_BUILD_LIBRARY /D OPJ_STATIC /D "FT_CONFIG_MODULES_H=\"slimftmodules.h\"" /D "FT_CONFIG_OPTIONS_H=\"slimftoptions.h\"" /D "verbose=-1" /D _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1 /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"ARM\Release\libthirdparty\\" /Fd"ARM\Release\libthirdparty\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\mupdf\thirdparty\freetype\src\base\ftbase.c ..\mupdf\thirdparty\freetype\src\base\ftbbox.c ..\mupdf\thirdparty\freetype\src\base\ftbitmap.c ..\mupdf\thirdparty\freetype\src\base\ftgasp.c ..\mupdf\thirdparty\freetype\src\base\ftglyph.c ..\mupdf\thirdparty\freetype\src\base\ftinit.c ..\mupdf\thirdparty\freetype\src\base\ftstroke.c ..\mupdf\thirdparty\freetype\src\base\ftsynth.c ..\mupdf\thirdparty\freetype\src\base\ftsystem.c ..\mupdf\thirdparty\freetype\src\base\fttype1.c ..\mupdf\thirdparty\freetype\src\base\ftxf86.c ..\mupdf\thirdparty\freetype\src\cff\cff.c ..\mupdf\thirdparty\freetype\src\cid\type1cid.c ..\mupdf\thirdparty\freetype\src\psaux\psaux.c ..\mupdf\thirdparty\freetype\src\pshinter\pshinter.c ..\mupdf\thirdparty\freetype\src\psnames\psnames.c ..\mupdf\thirdparty\freetype\src\raster\raster.c ..\mupdf\thirdparty\freetype\src\sfnt\sfnt.c ..\mupdf\thirdparty\freetype\src\smooth\smooth.c ..\mupdf\thirdparty\freetype\src\truetype\truetype.c ..\mupdf\thirdparty\freetype\src\type1\type1.c ..\mupdf\thirdparty\jbig2dec\jbig2.c ..\mupdf\thirdparty\jbig2dec\jbig2_arith.c ..\mupdf\thirdparty\jbig2dec\jbig2_arith_iaid.c ..\mupdf\thirdparty\jbig2dec\jbig2_arith_int.c ..\mupdf\thirdparty\jbig2dec\jbig2_generic.c ..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c ..\mupdf\thirdparty\jbig2dec\jbig2_huffman.c ..\mupdf\thirdparty\jbig2dec\jbig2_image.c ..\mupdf\thirdparty\jbig2dec\jbig2_metadata.c ..\mupdf\thirdparty\jbig2dec\jbig2_mmr.c ..\mupdf\thirdparty\jbig2dec\jbig2_page.c ..\mupdf\thirdparty\jbig2dec\jbig2_refinement.c ..\mupdf\thirdparty\jbig2dec\jbig2_segment.c ..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c ..\mupdf\thirdparty\jbig2dec\jbig2_text.c ..\mupdf\thirdparty\jpeg\jaricom.c ..\mupdf\thirdparty\jpeg\jcomapi.c ..\mupdf\thirdparty\jpeg\jdapimin.c ..\mupdf\thirdparty\jpeg\jdapistd.c ..\mupdf\thirdparty\jpeg\jdarith.c ..\mupdf\thirdparty\jpeg\jdatadst.c ..\mupdf\thirdparty\jpeg\jdatasrc.c ..\mupdf\thirdparty\jpeg\jdcoefct.c ..\mupdf\thirdparty\jpeg\jdcolor.c ..\mupdf\thirdparty\jpeg\jddctmgr.c ..\mupdf\thirdparty\jpeg\jdhuff.c ..\mupdf\thirdparty\jpeg\jdinput.c ..\mupdf\thirdparty\jpeg\jdmainct.c ..\mupdf\thirdparty\jpeg\jdmarker.c ..\mupdf\thirdparty\jpeg\jdmaster.c ..\mupdf\thirdparty\jpeg\jdmerge.c ..\mupdf\thirdparty\jpeg\jdpostct.c ..\mupdf\thirdparty\jpeg\jdsample.c ..\mupdf\thirdparty\jpeg\jdtrans.c ..\mupdf\thirdparty\jpeg\jerror.c ..\mupdf\thirdparty\jpeg\jfdctflt.c ..\mupdf\thirdparty\jpeg\jfdctfst.c ..\mupdf\thirdparty\jpeg\jfdctint.c ..\mupdf\thirdparty\jpeg\jidctflt.c ..\mupdf\thirdparty\jpeg\jidctfst.c ..\mupdf\thirdparty\jpeg\jidctint.c ..\mupdf\thirdparty\jpeg\jmemmgr.c ..\mupdf\thirdparty\jpeg\jmemnobs.c ..\mupdf\thirdparty\jpeg\jquant1.c ..\mupdf\thirdparty\jpeg\jquant2.c ..\mupdf\thirdparty\jpeg\jutils.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\bio.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\cidx_manager.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\cio.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\dwt.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\event.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\image.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\j2k.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\j2k_lib.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\jp2.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\jpt.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\mct.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\mqc.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\openjpeg.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\phix_manager.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\pi.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\ppix_manager.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\raw.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\t1.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\t2.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\tcd.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\tgt.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\thix_manager.c ..\mupdf\thirdparty\openjpeg\libopenjpeg\tpix_manager.c ..\mupdf\thirdparty\zlib\adler32.c ..\mupdf\thirdparty\zlib\compress.c ..\mupdf\thirdparty\zlib\crc32.c ..\mupdf\thirdparty\zlib\deflate.c ..\mupdf\thirdparty\zlib\inffast.c ..\mupdf\thirdparty\zlib\inflate.c ..\mupdf\thirdparty\zlib\inftrees.c ..\mupdf\thirdparty\zlib\trees.c ..\mupdf\thirdparty\zlib\uncompr.c ..\mupdf\thirdparty\zlib\zutil.c
+         ftbase.c
+         ftbbox.c
+         ftbitmap.c
+         ftgasp.c
+         ftglyph.c
+         ftinit.c
+         ftstroke.c
+         ftsynth.c
+         ftsystem.c
+         fttype1.c
+         ftxf86.c
+         cff.c
+         type1cid.c
+         psaux.c
+         pshinter.c
+         psnames.c
+         raster.c
+         sfnt.c
+         smooth.c
+         truetype.c
+         type1.c
+         jbig2.c
+         jbig2_arith.c
+         jbig2_arith_iaid.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2.c(448): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2.c(451): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2.c(458): warning C4018: '<' : signed/unsigned mismatch
+         jbig2_arith_int.c
+         jbig2_generic.c
+         jbig2_halftone.c
+         jbig2_huffman.c
+         jbig2_image.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_generic.c(802): warning C4018: '>' : signed/unsigned mismatch
+         jbig2_metadata.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(302): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(384): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(398): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(414): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(415): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(418): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(429): warning C4018: '<' : signed/unsigned mismatch
+         jbig2_mmr.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(526): warning C4018: '>' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_halftone.c(561): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_mmr.c(65): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_mmr.c(77): warning C4018: '<' : signed/unsigned mismatch
+         jbig2_page.c
+         jbig2_refinement.c
+         jbig2_segment.c
+         jbig2_symbol_dict.c
+         jbig2_text.c
+         jaricom.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_segment.c(86): warning C4018: '>' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(128): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_text.c(85): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(212): warning C4018: '<' : signed/unsigned mismatch
+         jcomapi.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(294): warning C4334: '<<' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+         jdapimin.c
+         jdapistd.c
+         jdarith.c
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(478): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(597): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(712): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(768): warning C4018: '<' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(995): warning C4018: '>' : signed/unsigned mismatch
+     1>..\mupdf\thirdparty\jbig2dec\jbig2_symbol_dict.c(1001): warning C4018: '>' : signed/unsigned mismatch
+         jdatadst.c
+         jdatasrc.c
+         jdcoefct.c
+         jdcolor.c
+         jddctmgr.c
+         jdhuff.c
+         jdinput.c
+         jdmainct.c
+         jdmarker.c
+         jdmaster.c
+         jdmerge.c
+         jdpostct.c
+         jdsample.c
+         jdtrans.c
+         jerror.c
+         jfdctflt.c
+         jfdctfst.c
+         jfdctint.c
+         jidctflt.c
+         jidctfst.c
+         jidctint.c
+         jmemmgr.c
+         jmemnobs.c
+         jquant1.c
+         jquant2.c
+         jutils.c
+         bio.c
+         cidx_manager.c
+         cio.c
+         dwt.c
+         event.c
+         image.c
+         j2k.c
+         j2k_lib.c
+         jp2.c
+         jpt.c
+         mct.c
+         mqc.c
+         openjpeg.c
+         phix_manager.c
+         pi.c
+         ppix_manager.c
+         raw.c
+         t1.c
+         t2.c
+         tcd.c
+         tgt.c
+         thix_manager.c
+         tpix_manager.c
+         adler32.c
+         compress.c
+         crc32.c
+         deflate.c
+         inffast.c
+         inflate.c
+         inftrees.c
+         trees.c
+         uncompr.c
+         zutil.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_arm\Lib.exe /OUT:"ARM\Release\libthirdparty.lib" /NOLOGO /MACHINE:ARM /LTCG ARM\Release\libthirdparty\ftbase.obj
+         ARM\Release\libthirdparty\ftbbox.obj
+         ARM\Release\libthirdparty\ftbitmap.obj
+         ARM\Release\libthirdparty\ftgasp.obj
+         ARM\Release\libthirdparty\ftglyph.obj
+         ARM\Release\libthirdparty\ftinit.obj
+         ARM\Release\libthirdparty\ftstroke.obj
+         ARM\Release\libthirdparty\ftsynth.obj
+         ARM\Release\libthirdparty\ftsystem.obj
+         ARM\Release\libthirdparty\fttype1.obj
+         ARM\Release\libthirdparty\ftxf86.obj
+         ARM\Release\libthirdparty\cff.obj
+         ARM\Release\libthirdparty\type1cid.obj
+         ARM\Release\libthirdparty\psaux.obj
+         ARM\Release\libthirdparty\pshinter.obj
+         ARM\Release\libthirdparty\psnames.obj
+         ARM\Release\libthirdparty\raster.obj
+         ARM\Release\libthirdparty\sfnt.obj
+         ARM\Release\libthirdparty\smooth.obj
+         ARM\Release\libthirdparty\truetype.obj
+         ARM\Release\libthirdparty\type1.obj
+         ARM\Release\libthirdparty\jbig2.obj
+         ARM\Release\libthirdparty\jbig2_arith.obj
+         ARM\Release\libthirdparty\jbig2_arith_iaid.obj
+         ARM\Release\libthirdparty\jbig2_arith_int.obj
+         ARM\Release\libthirdparty\jbig2_generic.obj
+         ARM\Release\libthirdparty\jbig2_halftone.obj
+         ARM\Release\libthirdparty\jbig2_huffman.obj
+         ARM\Release\libthirdparty\jbig2_image.obj
+         ARM\Release\libthirdparty\jbig2_metadata.obj
+         ARM\Release\libthirdparty\jbig2_mmr.obj
+         ARM\Release\libthirdparty\jbig2_page.obj
+         ARM\Release\libthirdparty\jbig2_refinement.obj
+         ARM\Release\libthirdparty\jbig2_segment.obj
+         ARM\Release\libthirdparty\jbig2_symbol_dict.obj
+         ARM\Release\libthirdparty\jbig2_text.obj
+         ARM\Release\libthirdparty\jaricom.obj
+         ARM\Release\libthirdparty\jcomapi.obj
+         ARM\Release\libthirdparty\jdapimin.obj
+         ARM\Release\libthirdparty\jdapistd.obj
+         ARM\Release\libthirdparty\jdarith.obj
+         ARM\Release\libthirdparty\jdatadst.obj
+         ARM\Release\libthirdparty\jdatasrc.obj
+         ARM\Release\libthirdparty\jdcoefct.obj
+         ARM\Release\libthirdparty\jdcolor.obj
+         ARM\Release\libthirdparty\jddctmgr.obj
+         ARM\Release\libthirdparty\jdhuff.obj
+         ARM\Release\libthirdparty\jdinput.obj
+         ARM\Release\libthirdparty\jdmainct.obj
+         ARM\Release\libthirdparty\jdmarker.obj
+         ARM\Release\libthirdparty\jdmaster.obj
+         ARM\Release\libthirdparty\jdmerge.obj
+         ARM\Release\libthirdparty\jdpostct.obj
+         ARM\Release\libthirdparty\jdsample.obj
+         ARM\Release\libthirdparty\jdtrans.obj
+         ARM\Release\libthirdparty\jerror.obj
+         ARM\Release\libthirdparty\jfdctflt.obj
+         ARM\Release\libthirdparty\jfdctfst.obj
+         ARM\Release\libthirdparty\jfdctint.obj
+         ARM\Release\libthirdparty\jidctflt.obj
+         ARM\Release\libthirdparty\jidctfst.obj
+         ARM\Release\libthirdparty\jidctint.obj
+         ARM\Release\libthirdparty\jmemmgr.obj
+         ARM\Release\libthirdparty\jmemnobs.obj
+         ARM\Release\libthirdparty\jquant1.obj
+         ARM\Release\libthirdparty\jquant2.obj
+         ARM\Release\libthirdparty\jutils.obj
+         ARM\Release\libthirdparty\bio.obj
+         ARM\Release\libthirdparty\cidx_manager.obj
+         ARM\Release\libthirdparty\cio.obj
+         ARM\Release\libthirdparty\dwt.obj
+         ARM\Release\libthirdparty\event.obj
+         ARM\Release\libthirdparty\image.obj
+         ARM\Release\libthirdparty\j2k.obj
+         ARM\Release\libthirdparty\j2k_lib.obj
+         ARM\Release\libthirdparty\jp2.obj
+         ARM\Release\libthirdparty\jpt.obj
+         ARM\Release\libthirdparty\mct.obj
+         ARM\Release\libthirdparty\mqc.obj
+         ARM\Release\libthirdparty\openjpeg.obj
+         ARM\Release\libthirdparty\phix_manager.obj
+         ARM\Release\libthirdparty\pi.obj
+         ARM\Release\libthirdparty\ppix_manager.obj
+         ARM\Release\libthirdparty\raw.obj
+         ARM\Release\libthirdparty\t1.obj
+         ARM\Release\libthirdparty\t2.obj
+         ARM\Release\libthirdparty\tcd.obj
+         ARM\Release\libthirdparty\tgt.obj
+         ARM\Release\libthirdparty\thix_manager.obj
+         ARM\Release\libthirdparty\tpix_manager.obj
+         ARM\Release\libthirdparty\adler32.obj
+         ARM\Release\libthirdparty\compress.obj
+         ARM\Release\libthirdparty\crc32.obj
+         ARM\Release\libthirdparty\deflate.obj
+         ARM\Release\libthirdparty\inffast.obj
+         ARM\Release\libthirdparty\inflate.obj
+         ARM\Release\libthirdparty\inftrees.obj
+         ARM\Release\libthirdparty\trees.obj
+         ARM\Release\libthirdparty\uncompr.obj
+         ARM\Release\libthirdparty\zutil.obj
+         libthirdparty.vcxproj -> D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ARM\Release\libthirdparty.lib
+       _GenerateProjectPriFileCore:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x64\MakePri.exe New -ProjectRoot "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\\" -ConfigXml ARM\Release\libthirdparty\priconfig.xml -OutputFile "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\ARM\Release\libthirdparty.pri" -IndexName libthirdparty -Verbose -Overwrite  
+     1>Done Building Project "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libthirdparty.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:06.24

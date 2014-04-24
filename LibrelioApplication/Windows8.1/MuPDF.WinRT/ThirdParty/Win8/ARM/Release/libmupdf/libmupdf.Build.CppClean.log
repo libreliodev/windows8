@@ -1,0 +1,243 @@
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\mucbz.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_mesh.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_unpack.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_geometry.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_time.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_text.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_basic.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_flate.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_md5.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_save.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_colorspace.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_pixmap.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_text.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_read.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_parse.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_colorspace.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_event.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_function.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_interpret.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_outline.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_parse.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_shade.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_type3.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_write.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xref_aux.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_doc.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_image.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_path.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_util.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_device.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_paint.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_context.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_hash.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_trans.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_arc4.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_bbox.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_document.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_search.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_jbig2d.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_jpeg.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_tiff.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_bitmap.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_path.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_store.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_open.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_crypt.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_font.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_image.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_lex.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_nametree.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_page.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_repair.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_unicode.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xref.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_common.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_gradient.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_tile.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_zip.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_blend.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_glyph.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_simple_scale.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_getopt.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_memory.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_aes.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_sha2.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_null.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_trace.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_link.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_outline.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_faxd.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_predict.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_png.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_halftone.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_shade.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_comp_buf.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_load.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_encoding.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_fontfile.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_affine.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_edge.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_path.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_error.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_string.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_xml.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_md5.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_list.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_interactive.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_dctd.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_lzwd.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_jpx.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\memento.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_font.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_buffer.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_annot.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_table.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_form.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_metrics.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_object.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_pattern.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_store.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_stream.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xobject.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_glyphs.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_outline.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_resource.obj
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\vc110.pdb
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf.lib
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\priconfig.xml.intermediate
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\layout.resfiles.intermediate
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\resources.resfiles.intermediate
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pri.resfiles.intermediate
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\priconfig.xml
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\layout.resfiles
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\resources.resfiles
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pri.resfiles
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf.pri
+c:\users\dorin\documents\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\languagequalifiers.txt
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_context.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_error.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_geometry.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_getopt.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_hash.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_memory.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_string.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_time.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_trans.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\base_xml.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_aes.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_arc4.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_md5.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\crypt_sha2.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_bbox.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_list.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_null.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_text.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\dev_trace.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_document.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_interactive.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_link.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_outline.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\doc_search.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_affine.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_blend.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_device.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_edge.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_glyph.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_mesh.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_paint.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_path.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_simple_scale.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\draw_unpack.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_basic.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_dctd.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_faxd.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_flate.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_jbig2d.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_lzwd.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\filt_predict.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_jpeg.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_jpx.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_md5.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_png.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_save.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\image_tiff.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\memento.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\mucbz.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_annot.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_load.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_parse.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_cmap_table.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_colorspace.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_crypt.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_encoding.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_event.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_font.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_fontfile.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_form.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_function.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_image.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_interpret.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_lex.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_metrics.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_nametree.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_object.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_outline.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_page.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_parse.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_pattern.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_repair.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_shade.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_store.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_stream.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_type3.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_unicode.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_write.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xobject.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xref.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\pdf_xref_aux.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_bitmap.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_colorspace.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_font.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_halftone.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_path.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_pixmap.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_shade.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_store.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\res_text.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_buffer.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_comp_buf.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_open.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\stm_read.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_common.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_doc.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_glyphs.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_gradient.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_image.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_outline.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_path.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_resource.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_tile.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_util.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\xps_zip.obj
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.11028.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.11028.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.3944.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.3944.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.9248.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.9248.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.9752.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.9752.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.command.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\cl.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\lib-link.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\lib-link.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\lib.command.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\libmupdf.read.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\libmupdf.write.1.tlog
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\vc110.pdb
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf\priconfig.xml
+d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\win8\arm\release\libmupdf.lib

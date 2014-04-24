@@ -1,0 +1,442 @@
+﻿Build started 24.04.2014 6:15:54 PM.
+     1>Project "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libmupdf.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\mupdf\scripts /I..\mupdf\fitz /I..\mupdf\pdf /I..\mupdf\thirdparty\jbig2dec /I..\mupdf\thirdparty\jpeg /I..\mupdf\thirdparty\openjpeg\libopenjpeg /I..\mupdf\thirdparty\zlib /I..\mupdf\thirdparty\freetype\include /I"D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\\" /I"Generated Files\\" /IWin32\Release\libmupdf\ /Zi /nologo /W3 /WX- /MP /O2 /Oi /Oy- /GL /D WRTSA /D NDEBUG /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\libmupdf\\" /Fd"Win32\Release\libmupdf\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\mupdf\cbz\mucbz.c ..\mupdf\draw\draw_affine.c ..\mupdf\draw\draw_blend.c ..\mupdf\draw\draw_device.c ..\mupdf\draw\draw_edge.c ..\mupdf\draw\draw_glyph.c ..\mupdf\draw\draw_mesh.c ..\mupdf\draw\draw_paint.c ..\mupdf\draw\draw_path.c ..\mupdf\draw\draw_simple_scale.c ..\mupdf\draw\draw_unpack.c ..\mupdf\fitz\base_context.c ..\mupdf\fitz\base_error.c ..\mupdf\fitz\base_geometry.c ..\mupdf\fitz\base_getopt.c ..\mupdf\fitz\base_hash.c ..\mupdf\fitz\base_memory.c ..\mupdf\fitz\base_string.c ..\mupdf\fitz\base_time.c ..\mupdf\fitz\base_trans.c ..\mupdf\fitz\base_xml.c ..\mupdf\fitz\crypt_aes.c ..\mupdf\fitz\crypt_arc4.c ..\mupdf\fitz\crypt_md5.c ..\mupdf\fitz\crypt_sha2.c ..\mupdf\fitz\dev_bbox.c ..\mupdf\fitz\dev_list.c ..\mupdf\fitz\dev_null.c ..\mupdf\fitz\dev_text.c ..\mupdf\fitz\dev_trace.c ..\mupdf\fitz\doc_document.c ..\mupdf\fitz\doc_interactive.c ..\mupdf\fitz\doc_link.c ..\mupdf\fitz\doc_outline.c ..\mupdf\fitz\doc_search.c ..\mupdf\fitz\filt_basic.c ..\mupdf\fitz\filt_dctd.c ..\mupdf\fitz\filt_faxd.c ..\mupdf\fitz\filt_flate.c ..\mupdf\fitz\filt_jbig2d.c ..\mupdf\fitz\filt_lzwd.c ..\mupdf\fitz\filt_predict.c ..\mupdf\fitz\image_jpeg.c ..\mupdf\fitz\image_jpx.c ..\mupdf\fitz\image_md5.c ..\mupdf\fitz\image_png.c ..\mupdf\fitz\image_save.c ..\mupdf\fitz\image_tiff.c ..\mupdf\fitz\memento.c ..\mupdf\fitz\res_bitmap.c ..\mupdf\fitz\res_colorspace.c ..\mupdf\fitz\res_font.c ..\mupdf\fitz\res_halftone.c ..\mupdf\fitz\res_path.c ..\mupdf\fitz\res_pixmap.c ..\mupdf\fitz\res_shade.c ..\mupdf\fitz\res_store.c ..\mupdf\fitz\res_text.c ..\mupdf\fitz\stm_buffer.c ..\mupdf\fitz\stm_comp_buf.c ..\mupdf\fitz\stm_open.c ..\mupdf\fitz\stm_read.c ..\mupdf\pdf\pdf_annot.c ..\mupdf\pdf\pdf_cmap.c ..\mupdf\pdf\pdf_cmap_load.c ..\mupdf\pdf\pdf_cmap_parse.c ..\mupdf\pdf\pdf_cmap_table.c ..\mupdf\pdf\pdf_colorspace.c ..\mupdf\pdf\pdf_crypt.c ..\mupdf\pdf\pdf_encoding.c ..\mupdf\pdf\pdf_event.c ..\mupdf\pdf\pdf_font.c ..\mupdf\pdf\pdf_fontfile.c ..\mupdf\pdf\pdf_form.c ..\mupdf\pdf\pdf_function.c ..\mupdf\pdf\pdf_image.c ..\mupdf\pdf\pdf_interpret.c ..\mupdf\pdf\pdf_lex.c ..\mupdf\pdf\pdf_metrics.c ..\mupdf\pdf\pdf_nametree.c ..\mupdf\pdf\pdf_object.c ..\mupdf\pdf\pdf_outline.c ..\mupdf\pdf\pdf_page.c ..\mupdf\pdf\pdf_parse.c ..\mupdf\pdf\pdf_pattern.c ..\mupdf\pdf\pdf_repair.c ..\mupdf\pdf\pdf_shade.c ..\mupdf\pdf\pdf_store.c ..\mupdf\pdf\pdf_stream.c ..\mupdf\pdf\pdf_type3.c ..\mupdf\pdf\pdf_unicode.c ..\mupdf\pdf\pdf_write.c ..\mupdf\pdf\pdf_xobject.c ..\mupdf\pdf\pdf_xref.c ..\mupdf\pdf\pdf_xref_aux.c ..\mupdf\xps\xps_common.c ..\mupdf\xps\xps_doc.c ..\mupdf\xps\xps_glyphs.c ..\mupdf\xps\xps_gradient.c ..\mupdf\xps\xps_image.c ..\mupdf\xps\xps_outline.c ..\mupdf\xps\xps_path.c ..\mupdf\xps\xps_resource.c ..\mupdf\xps\xps_tile.c ..\mupdf\xps\xps_util.c ..\mupdf\xps\xps_zip.c
+         mucbz.c
+         draw_affine.c
+         draw_blend.c
+         draw_device.c
+         draw_edge.c
+         draw_glyph.c
+         draw_mesh.c
+         draw_paint.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_device.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_affine.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_edge.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\cbz\mucbz.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_blend.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_glyph.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_mesh.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_paint.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         draw_path.c
+         draw_simple_scale.c
+         draw_unpack.c
+         base_context.c
+         base_error.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_simple_scale.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_path.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\draw\draw_unpack.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         base_geometry.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_context.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_error.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         base_getopt.c
+         base_hash.c
+         base_memory.c
+         base_string.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_geometry.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         base_time.c
+         base_trans.c
+         base_xml.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_hash.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_memory.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_string.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         crypt_aes.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_trans.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         crypt_arc4.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\base_xml.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         crypt_md5.c
+         crypt_sha2.c
+         dev_bbox.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\crypt_aes.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         dev_list.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\crypt_arc4.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         dev_null.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\crypt_md5.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\crypt_sha2.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         dev_text.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\dev_bbox.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\dev_list.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         dev_trace.c
+         doc_document.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\dev_null.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         doc_interactive.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\dev_text.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         doc_link.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\dev_trace.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\doc_document.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\doc_interactive.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         doc_outline.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\doc_link.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         doc_search.c
+         filt_basic.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\doc_outline.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         filt_dctd.c
+         filt_faxd.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\doc_search.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_basic.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         filt_flate.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_faxd.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         filt_jbig2d.c
+         filt_lzwd.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_dctd.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         filt_predict.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_flate.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_jbig2d.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_lzwd.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         image_jpeg.c
+         image_jpx.c
+         image_md5.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\filt_predict.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         image_png.c
+         image_save.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_jpeg.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         image_tiff.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_jpx.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_md5.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         memento.c
+         res_bitmap.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_png.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>..\mupdf\fitz\memento.c(62): warning C4273: 'malloc' : inconsistent dll linkage
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(642) : see previous definition of 'malloc'
+     1>..\mupdf\fitz\memento.c(63): warning C4273: 'free' : inconsistent dll linkage
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(641) : see previous definition of 'free'
+     1>..\mupdf\fitz\memento.c(64): warning C4273: 'realloc' : inconsistent dll linkage
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(644) : see previous definition of 'realloc'
+     1>..\mupdf\fitz\memento.c(65): warning C4273: 'calloc' : inconsistent dll linkage
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(640) : see previous definition of 'calloc'
+     1>..\mupdf\fitz\memento.c(69): warning C4273: 'atoi' : inconsistent dll linkage
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(430) : see previous definition of 'atoi'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_save.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\image_tiff.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         res_colorspace.c
+         res_font.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_bitmap.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         res_halftone.c
+         res_path.c
+         res_pixmap.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_colorspace.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_font.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         res_shade.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_halftone.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         res_store.c
+         res_text.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_path.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_pixmap.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_shade.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_store.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         stm_buffer.c
+         stm_comp_buf.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\res_text.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         stm_open.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\stm_buffer.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         stm_read.c
+         pdf_annot.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\stm_comp_buf.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\stm_open.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\fitz\stm_read.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_cmap.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_annot.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_cmap_load.c
+         pdf_cmap_parse.c
+         pdf_cmap_table.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_cmap.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_colorspace.c
+         pdf_crypt.c
+         pdf_encoding.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_cmap_load.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_cmap_parse.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_cmap_table.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_colorspace.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_crypt.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_encoding.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_event.c
+         pdf_font.c
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_event.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_fontfile.c
+         pdf_form.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_font.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_function.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_fontfile.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_form.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_image.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_function.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_image.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_interpret.c
+         pdf_lex.c
+         pdf_metrics.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_interpret.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_lex.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_metrics.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_nametree.c
+         pdf_object.c
+         pdf_outline.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_nametree.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_page.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_object.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_parse.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_outline.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_pattern.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_page.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_repair.c
+         pdf_shade.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_parse.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_pattern.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_store.c
+         pdf_stream.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_repair.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_shade.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_type3.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_store.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_stream.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_unicode.c
+         pdf_write.c
+         pdf_xobject.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_type3.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         pdf_xref.c
+         pdf_xref_aux.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_unicode.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_write.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_xobject.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         xps_common.c
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_xref.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>d:\new folder\tmp\librelioapplication\mupdf.winrt\thirdparty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\pdf\pdf_xref_aux.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         xps_doc.c
+         xps_glyphs.c
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_common.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         xps_gradient.c
+         xps_image.c
+         xps_outline.c
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_glyphs.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_doc.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_gradient.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_image.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_outline.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+         xps_path.c
+         xps_resource.c
+         xps_tile.c
+         xps_util.c
+         xps_zip.c
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_path.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_resource.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_tile.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_zip.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\mupdf\fitz\fitz.h(59): warning C4005: 'isnan' : macro redefinition (..\mupdf\xps\xps_util.c)
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\math.h(289) : see previous definition of 'isnan'
+     1>..\mupdf\xps\xps_zip.c(563): warning C4090: 'function' : different 'const' qualifiers
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Win32\Release\libmupdf.lib" /NOLOGO /LTCG Win32\Release\libmupdf\mucbz.obj
+         Win32\Release\libmupdf\draw_affine.obj
+         Win32\Release\libmupdf\draw_blend.obj
+         Win32\Release\libmupdf\draw_device.obj
+         Win32\Release\libmupdf\draw_edge.obj
+         Win32\Release\libmupdf\draw_glyph.obj
+         Win32\Release\libmupdf\draw_mesh.obj
+         Win32\Release\libmupdf\draw_paint.obj
+         Win32\Release\libmupdf\draw_path.obj
+         Win32\Release\libmupdf\draw_simple_scale.obj
+         Win32\Release\libmupdf\draw_unpack.obj
+         Win32\Release\libmupdf\base_context.obj
+         Win32\Release\libmupdf\base_error.obj
+         Win32\Release\libmupdf\base_geometry.obj
+         Win32\Release\libmupdf\base_getopt.obj
+         Win32\Release\libmupdf\base_hash.obj
+         Win32\Release\libmupdf\base_memory.obj
+         Win32\Release\libmupdf\base_string.obj
+         Win32\Release\libmupdf\base_time.obj
+         Win32\Release\libmupdf\base_trans.obj
+         Win32\Release\libmupdf\base_xml.obj
+         Win32\Release\libmupdf\crypt_aes.obj
+         Win32\Release\libmupdf\crypt_arc4.obj
+         Win32\Release\libmupdf\crypt_md5.obj
+         Win32\Release\libmupdf\crypt_sha2.obj
+         Win32\Release\libmupdf\dev_bbox.obj
+         Win32\Release\libmupdf\dev_list.obj
+         Win32\Release\libmupdf\dev_null.obj
+         Win32\Release\libmupdf\dev_text.obj
+         Win32\Release\libmupdf\dev_trace.obj
+         Win32\Release\libmupdf\doc_document.obj
+         Win32\Release\libmupdf\doc_interactive.obj
+         Win32\Release\libmupdf\doc_link.obj
+         Win32\Release\libmupdf\doc_outline.obj
+         Win32\Release\libmupdf\doc_search.obj
+         Win32\Release\libmupdf\filt_basic.obj
+         Win32\Release\libmupdf\filt_dctd.obj
+         Win32\Release\libmupdf\filt_faxd.obj
+         Win32\Release\libmupdf\filt_flate.obj
+         Win32\Release\libmupdf\filt_jbig2d.obj
+         Win32\Release\libmupdf\filt_lzwd.obj
+         Win32\Release\libmupdf\filt_predict.obj
+         Win32\Release\libmupdf\image_jpeg.obj
+         Win32\Release\libmupdf\image_jpx.obj
+         Win32\Release\libmupdf\image_md5.obj
+         Win32\Release\libmupdf\image_png.obj
+         Win32\Release\libmupdf\image_save.obj
+         Win32\Release\libmupdf\image_tiff.obj
+         Win32\Release\libmupdf\memento.obj
+         Win32\Release\libmupdf\res_bitmap.obj
+         Win32\Release\libmupdf\res_colorspace.obj
+         Win32\Release\libmupdf\res_font.obj
+         Win32\Release\libmupdf\res_halftone.obj
+         Win32\Release\libmupdf\res_path.obj
+         Win32\Release\libmupdf\res_pixmap.obj
+         Win32\Release\libmupdf\res_shade.obj
+         Win32\Release\libmupdf\res_store.obj
+         Win32\Release\libmupdf\res_text.obj
+         Win32\Release\libmupdf\stm_buffer.obj
+         Win32\Release\libmupdf\stm_comp_buf.obj
+         Win32\Release\libmupdf\stm_open.obj
+         Win32\Release\libmupdf\stm_read.obj
+         Win32\Release\libmupdf\pdf_annot.obj
+         Win32\Release\libmupdf\pdf_cmap.obj
+         Win32\Release\libmupdf\pdf_cmap_load.obj
+         Win32\Release\libmupdf\pdf_cmap_parse.obj
+         Win32\Release\libmupdf\pdf_cmap_table.obj
+         Win32\Release\libmupdf\pdf_colorspace.obj
+         Win32\Release\libmupdf\pdf_crypt.obj
+         Win32\Release\libmupdf\pdf_encoding.obj
+         Win32\Release\libmupdf\pdf_event.obj
+         Win32\Release\libmupdf\pdf_font.obj
+         Win32\Release\libmupdf\pdf_fontfile.obj
+         Win32\Release\libmupdf\pdf_form.obj
+         Win32\Release\libmupdf\pdf_function.obj
+         Win32\Release\libmupdf\pdf_image.obj
+         Win32\Release\libmupdf\pdf_interpret.obj
+         Win32\Release\libmupdf\pdf_lex.obj
+         Win32\Release\libmupdf\pdf_metrics.obj
+         Win32\Release\libmupdf\pdf_nametree.obj
+         Win32\Release\libmupdf\pdf_object.obj
+         Win32\Release\libmupdf\pdf_outline.obj
+         Win32\Release\libmupdf\pdf_page.obj
+         Win32\Release\libmupdf\pdf_parse.obj
+         Win32\Release\libmupdf\pdf_pattern.obj
+         Win32\Release\libmupdf\pdf_repair.obj
+         Win32\Release\libmupdf\pdf_shade.obj
+         Win32\Release\libmupdf\pdf_store.obj
+         Win32\Release\libmupdf\pdf_stream.obj
+         Win32\Release\libmupdf\pdf_type3.obj
+         Win32\Release\libmupdf\pdf_unicode.obj
+         Win32\Release\libmupdf\pdf_write.obj
+         Win32\Release\libmupdf\pdf_xobject.obj
+         Win32\Release\libmupdf\pdf_xref.obj
+         Win32\Release\libmupdf\pdf_xref_aux.obj
+         Win32\Release\libmupdf\xps_common.obj
+         Win32\Release\libmupdf\xps_doc.obj
+         Win32\Release\libmupdf\xps_glyphs.obj
+         Win32\Release\libmupdf\xps_gradient.obj
+         Win32\Release\libmupdf\xps_image.obj
+         Win32\Release\libmupdf\xps_outline.obj
+         Win32\Release\libmupdf\xps_path.obj
+         Win32\Release\libmupdf\xps_resource.obj
+         Win32\Release\libmupdf\xps_tile.obj
+         Win32\Release\libmupdf\xps_util.obj
+         Win32\Release\libmupdf\xps_zip.obj
+         libmupdf.vcxproj -> D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\Win32\Release\libmupdf.lib
+       _GenerateProjectPriFileCore:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x64\MakePri.exe New -ProjectRoot "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\\" -ConfigXml Win32\Release\libmupdf\priconfig.xml -OutputFile "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\Win32\Release\libmupdf.pri" -IndexName libmupdf -Verbose -Overwrite  
+     1>Done Building Project "D:\New folder\tmp\LibrelioApplication\MuPDF.WinRT\ThirdParty\Win8\libmupdf.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:10.53
