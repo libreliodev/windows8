@@ -434,6 +434,9 @@ namespace LibrelioApplication
 
         bool cancelDraw = false;
 
+        private double windowWidth = 0;
+        private double windowHeight = 0;
+
         IList<LinkInfo> visitorList = new List<LinkInfo>();
 
         
@@ -677,12 +680,12 @@ namespace LibrelioApplication
 
         bool IsApplicationSizePortrait()
         {
-            return Window.Current.Bounds.Width < Window.Current.Bounds.Height;
+            return windowWidth < windowHeight;
         }
 
         bool IsApplicationSizeSnapped()
         {
-            return Window.Current.Bounds.Width <= 500;
+            return windowWidth <= 500;
         }
 
         // Thumbnail click
@@ -833,7 +836,7 @@ namespace LibrelioApplication
             int height = 0;
             MuPDFWinRT.Point size = document.GetPageSize(0);
             
-            if (Window.Current.Bounds.Width > Window.Current.Bounds.Height)
+            if (windowWidth > windowHeight)
             {
                 // calculate display zoom factor
                 defaultZoomFactor = CalculateZoomFactor(size.Y);
@@ -853,8 +856,8 @@ namespace LibrelioApplication
                 PageData data = new PageData()
                 {
                     Image = null,
-                    Width = Window.Current.Bounds.Width,
-                    Height = Window.Current.Bounds.Height,
+                    Width = windowWidth,
+                    Height = windowHeight,
                     Idx = 1,
                     ZoomFactor = defaultZoomFactor,
                     FirstPageZoomFactor = defaultZoomFactor,
@@ -872,8 +875,8 @@ namespace LibrelioApplication
                     data = new PageData()
                     {
                         Image = null,
-                        Width = Window.Current.Bounds.Width,
-                        Height = Window.Current.Bounds.Height,
+                        Width = windowWidth,
+                        Height = windowHeight,
                         Idx = p + 1,
                         ZoomFactor = defaultZoomFactor,
                         FirstPageZoomFactor = defaultZoomFactor,
@@ -889,8 +892,8 @@ namespace LibrelioApplication
                 data = new PageData()
                 {
                     Image = null,
-                    Width = Window.Current.Bounds.Width,
-                    Height = Window.Current.Bounds.Height,
+                    Width = windowWidth,
+                    Height = windowHeight,
                     Idx = pageCount,
                     ZoomFactor = defaultZoomFactor,
                     FirstPageZoomFactor = defaultZoomFactor,
@@ -903,8 +906,8 @@ namespace LibrelioApplication
                 //data = new PageData()
                 //{
                 //    Image = null,
-                //    Width = Window.Current.Bounds.Width,
-                //    Height = Window.Current.Bounds.Height,
+                //    Width = windowWidth,
+                //    Height = windowHeight,
                 //    Idx = pageCount + 1,
                 //    ZoomFactor = defaultZoomFactor,
                 //    FirstPageZoomFactor = defaultZoomFactor,
@@ -956,8 +959,8 @@ namespace LibrelioApplication
                     var data = new PageData()
                     {
                         Image = null,
-                        Width = Window.Current.Bounds.Width,
-                        Height = Window.Current.Bounds.Height,
+                        Width = windowWidth,
+                        Height = windowHeight,
                         Idx = p + 1,
                         ZoomFactor = defaultZoomFactor,
                         FirstPageZoomFactor = defaultZoomFactor,
@@ -1066,10 +1069,10 @@ namespace LibrelioApplication
 
         private void SetScrollViewer(ScrollViewer scr)
         {
-            //if (currentZoomFactor < 1)
-            //{
-            //    scrollViewer.ChangeView(null, null, currentZoomFactor);
-            //}
+            if (currentZoomFactor < 0.95)
+            {
+                scrollViewer.ChangeView(null, null, currentZoomFactor, true);
+            }
 
             if (!loadedFirstPage)
             {
@@ -1622,7 +1625,7 @@ namespace LibrelioApplication
                     var scr = findFirstInVisualTree<ScrollViewer>(item);
                     if (scr != null && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
                     {
-                        scr.ChangeView(null, null, defaultZoomFactor);
+                        scr.ChangeView(null, null, defaultZoomFactor, true);
                     }
 
                     pageNum = p;
@@ -1635,7 +1638,7 @@ namespace LibrelioApplication
                     scr = findFirstInVisualTree<ScrollViewer>(item);
                     if (scr != null && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
                     {
-                        scr.ChangeView(null, null, defaultZoomFactor);
+                        scr.ChangeView(null, null, defaultZoomFactor, true);
                     }
 
                     var task1 = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
@@ -1712,7 +1715,7 @@ namespace LibrelioApplication
                         return;
                     }
 
-                    var task = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async() =>
+                    var task = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, async () =>
                     {
                         if (scrView.HorizontalOffset <= scrView.VerticalOffset)
                         {
@@ -1722,7 +1725,7 @@ namespace LibrelioApplication
                         {
                             await UpdatePages(pageNum, NUM_NEIGHBOURS_REDRAW, scrView, true);
                         }
-                     });
+                    });
                 }
             }
         }
@@ -2279,6 +2282,8 @@ namespace LibrelioApplication
 
         private void pageRoot_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            windowWidth = e.NewSize.Width;
+            windowHeight = e.NewSize.Height;
             if (pages.Count > 0)
             {
                 if (pages[0].Width != e.NewSize.Width ||
@@ -2341,8 +2346,8 @@ namespace LibrelioApplication
                     var data = new PageData()
                     {
                         Image = null,
-                        Width = Window.Current.Bounds.Width,
-                        Height = Window.Current.Bounds.Height,
+                        Width = windowWidth,
+                        Height = windowHeight,
                         Idx = p + 1,
                         ZoomFactor = defaultZoomFactor,
                         FirstPageZoomFactor = defaultZoomFactor,
@@ -2359,8 +2364,8 @@ namespace LibrelioApplication
                     var data = new PageData()
                     {
                         Image = null,
-                        Width = Window.Current.Bounds.Width,
-                        Height = Window.Current.Bounds.Height,
+                        Width = windowWidth,
+                        Height = windowHeight,
                         Idx = p + 1,
                         ZoomFactor = defaultZoomFactor,
                         FirstPageZoomFactor = defaultZoomFactor,
@@ -2375,7 +2380,7 @@ namespace LibrelioApplication
                 var scr = findFirstInVisualTree<ScrollViewer>(item);
                 if (scr != null)
                 {
-                    scr.ChangeView(null, null, defaultZoomFactor);
+                    scr.ChangeView(null, null, defaultZoomFactor, true);
                 }
             }
 
@@ -2423,8 +2428,8 @@ namespace LibrelioApplication
                 var data = new PageData()
                 {
                     Image = null,
-                    Width = Window.Current.Bounds.Width,
-                    Height = Window.Current.Bounds.Height,
+                    Width = windowWidth,
+                    Height = windowHeight,
                     Idx = p + 1,
                     ZoomFactor = defaultZoomFactor,
                     FirstPageZoomFactor = defaultZoomFactor,
@@ -2439,7 +2444,7 @@ namespace LibrelioApplication
                 var scr = findFirstInVisualTree<ScrollViewer>(item);
                 if (scr != null)
                 {
-                    scr.ChangeView(null, null, defaultZoomFactor);
+                    scr.ChangeView(null, null, defaultZoomFactor, true);
                 }
             }
 
@@ -2520,9 +2525,9 @@ namespace LibrelioApplication
 
             var point = e.GetPosition(null);
 
-            if (point.X < Window.Current.Bounds.Width / 8)
+            if (point.X < windowWidth / 8)
                 LeftPressed();
-            else if (point.X > Window.Current.Bounds.Width - (Window.Current.Bounds.Width / 8))
+            else if (point.X > windowWidth - (windowWidth / 8))
                 RightPressed();
 
             isTappedProcessing = false;
@@ -2541,25 +2546,67 @@ namespace LibrelioApplication
             isDoubleTappedProcessing = true;
 
             doubleTapped = true;
+
             var item = pagesListView.ContainerFromIndex(pageNum) as GridViewItem;
             var scr = findFirstInVisualTree<ScrollViewer>(item);
             if (scr != null)
             {
-                if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
+                TimeSpan period = TimeSpan.FromMilliseconds(10);
+
+                Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
                 {
-                    scr.ChangeView(null, null, 2 * defaultZoomFactor);
-                    doubleClickPoint = point;
-                    doubleTappedZoomed = true;
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
+                        {
+                            scr.ViewChanged += scr_ViewChanged;
+                            if (!scr.ChangeView(null, null, (2 * defaultZoomFactor), true))
+                                scr.ViewChanged -= scr_ViewChanged;
+
+                            doubleClickPoint = point;
+                            doubleTappedZoomed = true;
+                        }
+                        else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
+                        {
+                            scr.ViewChanged += scr_ViewChanged;
+                            if (!scr.ChangeView(null, null, defaultZoomFactor, true))
+                                scr.ViewChanged -= scr_ViewChanged;
+                                
+                            doubleClickPoint = point;
+                            doubleTappedZoomed = false;
+                        }
+                    });
                 }
-                else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
-                {
-                    scr.ChangeView(null, null, defaultZoomFactor);
-                    doubleClickPoint = point;
-                    doubleTappedZoomed = false;
-                }
+                , period);
+
             }
 
-            scr.LayoutUpdated += scr_LayoutUpdated;
+            //isDoubleTappedProcessing = false;
+            //scr.LayoutUpdated += scr_LayoutUpdated;
+        }
+
+        void scr_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (!isDoubleTappedProcessing) return;
+            
+            var scr = sender as ScrollViewer;
+            if (scr != null)
+            {
+                scr.ViewChanged -= scr_ViewChanged;
+
+                var hOffset = doubleClickPoint.X * scr.ZoomFactor - (scr.ViewportWidth / 2);
+                if (hOffset < 0) hOffset = 0;
+                if (scr.ExtentWidth * scr.ZoomFactor - hOffset < scr.ViewportWidth)
+                    hOffset = scr.ExtentWidth - hOffset;
+                var vOffset = doubleClickPoint.Y * scr.ZoomFactor - (scr.ViewportHeight / 2);
+                if (vOffset < 0) vOffset = 0;
+                if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
+                    vOffset = scr.ExtentHeight - vOffset;
+
+                scr.ChangeView(hOffset, vOffset, null); 
+            }
+
+            isDoubleTappedProcessing = false;
         }
 
         void scr_LayoutUpdated(object sender, object e)
@@ -2578,8 +2625,17 @@ namespace LibrelioApplication
                 if (vOffset < 0) vOffset = 0;
                 if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
                     vOffset = scr.ExtentHeight - vOffset;
-                scr.ChangeView(hOffset, null, null);
-                scr.ChangeView(null, vOffset, null);
+
+                TimeSpan period = TimeSpan.FromMilliseconds(10);
+
+                Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
+                {
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        scr.ChangeView(hOffset, vOffset, null);
+                    });
+                }
+                , period);
 
                 scr.LayoutUpdated -= scr_LayoutUpdated;
             }
