@@ -2559,21 +2559,21 @@ namespace LibrelioApplication
                     {
                         if (!doubleTappedZoomed && Math.Abs(scr.ZoomFactor - (2 * defaultZoomFactor)) > 0.04)
                         {
+                            doubleClickPoint = point;
+                            doubleTappedZoomed = true;
+
                             scr.ViewChanged += scr_ViewChanged;
                             if (!scr.ChangeView(null, null, (2 * defaultZoomFactor), true))
                                 scr.ViewChanged -= scr_ViewChanged;
-
-                            doubleClickPoint = point;
-                            doubleTappedZoomed = true;
                         }
                         else if (doubleTappedZoomed && Math.Abs(scr.ZoomFactor - defaultZoomFactor) > 0.04)
                         {
+                            doubleClickPoint = point;
+                            doubleTappedZoomed = false;
+
                             scr.ViewChanged += scr_ViewChanged;
                             if (!scr.ChangeView(null, null, defaultZoomFactor, true))
                                 scr.ViewChanged -= scr_ViewChanged;
-                                
-                            doubleClickPoint = point;
-                            doubleTappedZoomed = false;
                         }
                     });
                 }
@@ -2581,7 +2581,6 @@ namespace LibrelioApplication
 
             }
 
-            //isDoubleTappedProcessing = false;
             //scr.LayoutUpdated += scr_LayoutUpdated;
         }
 
@@ -2594,24 +2593,15 @@ namespace LibrelioApplication
             {
                 scr.ViewChanged -= scr_ViewChanged;
 
-                var hOffset = doubleClickPoint.X * scr.ZoomFactor - (scr.ViewportWidth / 2);
-                if (hOffset < 0) hOffset = 0;
-                if (scr.ExtentWidth * scr.ZoomFactor - hOffset < scr.ViewportWidth)
-                    hOffset = scr.ExtentWidth - hOffset;
-                var vOffset = doubleClickPoint.Y * scr.ZoomFactor - (scr.ViewportHeight / 2);
-                if (vOffset < 0) vOffset = 0;
-                if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
-                    vOffset = scr.ExtentHeight - vOffset;
-
-                scr.ChangeView(hOffset, vOffset, null); 
+                var scr1 = findFirstInVisualTree<ScrollViewer>(pagesListView);
+                scr1.LayoutUpdated += scr1_LayoutUpdated;
             }
-
-            isDoubleTappedProcessing = false;
         }
 
-        void scr_LayoutUpdated(object sender, object e)
+        void scr1_LayoutUpdated(object sender, object e)
         {
-            if (!isDoubleTappedProcessing) return;
+            var scr1 = findFirstInVisualTree<ScrollViewer>(pagesListView);
+            scr1.LayoutUpdated -= scr1_LayoutUpdated;
 
             var item = pagesListView.ContainerFromIndex(pageNum) as GridViewItem;
             var scr = findFirstInVisualTree<ScrollViewer>(item);
@@ -2626,22 +2616,45 @@ namespace LibrelioApplication
                 if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
                     vOffset = scr.ExtentHeight - vOffset;
 
-                TimeSpan period = TimeSpan.FromMilliseconds(10);
-
-                Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
-                {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        scr.ChangeView(hOffset, vOffset, null);
-                    });
-                }
-                , period);
-
-                scr.LayoutUpdated -= scr_LayoutUpdated;
+                scr.ChangeView(hOffset, vOffset, null, true);
             }
 
             isDoubleTappedProcessing = false;
         }
+
+        //void scr_LayoutUpdated(object sender, object e)
+        //{
+        //    if (!isDoubleTappedProcessing) return;
+
+        //    var item = pagesListView.ContainerFromIndex(pageNum) as GridViewItem;
+        //    var scr = findFirstInVisualTree<ScrollViewer>(item);
+        //    if (scr != null)
+        //    {
+                //var hOffset = doubleClickPoint.X * scr.ZoomFactor - (scr.ViewportWidth / 2);
+                //if (hOffset < 0) hOffset = 0;
+                //if (scr.ExtentWidth * scr.ZoomFactor - hOffset < scr.ViewportWidth)
+                //    hOffset = scr.ExtentWidth - hOffset;
+                //var vOffset = doubleClickPoint.Y * scr.ZoomFactor - (scr.ViewportHeight / 2);
+                //if (vOffset < 0) vOffset = 0;
+                //if (scr.ExtentHeight * scr.ZoomFactor - vOffset < scr.ViewportHeight)
+                //    vOffset = scr.ExtentHeight - vOffset;
+
+                //TimeSpan period = TimeSpan.FromMilliseconds(10);
+
+                //Windows.System.Threading.ThreadPoolTimer.CreateTimer(async (source) =>
+                //{
+                //    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                //    {
+                //        scr.ChangeView(hOffset, vOffset, null);
+                //    });
+                //}
+                //, period);
+
+                //scr.LayoutUpdated -= scr_LayoutUpdated;
+            //}
+
+            //isDoubleTappedProcessing = false;
+        //}
 
     }
 }
