@@ -74,8 +74,10 @@ namespace LibrelioApplication
         public static async Task<IRandomAccessStream> DownloadFileAsync(LibrelioUrl url, CancellationToken cancelToken = default(CancellationToken))
         {
             var stream = new InMemoryRandomAccessStream();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("user-agent", "LibrelioWinRT");
 
-            using(var response = await new HttpClient().GetAsync(url.AbsoluteUrl))
+            using (var response = await client.GetAsync(url.AbsoluteUrl))
             {
                 var buffer = await response.Content.ReadAsStringAsync();
                 var dataWriter = new DataWriter(stream.GetOutputStreamAt(0));
@@ -90,8 +92,10 @@ namespace LibrelioApplication
         public static async Task<IRandomAccessStream> DownloadFileAsync(string url, CancellationToken cancelToken = default(CancellationToken))
         {
             var stream = new InMemoryRandomAccessStream();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("user-agent", "LibrelioWinRT");
 
-            using (var response = await new HttpClient().GetAsync(url))
+            using (var response = await client.GetAsync(url))
             {
                 var buffer = await response.Content.ReadAsByteArrayAsync();
                 var dataWriter = new DataWriter(stream.GetOutputStreamAt(0));

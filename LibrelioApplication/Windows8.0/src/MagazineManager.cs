@@ -99,6 +99,7 @@ namespace LibrelioApplication
                 try
                 {
                     var httpClient = new HttpClient();
+		    httpClient.DefaultRequestHeaders.Add("user-agent", "LibrelioWinRT");
                     var url = new Uri(this._pList.AbsoluteUrl);
                     var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -330,6 +331,7 @@ namespace LibrelioApplication
         public async Task<IRandomAccessStream> DownloadPDFAsync(LibrelioUrl magUrl, StorageFolder folder, bool isd, IProgress<int> progress = null, CancellationToken cancelToken = default(CancellationToken))
         {
             HttpClient client = new HttpClient();
+	    httpClient.DefaultRequestHeaders.Add("user-agent", "LibrelioWinRT");
 
             var url = magUrl.AbsoluteUrl;
             if (isd) url = url.Replace("_.", ".");
