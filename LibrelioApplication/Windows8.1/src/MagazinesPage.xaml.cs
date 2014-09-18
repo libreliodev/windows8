@@ -955,6 +955,7 @@ namespace LibrelioApplication
             if (folder == null) return;
 
             BackgroundDownloader downloader = new BackgroundDownloader();
+            downloader.SetRequestHeader("user-agent", "LibrelioWinRT");
             //ApplicationData.Current.LocalSettings.Values.Remove("last_update");
             var value = ApplicationData.Current.LocalSettings.Values["last_update"] as string;
             if (value == null)

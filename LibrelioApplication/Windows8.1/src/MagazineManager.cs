@@ -394,6 +394,7 @@ namespace LibrelioApplication
 
             progress.Report(0);
             BackgroundDownloader downloader = new BackgroundDownloader();
+            downloader.SetRequestHeader("user-agent", "LibrelioWinRT");
             DownloadOperation download = downloader.CreateDownload(new Uri(url), file);
 
             await HandleDownloadAsync(download, true, progress, cancelToken);
@@ -487,6 +488,7 @@ namespace LibrelioApplication
 
             progress.Report(0);
             BackgroundDownloader downloader = new BackgroundDownloader();
+            downloader.SetRequestHeader("user-agent", "LibrelioWinRT");
             DownloadOperation download = downloader.CreateDownload(new Uri(magUrl.Url), file);
 
             await HandleDownloadAsync(download, true, progress, cancelToken);
@@ -1354,6 +1356,7 @@ namespace LibrelioApplication
 
             progress.Report(0);
             BackgroundDownloader downloader = new BackgroundDownloader();
+            downloader.SetRequestHeader("user-agent", "LibrelioWinRT");
             DownloadOperation download = downloader.CreateDownload(new Uri(url), pdfFile);
 
             await HandleDownloadAsync(download,  true, progress, cancelToken);
