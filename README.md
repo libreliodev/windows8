@@ -12,7 +12,7 @@ This project aims at porting the existing iOS customizable app to Windows 8.
 This project is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This project is Copyright 2012-2013 WidgetAvenue - Librelio, except included libraries:
-- Copyright 2006-2012 Artifex Software, Inc for the MuPDF library
+- Copyright 2006-2015 Artifex Software, Inc for the MuPDF library
 
 ##Customization
 The customization process is detailed at https://github.com/libreliodev/windows8/issues/1#issuecomment-17126807
